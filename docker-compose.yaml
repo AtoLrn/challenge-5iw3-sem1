@@ -1,0 +1,12 @@
+version: 3.0.0
+include:
+  - ./api-platform/docker-compose.yml  # Add Api Plateform docker compose
+
+services:
+  # A Moch to replace S3 Storage https://github.com/adobe/S3Mock#start-using-docker-compose
+  s3mock:
+    image: adobe/s3mock:3.1.0
+    environment:
+      - initialBuckets=storage
+    ports:
+      - 9090:9090
