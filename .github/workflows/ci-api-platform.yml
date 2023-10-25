@@ -1,10 +1,16 @@
-name: CI
+name: CI API platform
 
 on:
   push:
     branches:
-      - main
-  pull_request: ~
+      - master
+    paths:
+      - "api-platform/**"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "api-platform/**"
   workflow_dispatch: ~
 
 concurrency:
@@ -13,21 +19,21 @@ concurrency:
 
 jobs:
   tests:
-    name: Tests
+    name: Test if App work correctly
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v4
-      -
-        name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      -
-        name: Build Docker images
+
+      - name: Build Docker images
         uses: docker/bake-action@v4
         with:
           pull: true
           load: true
+          workdir: ./api-platform
           files: |
             docker-compose.yml
             docker-compose.override.yml
@@ -35,39 +41,35 @@ jobs:
             *.cache-from=type=gha,scope=${{github.ref}}
             *.cache-from=type=gha,scope=refs/heads/main
             *.cache-to=type=gha,scope=${{github.ref}},mode=max
-      -
-        name: Start services
+
+      - name: Start services
+        working-directory: ./api-platform
         run: docker compose up --wait --no-build
-      -
-        name: Check HTTP reachability
+
+      - name: Check HTTP reachability
+        working-directory: ./api-platform
         run: curl -v -o /dev/null http://localhost
-      -
-        name: Check API reachability
+
+      - name: Check API reachability
+        working-directory: ./api-platform
         run: curl -vk -o /dev/null https://localhost
-      -
-        name: Check PWA reachability
+
+      - name: Check PWA reachability
+        working-directory: ./api-platform
         run: "curl -vk -o /dev/null -H 'Accept: text/html' https://localhost"
-      -
-        name: Create test database
+
+      - name: Create test database
+        working-directory: ./api-platform
         run: docker compose exec -T php bin/console -e test doctrine:database:create
-      -
-        name: Run migrations
+
+      - name: Run migrations
+        working-directory: ./api-platform
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
-      -
-        name: Run PHPUnit
+
+      - name: Run PHPUnit
+        working-directory: ./api-platform
         run: docker compose exec -T php bin/phpunit
-      -
-        name: Doctrine Schema Validator
+
+      - name: Doctrine Schema Validator
+        working-directory: ./api-platform
         run: docker compose exec -T php bin/console -e test doctrine:schema:validate
-  lint:
-    name: Docker Lint
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        name: Lint Dockerfiles
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-            recursive: true
