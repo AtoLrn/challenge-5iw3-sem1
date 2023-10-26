@@ -1,4 +1,4 @@
-name: CI API platform
+name: CI Api Platform
 
 on:
   push:
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   tests:
-    name: Test if App work correctly
+    name: Api Platform CI pipeline
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,15 +47,12 @@ jobs:
         run: docker compose up --wait --no-build
 
       - name: Check HTTP reachability
-        working-directory: ./api-platform
         run: curl -v -o /dev/null http://localhost
 
       - name: Check API reachability
-        working-directory: ./api-platform
         run: curl -vk -o /dev/null https://localhost
 
       - name: Check PWA reachability
-        working-directory: ./api-platform
         run: "curl -vk -o /dev/null -H 'Accept: text/html' https://localhost"
 
       - name: Create test database

@@ -1,4 +1,4 @@
-name: CI terraform
+name: CI Terraform
 
 on:
   push:

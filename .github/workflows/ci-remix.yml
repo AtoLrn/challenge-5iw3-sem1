@@ -1,0 +1,46 @@
+name: CI remix
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "remix/**"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "remix/**"
+
+jobs:
+  tests:
+    name: Remix CI pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.8.0"
+
+      - name: Install dependencies
+        working-directory: ./remix
+        run: npm ci
+
+      - name: Check lint
+        working-directory: ./remix
+        run: npm run lint
+
+      - name: Check build
+        working-directory: ./remix
+        run: npm run build
+
+      - name: Launch app in background
+        working-directory: ./remix
+        run: screen -d -m npm run start
+
+      - name: Check reachability
+        # sleep to let the time for the server to start
+        run: sleep 5; curl -v -o /dev/null http://localhost:3000

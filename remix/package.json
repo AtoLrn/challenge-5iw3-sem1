@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "remix dev",
+    "build": "remix build",
     "start": "remix-serve build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix ./src"
+    "lint": "eslint ./src",
+    "format": "eslint --fix ./src"
   },
   "author": "",
   "license": "ISC",

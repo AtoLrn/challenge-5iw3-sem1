@@ -44,7 +44,7 @@ export default function App() {
 			<body suppressHydrationWarning={NODE_ENV === 'development'}>
 				<GoogleTagManagerIframe id={GOOGLE_TAG_MANAGER_ID}/>
 
-				<h1 className='text-3xl font-bold underline'>Hello { contacts }! </h1>
+				<h1 className='text-3xl font-bold underline'>Hello { contacts } ! </h1>
 
         
 				<Link to={'/test'}>
