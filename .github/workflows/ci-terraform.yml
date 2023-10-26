@@ -1,0 +1,31 @@
+name: CI terraform
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "infra/terraform/**"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "infra/terraform/**"
+
+jobs:
+  tests:
+    name: Terraform CI pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.6.2"
+
+      - name: Check Terraform lint
+        working-directory: ./infra/terraform
+        run: terraform fmt -recursive -check
+
