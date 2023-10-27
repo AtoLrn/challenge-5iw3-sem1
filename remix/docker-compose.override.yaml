@@ -1,0 +1,8 @@
+version: 3.0.0
+
+services:
+  remix:
+    build:
+      target: remix-dev
+    volumes:
+      - ./:/app
