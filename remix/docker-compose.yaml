@@ -1,0 +1,21 @@
+version: 3.0.0
+
+services:
+  remix:
+    container_name: remix-app
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+        
+  nginx:
+    container_name: reverse-proxy
+    restart: unless-stopped
+    image: nginx:alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ../infra/nginx/remix.conf:/etc/nginx/nginx.conf
