@@ -2,12 +2,15 @@ version: "3.4"
 
 services:
   php:
-    image: ${IMAGES_PREFIX:-}app-php
+    image: inkit/api-platform
+    container_name: api-platform-app-dev
+    build:
+      context: ./api
+      target: frankenphp_dev
     depends_on:
       - database
     restart: unless-stopped
     environment:
-      PWA_UPSTREAM: pwa:3000
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
@@ -17,6 +20,18 @@ services:
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
       MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      PWA_UPSTREAM: pwa:3000
+      MERCURE_EXTRA_DIRECTIVES: demo
+      # See https://xdebug.org/docs/all_settings#mode
+      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+    volumes:
+      - ./api:/app
+      - /app/var
+      - ./api/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./api/frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
+      # If you develop on Mac or Windows you can remove the vendor/ directory
+      #  from the bind-mount for better performance by enabling the next line:
+      #- /app/vendor
     ports:
       # HTTP
       - target: 80
@@ -30,15 +45,33 @@ services:
       - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
 
   pwa:
-    image: ${IMAGES_PREFIX:-}app-pwa
+    image: inkit/api-platform-pwa
+    container_name: api-platform-pwa-app
+    build:
+      context: ./pwa
+      target: dev
+    volumes:
+      - ./pwa:/srv/app
     environment:
+      API_PLATFORM_CREATE_CLIENT_ENTRYPOINT: http://php
+      API_PLATFORM_CREATE_CLIENT_OUTPUT: .
       NEXT_PUBLIC_ENTRYPOINT: http://php
+      # On Linux, you may want to comment the following line for improved performance
+      WATCHPACK_POLLING: "true"
 
 ###> doctrine/doctrine-bundle ###
   database:
+    container_name: postgres-db
     image: postgres:${POSTGRES_VERSION:-15}-alpine
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-app}
       # You should definitely change the password in production

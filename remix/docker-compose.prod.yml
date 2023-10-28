@@ -2,11 +2,12 @@ version: 3.0.0
 
 services:
   remix:
-    container_name: remix-app
+    image: inkit/remix
+    container_name: remix-app-prod
     restart: unless-stopped
     build:
       context: ./
       dockerfile: Dockerfile
-      target: remix-prod
+      target: prod
     ports:
       - 3000:3000

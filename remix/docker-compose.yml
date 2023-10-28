@@ -1,0 +1,15 @@
+version: 3.0.0
+
+services:
+  remix:
+    image: inkit/remix
+    container_name: remix-app-dev
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./:/app
+    ports:
+      - 3000:3000

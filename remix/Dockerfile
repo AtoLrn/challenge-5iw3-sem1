@@ -1,4 +1,4 @@
-FROM --platform=amd64 node:20.8-alpine AS remix-builder
+FROM node:20.8-alpine AS builder
 
 WORKDIR /app
 
@@ -7,21 +7,21 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-FROM remix-builder AS remix-dev
+FROM node:20.8-alpine AS dev
 
-ENV APP_ENV=dev
+WORKDIR /app
 
-COPY --from=remix-builder /app ./
+ENV NODE_ENV=development
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npm install; npm run dev"]
 
-FROM remix-builder AS remix-prod
+FROM builder AS prod
 
-ENV APP_ENV=prod
+ENV NODE_ENV=production
 
-COPY --from=remix-builder /app ./
+COPY --from=builder /app ./
 
 EXPOSE 3000
 
