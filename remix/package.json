@@ -20,7 +20,9 @@
     "@remix-run/react": "^2.0.1",
     "@remix-run/serve": "^2.0.1",
     "express": "^4.18.2",
-    "isbot": "latest"
+    "framer-motion": "^10.16.4",
+    "isbot": "latest",
+    "react-icons": "^4.11.0"
   },
   "devDependencies": {
     "@remix-run/eslint-config": "^2.0.1",
@@ -28,6 +30,6 @@
     "@types/react-dom": "^18.2.10",
     "eslint": "^8.51.0",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.0"
   }
 }
