@@ -6,16 +6,11 @@ export const withDebounce = <T, X>(callback: FunctionWithArgs<T, X>, interval: I
   
 	return (args: T) => {
 		clearTimeout(timer)
-		return new Promise<X>((resolve, reject) => {
+		return new Promise<X>((resolve) => {
 			timer = setTimeout(
 				() => resolve(callback(args)),
 				interval,
 			)
-			setTimeout(() => {
-				reject()
-			}, interval + 10)
-		}).catch(() => {
-			// CLEARING MEMORY
 		})
 	}
 }

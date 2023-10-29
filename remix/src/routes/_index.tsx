@@ -5,7 +5,7 @@ import { getPosts } from '../utils/requests/posts'
 import { AiOutlineArrowRight } from 'react-icons/ai'
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { withDebounce } from 'src/utils/debounce'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export async function loader({ request } : LoaderFunctionArgs) {
 	const url = new URL(request.url)
@@ -35,12 +35,12 @@ export default function MainPage() {
 
 	const posts  = useFetcher<typeof loader>()
 	
-	const debounce = withDebounce((event: React.ChangeEvent<HTMLInputElement>) => {
+	const debounce = useCallback(withDebounce((event: React.ChangeEvent<HTMLInputElement>) => {
 		const url = new URLSearchParams()
 		url.append('title', event.target.value)
 		posts.submit(url)
 		setLoading(false)
-	}, 300)
+	}, 300), [])
 
 	const isSearchLoading =  isLoading || posts.state === 'loading'
 
@@ -60,26 +60,45 @@ export default function MainPage() {
 					<button className='border-b-2 h-16 border-white w-1/5 cursor-pointer text-2xl flex  justify-center items-center gap-2' ><span>Search</span> <AiOutlineArrowRight /></button>
 				</Form>
 
-				<section className='z-20 w-full flex flex-col items-stretch justify-center gap-1 absolute left-0 top-full'> 
-					<AnimatePresence>
+				<section className='z-20 w-full flex flex-col items-stretch justify-center absolute left-0 top-full  backdrop-blur gap-1'> 
+					<AnimatePresence mode='popLayout'>
 
-						{ posts.data?.posts.slice(1, 5).map((post) => {
+						{ posts.data?.posts.slice(1, 5).map((post, index, arr) => {
+							const interval = 0.05
+							const baseIndex = 50
 							return <m.div 
+
+								style={{ zIndex: baseIndex + index }}
 								initial={{ opacity: 0 }}
-								animate= {{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-								className='bg-black bg-opacity-20 backdrop-blur border-2 border-slate-900 rounded-xl w-full  cursor-pointer' key={post.id}>
-								<Link to={`/search/${encodeURIComponent(post.title.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4'>
+								animate= {{ opacity: 1, transition: {
+									delay: index * interval
+								} }}
+								exit={{ opacity: 0, translateY: index !== 0 ? '-100%' : '', transition: {
+									delay: interval * (arr.length - index) 
+								} }}
+							
+								className='w-full cursor-pointer ' key={post.id}>
+								<Link to={`/search/${encodeURIComponent(post.title.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
+									<img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" alt="" className='rounded-full w-10 h-10' />
 									{post.title}
 								</Link>
 							</m.div>
 						})}
 						{
+							posts.data?.posts.length === 0 && !isSearchLoading ? 
+								<m.div
+									initial={{ opacity: 0 }}
+									animate= {{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+									key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>No results</m.div>
+								: <></>
+						}
+						{
 							isSearchLoading ? <m.div
 								initial={{ opacity: 0 }}
 								animate= {{ opacity: 1 }}
 								exit={{ opacity: 0 }}
-								key='loader' className='bg-black bg-opacity-20 backdrop-blur border-2 border-slate-900 rounded-xl w-full p-2 px-4 cursor-pointer flex justify-center'>Loading...</m.div> : <></>
+								key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>Loading...</m.div> : <></>
 						}
 					</AnimatePresence>
 
@@ -87,7 +106,7 @@ export default function MainPage() {
 			</m.div>			
 
 			<div className='absolute top-0 left-0 w-1/2 h-screen object-cover z-10 bg-black' style={{ boxShadow: '50px 0px 50px 13px rgba(0,0,0,9)' }}></div>
-			<div className='absolute top-0 left-1/2 w-1/2 h-screen' style={{ filter: ' grayscale(100%) sepia(100%) blur(1px) brightness(30%) hue-rotate(300deg) saturate(495%) contrast(150%)'}}>
+			<div className='absolute top-0 left-1/2 w-1/2 z-0 h-screen' style={{ filter: ' grayscale(100%) sepia(100%) blur(1px) brightness(30%) hue-rotate(300deg) saturate(495%) contrast(150%)'}}>
 				<img className='w-screen h-screen object-cover z-0' src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="" />
 			</div>
 		</main>
