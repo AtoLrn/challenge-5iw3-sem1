@@ -1,0 +1,29 @@
+name: Bug
+description: Bug discovered
+title: "title"
+body:
+  - type: dropdown
+    attributes:
+      label: Affected app
+      multiple: false
+      options:
+        - Remix
+        - Api-platform
+  - type: textarea
+    attributes:
+      label: Description
+      description: Describe what is the bug
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behaviour
+      description: Explain what is supposed to happen
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How to reproduce
+      description: Describe how to reproduce this bug
+    validations:
+      required: true
