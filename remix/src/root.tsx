@@ -10,11 +10,14 @@ import { LinksFunction, json } from '@remix-run/node'
 import { GoogleTagManager, GoogleTagManagerIframe } from './utils/gtm/GoogleTagManager'
 import { getEnvironnement } from './utils/gtm/env/environnement.server'
 import stylesheet from './tailwind.css'
+import driverJSStyle from 'driver.js/dist/driver.css'
+
 import { Navigation } from './components/Navigation'
 import { User } from './utils/types/user'
 
 export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: stylesheet },
+	{ rel: 'stylesheet', href: driverJSStyle },
 ]
   
 export async function loader() {
