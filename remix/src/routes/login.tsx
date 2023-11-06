@@ -17,7 +17,7 @@ export default function MainPage() {
                     {/* /PAGE TITLE */}
 
                     {/* LOGIN FORM */}
-                    <form action="">
+                    <form action="" className="flex flex-col">
                         <input id="email" type="email" name="email" placeholder="Email Address" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
                         <input id="password" type="password" name="password" placeholder="Password" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
 
