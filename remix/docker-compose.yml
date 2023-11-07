@@ -11,5 +11,7 @@ services:
       target: dev
     volumes:
       - ./:/app
+    environment:
+      API_URL: ${API_URL:-http://php}
     ports:
       - 3000:3000
