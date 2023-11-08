@@ -10,7 +10,7 @@ class GreetingsTest extends ApiTestCase
     {
         static::createClient()->request('POST', '/greetings', [
             'json' => [
-                'name' => 'Kévin',
+                'name' => 'Kevin',
             ],
             'headers' => [
                 'Content-Type' => 'application/ld+json',
@@ -21,7 +21,7 @@ class GreetingsTest extends ApiTestCase
         $this->assertJsonContains([
             '@context' => '/contexts/Greeting',
             '@type' => 'Greeting',
-            'name' => 'Kévin',
+            'name' => 'Kevin',
         ]);
     }
 }
