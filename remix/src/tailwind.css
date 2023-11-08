@@ -2,13 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-.instagram-btn {
+:root {
+  --screen-sm: 640px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1280px;
+  --screen-2xl: 1536px;
+}
+
+@media (min-width: 768px) {
+  .user-sidebar {
+    height: calc(100vh - 9rem);
+  }
+}
+
+.instagram-btn,
+.edit-btn {
   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.instagram-btn:hover {
+.instagram-btn:hover,
+.edit-btn:hover {
   transform: scale(1.05);
+}
+
+.instagram-btn:hover {
   box-shadow:
-    0 0 15px 5px #a855f780,
-    0 0 20px 10px #ec489980; /* Ombres uniformément réparties autour du bouton */
+  0 0 15px 5px #a855f780,
+  0 0 20px 10px #ec489980;
+}
+
+.edit-btn:hover {
+  box-shadow: 0 0 15px 5px #7f1d1d80;
 }

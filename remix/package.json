@@ -22,7 +22,8 @@
     "express": "^4.18.2",
     "framer-motion": "^10.16.4",
     "isbot": "latest",
-    "react-icons": "^4.11.0"
+    "react-icons": "^4.11.0",
+    "react-toastify": "^9.1.3"
   },
   "devDependencies": {
     "@remix-run/eslint-config": "^2.0.1",

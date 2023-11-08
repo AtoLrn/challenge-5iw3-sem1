@@ -35,11 +35,12 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
   }, [lastScrollY]);
 
   return <nav
-      className={`fixed top-0 left-0 w-full text-white backdrop-blur-sm z-50 px-36 py-8 flex items-center justify-between transition-transform duration-300 ${
+      className={`fixed top-0 left-0 w-full text-white backdrop-blur-sm z-50 transition-transform duration-300 shadow-md ${
         !isVisible && '-translate-y-full'
       }`}
     >
-		<a href="/" title='Home' aria-label='Home'>
+      <div className='container mx-auto py-8 flex items-center justify-between'>
+      <a href="/" title='Home' aria-label='Home'>
 			INKIT
 		</a>
 		<ul className="flex gap-4 items-center">
@@ -75,5 +76,6 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 			}
 			
 		</ul>
+      </div>
 	</nav>
 }

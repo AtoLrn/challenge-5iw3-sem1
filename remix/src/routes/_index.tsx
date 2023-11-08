@@ -30,6 +30,15 @@ export async function action ({ request }: ActionFunctionArgs) {
 	return redirect(`/search/${encodeURIComponent(title.replaceAll(' ', '-'))}`)
 }
 
+export function meta() {
+  return [
+    {
+      title: 'INKIT',
+      description: 'Find your tattoo artist',
+    },
+  ];
+}
+
 export default function MainPage() { 
 	const [ isLoading, setLoading ] = useState<boolean>()
 
