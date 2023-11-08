@@ -12,7 +12,7 @@ export async function loader({ request } : LoaderFunctionArgs) {
 	const search = new URLSearchParams(url.search)
 	const title = search.get('title')
 
-	if (!title || typeof title !== 'string') {
+	if (!title || 'string' !== typeof title) {
 		return json({ posts: [] }) 
 	}
 
@@ -23,7 +23,7 @@ export async function action ({ request }: ActionFunctionArgs) {
 	const body = await request.formData()
 	const title = body.get('title')
 
-	if (!title || typeof title !== 'string') {
+	if (!title || 'string' !== typeof title) {
 		return redirect('/')
 	}
 
@@ -31,12 +31,12 @@ export async function action ({ request }: ActionFunctionArgs) {
 }
 
 export function meta() {
-  return [
-    {
-      title: 'INKIT',
-      description: 'Find your tattoo artist',
-    },
-  ];
+	return [
+		{
+			title: 'INKIT',
+			description: 'Find your tattoo artist',
+		},
+	]
 }
 
 export default function MainPage() { 
@@ -51,7 +51,7 @@ export default function MainPage() {
 		setLoading(false)
 	}, 300), [])
 
-	const isSearchLoading =  isLoading || posts.state === 'loading'
+	const isSearchLoading =  isLoading || 'loading' === posts.state
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
@@ -82,7 +82,7 @@ export default function MainPage() {
 								animate= {{ opacity: 1, transition: {
 									delay: index * interval
 								} }}
-								exit={{ opacity: 0, translateY: index !== 0 ? '-100%' : '', transition: {
+								exit={{ opacity: 0, translateY: 0 !== index ? '-100%' : '', transition: {
 									delay: interval * (arr.length - index) 
 								} }}
 							
@@ -94,7 +94,7 @@ export default function MainPage() {
 							</m.div>
 						})}
 						{
-							posts.data?.posts.length === 0 && !isSearchLoading ? 
+							0 === posts.data?.posts.length && !isSearchLoading ? 
 								<m.div
 									initial={{ opacity: 0 }}
 									animate= {{ opacity: 1 }}
