@@ -1,7 +1,7 @@
 terraform {
   required_providers {
-    aws = {
-      source = "hashicorp/aws"
+    ovh = {
+      source = "ovh/ovh"
     }
   }
 
@@ -11,4 +11,3 @@ terraform {
     region = "eu-west-3"
   }
 }
-
