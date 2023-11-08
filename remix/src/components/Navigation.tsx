@@ -16,23 +16,21 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 				// Si scroll vers le bas, cacher la navbar
 				setIsVisible(false)
 			} else {
-				// Si scroll vers le haut, montrer la navbar
 				setIsVisible(true)
 			}
-			// Mise à jour du dernier scroll
 			setLastScrollY(window.scrollY)
 		}
 	}
 
-	useEffect(() => {
-		if ('undefined' !== typeof window) {
-			window.addEventListener('scroll', controlNavbar)
+useEffect(() => {
+  if ('undefined' !== typeof window) {
+    window.addEventListener('scroll', controlNavbar)
 
-			return () => {
-				window.removeEventListener('scroll', controlNavbar)
-			}
-		}
-	}, [lastScrollY])
+    return () => {
+      window.removeEventListener('scroll', controlNavbar)
+    }
+  }
+}, [lastScrollY])
 
 	return (
 		<nav

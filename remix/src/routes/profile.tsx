@@ -1,8 +1,15 @@
 import { motion as m } from 'framer-motion'
 import { FaInstagram, FaPen } from 'react-icons/fa'
 import { Title } from 'src/components/Title'
+import { LinksFunction } from '@remix-run/node';
+import stylesheet from '../style/profile.css';
 
-// Type pour les données chargées, modifiez selon vos données de profil réelles
+export const links: LinksFunction = () => {
+  return [
+    { rel: 'stylesheet', href: stylesheet },
+  ];
+};
+
 type ProfileData = {
   username: string;
   avatarUrl: string;
@@ -26,10 +33,11 @@ export function meta() {
 }
 
 export default function ProfilePage() {
-	// Create false data for the profile
+  /**
+   * @TODO: Fetch user data from the database
+  */
 	const profile: ProfileData = {
 		username: 'John Doe',
-		// tattoo artist avatar
 		avatarUrl: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
 		isProfessional: false,
 		isAdmin: false,
