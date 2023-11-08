@@ -12,25 +12,17 @@ import { getEnvironnement } from './utils/gtm/env/environnement.server'
 import stylesheet from './tailwind.css'
 import driverJSStyle from 'driver.js/dist/driver.css'
 
-import { Navigation } from './components/Navigation'
-import { User } from './utils/types/user'
-
 export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: stylesheet },
 	{ rel: 'stylesheet', href: driverJSStyle },
 ]
   
 export async function loader() {
-	const user: User = {
-		name: 'Placeholder',
-		avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
-	}
-
-	return json({ ...getEnvironnement(), user })
+	return json({ ...getEnvironnement() })
 }
 
 export default function App() {
-	const { GOOGLE_TAG_MANAGER_ID, NODE_ENV, user } = useLoaderData<typeof loader>()
+	const { GOOGLE_TAG_MANAGER_ID, NODE_ENV } = useLoaderData<typeof loader>()
 
 	return (
 		<html>
@@ -39,6 +31,7 @@ export default function App() {
 					rel="icon"
 					href="data:image/x-icon;base64,AA"
 				/>
+				<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@^2.4/dist/maplibre-gl.css" />
 				<Meta />
 				<Links />
 				<GoogleTagManager id={GOOGLE_TAG_MANAGER_ID}/>
@@ -46,10 +39,7 @@ export default function App() {
 			</head>
 			<body suppressHydrationWarning={NODE_ENV === 'development'}>
 				<GoogleTagManagerIframe id={GOOGLE_TAG_MANAGER_ID}/>
-
-				<Navigation user={user} />
-				<Outlet />
-				
+				<Outlet />				
 				<Scripts />
 				<LiveReload />
 			</body>

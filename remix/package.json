@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@radix-ui/react-hover-card": "^1.0.7",
     "@remix-run/dev": "^2.1.0",
     "@remix-run/express": "^2.0.1",
     "@remix-run/node": "^2.0.1",
@@ -23,12 +24,14 @@
     "express": "^4.18.2",
     "framer-motion": "^10.16.4",
     "isbot": "latest",
+    "mapbox-gl": "^2.15.0",
     "react-icons": "^4.11.0",
     "zod": "^3.22.4",
     "zodix": "^0.4.4"
   },
   "devDependencies": {
     "@remix-run/eslint-config": "^2.0.1",
+    "@types/mapbox-gl": "^2.7.18",
     "@types/react": "^18.2.25",
     "@types/react-dom": "^18.2.10",
     "eslint": "^8.51.0",
