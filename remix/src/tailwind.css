@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.instagram-btn {
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.instagram-btn:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 15px 5px #a855f780,
+    0 0 20px 10px #ec489980; /* Ombres uniformément réparties autour du bouton */
+}

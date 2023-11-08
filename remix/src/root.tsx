@@ -20,7 +20,7 @@ export const links: LinksFunction = () => [
 export async function loader() {
 	const user: User = {
 		name: 'Placeholder',
-		avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
+		avatar: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg'
 	}
 
 	return json({ ...getEnvironnement(), user })
@@ -35,6 +35,11 @@ export default function App() {
 				<link
 					rel="icon"
 					href="data:image/x-icon;base64,AA"
+				/>
+				<meta charSet="utf-8" />
+				<meta
+					name="viewport"
+					content="width=device-width,initial-scale=1"
 				/>
 				<Meta />
 				<Links />
