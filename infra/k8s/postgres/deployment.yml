@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: password
+        - name: POSTGRES_DB
+          value: app
+        resources:
+          requests:
+            cpu: "128m"
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: postgres-data
+              readOnly: false
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+  minReadySeconds: 30
