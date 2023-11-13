@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -11,10 +9,15 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\Auth\LoginController;
+use App\Controller\Auth\RegistrationController;
+use App\Controller\User\GetMeController;
 use App\Repository\UserRepository;
 use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -28,71 +31,92 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'user:collection']
         ),
         new Post(
-            //validationContext: ['groups' => ['Default' => 'user:create']],
-            denormalizationContext: ['groups' => 'user:create']
+            uriTemplate: '/register',
+            normalizationContext: ['groups' => 'user:register'],
+            denormalizationContext: ['groups' => 'user:register'],
+            controller: RegistrationController::class
+        ),
+        new Post(
+            uriTemplate: '/login',
+            normalizationContext: ['groups' => 'user:login'],
+            denormalizationContext: ['groups' => 'user:login'],
+            controller: LoginController::class
+        ),
+        new Post(
+            denormalizationContext: ['groups' => 'user:create'],
+            normalizationContext: ['groups' => 'user:read']
         ),
         new Get(
             normalizationContext: ['groups' => 'user:read']
         ),
+        new Get(
+            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/users/me',
+            normalizationContext: ['groups' => 'user:me'],
+            controller: GetMeController::class
+        ),
         new Put(),
         new Patch(
-            denormalizationContext: ['groups' => 'user:patch']
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'user:patch'],
+            normalizationContext: ['groups' => 'user:read']
         ),
         new Delete()
-    ]
+    ],
+    paginationEnabled: false
 )]
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'user:collection'])]
+    #[Groups(['user:read', 'user:collection', 'user:me'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['user:read', 'user:register', 'user:login', 'user:patch', 'user:me'])]
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:create', 'user:patch', 'user:collection'])]
+    #[Assert\Email]
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    #[Groups(['user:register', 'user:login', 'user:patch'])]
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[Assert\NotBlank]
+    #[Groups(['user:read', 'user:register', 'user:patch', 'user:collection', 'user:me'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:create', 'user:patch'])]
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
-
-    #[Groups(['user:read', 'user:create', 'user:patch'])]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    #[ORM\Column(length: 255, unique: true)]
-    private ?string $email = null;
-
-    #[Groups(['user:read', 'user:patch', 'user:collection'])]
+    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:me'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
-    #[Groups(['user:read', 'user:create', 'user:patch'])]
+    #[Groups(['user:read', 'user:register', 'user:patch', 'user:me'])]
     #[ORM\Column]
     private ?bool $isProfessional = null;
 
-    #[ORM\Column(options: ["default" => false])]
-    private ?bool $isAdmin = false;
-
-    #[Groups(['user:read', 'user:patch'])]
+    #[Groups(['user:read', 'user:patch', 'user:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isBanned = false;
 
-    #[Groups(['user:read', 'user:patch'])]
+    #[Groups(['user:read', 'user:patch', 'user:me'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
 
-    #[Groups(['user:read', 'user:patch'])]
+    #[Groups(['user:read', 'user:patch', 'user:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isVerified = false;
 
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'user:me'])]
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'user:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
 
@@ -114,19 +138,51 @@ class User
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    public function getEmail(): ?string
     {
-        return $this->username;
+        return $this->email;
     }
 
-    public function setUsername(string $username): static
+    public function setEmail(string $email): static
     {
-        $this->username = $username;
+        $this->email = $email;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -138,14 +194,23 @@ class User
         return $this;
     }
 
-    public function getEmail(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
     {
-        return $this->email;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
-    public function setEmail(string $email): static
+    public function getUsername(): ?string
     {
-        $this->email = $email;
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }
@@ -170,18 +235,6 @@ class User
     public function setIsProfessional(bool $isProfessional): static
     {
         $this->isProfessional = $isProfessional;
-
-        return $this;
-    }
-
-    public function isIsAdmin(): ?bool
-    {
-        return $this->isAdmin;
-    }
-
-    public function setIsAdmin(bool $isAdmin): static
-    {
-        $this->isAdmin = $isAdmin;
 
         return $this;
     }
