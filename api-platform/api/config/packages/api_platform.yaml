@@ -1,6 +1,9 @@
 api_platform:
     title: Hello API Platform
     version: 1.0.0
+
+    show_webby: false
+
     # Mercure integration, remove if unwanted
     mercure: ~
     formats:
@@ -17,6 +20,7 @@ api_platform:
         extra_properties:
             standard_put: true
             rfc_7807_compliant_errors: true
+
     event_listeners_backward_compatibility_layer: false
     keep_legacy_inflector: false
 
