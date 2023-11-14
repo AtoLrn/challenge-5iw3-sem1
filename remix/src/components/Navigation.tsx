@@ -22,15 +22,15 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 		}
 	}
 
-useEffect(() => {
-  if ('undefined' !== typeof window) {
-    window.addEventListener('scroll', controlNavbar)
+	useEffect(() => {
+		if ('undefined' !== typeof window) {
+			window.addEventListener('scroll', controlNavbar)
 
-    return () => {
-      window.removeEventListener('scroll', controlNavbar)
-    }
-  }
-}, [lastScrollY])
+			return () => {
+				window.removeEventListener('scroll', controlNavbar)
+			}
+		}
+	}, [lastScrollY])
 
 	return (
 		<nav
