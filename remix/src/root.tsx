@@ -37,7 +37,7 @@ export default function App() {
 				<GoogleTagManager id={GOOGLE_TAG_MANAGER_ID}/>
 
 			</head>
-			<body suppressHydrationWarning={'development' === NODE_ENV}>
+			<body suppressHydrationWarning={NODE_ENV === 'development'}>
 				<GoogleTagManagerIframe id={GOOGLE_TAG_MANAGER_ID}/>
 				<Outlet />				
 				<Scripts />

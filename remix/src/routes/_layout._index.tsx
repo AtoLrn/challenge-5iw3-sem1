@@ -19,7 +19,7 @@ export async function loader({ request } : LoaderFunctionArgs) {
 	const search = new URLSearchParams(url.search)
 	const title = search.get('title')
 
-	if (!title || 'string' !== typeof title) {
+	if (!title || typeof title !== 'string') {
 		return json({ posts: [] }) 
 	}
 
@@ -63,7 +63,7 @@ export default function MainPage() {
 		setLoading(false)
 	}, 300), [])
 
-	const isSearchLoading =  isLoading || 'loading' === posts.state
+	const isSearchLoading =  isLoading || posts.state === 'loading'
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
@@ -94,7 +94,7 @@ export default function MainPage() {
 								animate= {{ opacity: 1, transition: {
 									delay: index * interval
 								} }}
-								exit={{ opacity: 0, translateY: 0 !== index ? '-100%' : '', transition: {
+								exit={{ opacity: 0, translateY: index !== 0 ? '-100%' : '', transition: {
 									delay: interval * (arr.length - index) 
 								} }}
 							
@@ -106,7 +106,7 @@ export default function MainPage() {
 							</m.div>
 						})}
 						{
-							0 === posts.data?.posts.length && !isSearchLoading ? 
+							posts.data?.posts.length === 0 && !isSearchLoading ? 
 								<m.div
 									initial={{ opacity: 0 }}
 									animate= {{ opacity: 1 }}
