@@ -15,12 +15,6 @@ type ProfileData = {
   email: string;
   isProfessional: boolean;
   isAdmin: boolean;
-  instagramToken: string;
-  workingDays: {
-    day: string;
-    start: string;
-    end: string;
-  }[];
 };
 
 export function meta() {
@@ -43,45 +37,7 @@ export default function ProfilePage() {
 		avatarUrl: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
 		isProfessional: true,
 		isAdmin: false,
-		instagramToken: '123456789',
-		email: 'test@test.com',
-		workingDays: [
-			{
-				day: 'Monday',
-				start: '08:00',
-				end: '18:00',
-			},
-			{
-				day: 'Tuesday',
-				start: '08:00',
-				end: '18:00',
-			},
-			{
-				day: 'Wednesday',
-				start: '08:00',
-				end: '18:00',
-			},
-			{
-				day: 'Thursday',
-				start: '08:00',
-				end: '18:00',
-			},
-			{
-				day: 'Friday',
-				start: '08:00',
-				end: '18:00',
-			},
-			{
-				day: 'Saturday',
-				start: '08:00',
-				end: '18:00',
-			},
-			{
-				day: 'Sunday',
-				start: '08:00',
-				end: '18:00',
-			},
-		],
+		email: 'test@test.com'
 	}
 
 	// Animation variants for Framer Motion
@@ -205,17 +161,6 @@ export default function ProfilePage() {
 									/>
 								</div>
 								<div className="flex flex-col gap-2">
-									<label htmlFor="instagram">Instagram</label>
-									<input
-										type="text"
-										name="instagram"
-										id="instagram"
-										placeholder="john_doe"
-										className="bg-transparent border-b border-white text-white"
-										defaultValue={profile.instagramToken}
-									/>
-								</div>
-								<div className="flex flex-col gap-2">
 									<label htmlFor="avatar">Avatar</label>
 									<input
 										type="file"
@@ -236,50 +181,22 @@ export default function ProfilePage() {
 				</m.section>
 
 				<section className="flex-grow">
-					{/* Working Days */}
-					{profile.isProfessional ? (
-						<div>
-							<Title kind="h2" className="text-xl font-bold text-white mb-4">
-                Working Days
-							</Title>
-							<m.div
-								initial="hidden"
-								whileInView="visible"
-								viewport={{ once: true }}
-								custom={0}
-								variants={cardVariants}
-								className="bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg"
-								style={{ filter: isEditing ? 'blur(5px)' : 'none' }}
-							>
-								<ul>
-									{profile.workingDays.map((workingDay, index) => (
-										<li key={index} className="flex justify-between py-1">
-											<span>{workingDay.day}</span>
-											<span>
-												{workingDay.start} - {workingDay.end}
-											</span>
-										</li>
-									))}
-								</ul>
-							</m.div>
-						</div>
-					) : (
-						<div>
-							<Title kind="h2" className="text-xl font-bold text-white mb-4">
-                My Latests appointments
-							</Title>
-							<m.div
-								initial="hidden"
-								whileInView="visible"
-								viewport={{ once: true }}
-								custom={0}
-								variants={cardVariants}
-								className="bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg"
-							>
-								<p>You don't have any appointments yet.</p>
-							</m.div>
-						</div>
-					)}
+					{/* My latest appointments */}
+					<div>
+						<Title kind="h2" className="text-xl font-bold text-white mb-4">
+              My Latests appointments
+						</Title>
+						<m.div
+							initial="hidden"
+							whileInView="visible"
+							viewport={{ once: true }}
+							custom={0}
+							variants={cardVariants}
+							className="bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg"
+						>
+							<p>You don't have any appointments yet.</p>
+						</m.div>
+					</div>
 				</section>
 			</div>
 		</main>
