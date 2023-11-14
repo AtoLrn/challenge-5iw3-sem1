@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Fjalla One';
+    src: url('/fonts/FjallaOne-Regular.ttf') format('truetype'),
+}
+
+
+.gradient-bg {
+    background: rgb(125, 0, 0);
+    background: linear-gradient(146deg, rgba(125, 0, 0, 1) 0%, rgba(15, 15, 15, 1) 30%);
+}

@@ -1,3 +1,6 @@
+import { z } from 'zod'
+import { zx } from 'zodix'
+
 import { Form, Link, useFetcher } from '@remix-run/react'
 import { Title } from 'src/components/Title'
 import { AnimatePresence, motion as m } from 'framer-motion'
@@ -6,6 +9,10 @@ import { AiOutlineArrowRight } from 'react-icons/ai'
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { withDebounce } from 'src/utils/debounce'
 import { useCallback, useState } from 'react'
+
+const formSchema = z.object({
+	title: z.string()
+})
 
 export async function loader({ request } : LoaderFunctionArgs) {
 	const url = new URL(request.url)
@@ -19,15 +26,20 @@ export async function loader({ request } : LoaderFunctionArgs) {
 	return json({ posts: await getPosts({ title }) })
 } 
 
+
 export async function action ({ request }: ActionFunctionArgs) {
-	const body = await request.formData()
-	const title = body.get('title')
-
-	if (!title || 'string' !== typeof title) {
-		return redirect('/')
+	try {
+		const { title } = await zx.parseForm(request, formSchema)
+		if (!title || typeof title !== 'string') {
+			return redirect('/')
+		}
+	
+		return redirect(`/search/${encodeURIComponent(title.replaceAll(' ', '-'))}`)
+	} catch {
+		return json({
+			error: 'Something wrong happened in form validation'
+		})
 	}
-
-	return redirect(`/search/${encodeURIComponent(title.replaceAll(' ', '-'))}`)
 }
 
 export function meta() {
@@ -62,7 +74,7 @@ export default function MainPage() {
 				animate={{ opacity: 1, transform: 'translateY(0%)' }}
 				className='flex items-center flex-col z-20 relative w-1/2'>
 				<Form className='flex w-full h-20 items-center gap-8 z-20' method='POST'>
-					<input  onChange={(event) => {
+					<input id='search-bar'  onChange={(event) => {
 						setLoading(true)
 						debounce(event)
 					}} autoComplete='off' name="title" type="text" className='bg bg-transparent h-16 w-4/5 border-b-2 border-white text-2xl outline-none' placeholder='Search for tattoos, cities, studios & artists'/>

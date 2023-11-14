@@ -7,7 +7,7 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-FROM node:20.8-alpine AS dev
+FROM node:20.8 AS dev
 
 WORKDIR /app
 

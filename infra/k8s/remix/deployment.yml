@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remix
+  labels:
+    app: remix
+spec:
+  selector:
+    matchLabels:
+      app: remix
+  template:
+    metadata:
+      labels:
+        app: remix
+    spec:
+      containers:
+      - name: remix
+        image: redelta/inkit-remix:latest
+        resources:
+          requests:
+            cpu: "128m"
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+  minReadySeconds: 30

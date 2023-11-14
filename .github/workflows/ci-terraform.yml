@@ -28,4 +28,3 @@ jobs:
       - name: Check Terraform lint
         working-directory: ./infra/terraform
         run: terraform fmt -recursive -check
-

@@ -13,34 +13,86 @@ on:
       - "remix/**"
 
 jobs:
-  tests:
-    name: Remix CI pipeline
+  ci-dev:
+    name: Remix dev CI pipeline
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up NodeJS
-        uses: actions/setup-node@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get node_modules cache
+        uses: actions/cache@v3
         with:
-          node-version: "20.8.0"
+          restore-keys: |
+            ${{ hashFiles('./remix/package.json') }}
+          key: ${{ hashFiles('./remix/package.json') }}
+          path: |
+            ./remix/node_modules
+
+      - name: Build Docker images
+        uses: docker/bake-action@v4
+        with:
+          pull: true
+          load: true
+          workdir: ./remix
+          files: |
+            docker-compose.yml
 
       - name: Install dependencies
         working-directory: ./remix
-        run: npm ci
+        run: docker compose run remix npm install
 
       - name: Check lint
         working-directory: ./remix
-        run: npm run lint
+        run: docker compose run remix npm run lint
 
       - name: Check build
         working-directory: ./remix
-        run: npm run build
+        run: docker compose run remix npm run build
 
-      - name: Launch app in background
+      - name: Start service
         working-directory: ./remix
-        run: screen -d -m npm run start
+        run: docker compose up --wait --no-build
 
       - name: Check reachability
         # sleep to let the time for the server to start
-        run: sleep 5; curl -v -o /dev/null http://localhost:3000
+        run: sleep 10; curl -v -o /dev/null http://localhost:3000
+
+  ci-prod:
+    name: Remix prod CI pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get node_modules cache
+        uses: actions/cache@v3
+        with:
+          restore-keys: |
+            ${{ hashFiles('./remix/package.json') }}
+          key: ${{ hashFiles('./remix/package.json') }}
+          path: |
+            ./remix/node_modules
+
+      - name: Build Docker images
+        uses: docker/bake-action@v4
+        with:
+          pull: true
+          load: true
+          workdir: ./remix
+          files: |
+            docker-compose.prod.yml
+
+      - name: Start service
+        working-directory: ./remix
+        run: docker compose -f docker-compose.prod.yml up --wait --no-build
+
+      - name: Check reachability
+        # sleep to let the time for the server to start
+        run: sleep 10; curl -v -o /dev/null http://localhost:3000

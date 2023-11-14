@@ -1,9 +1,6 @@
-provider "aws" {
-  region = local.aws_region
-
-  default_tags {
-    tags = {
-      managed_by = "terraform"
-    }
-  }
+provider "ovh" {
+  endpoint           = "ovh-eu"
+  application_key    = var.ovh_application_key
+  application_secret = var.ovh_application_secret
+  consumer_key       = var.ovh_consumer_key
 }
