@@ -13,7 +13,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 	const controlNavbar = () => {
 		if ('undefined' !== typeof window) {
 			if (window.scrollY > lastScrollY) {
-				// Si scroll vers le bas, cacher la navbar
+				// Hide navbar when scrolling down
 				setIsVisible(false)
 			} else {
 				setIsVisible(true)
