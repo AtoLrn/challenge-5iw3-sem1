@@ -9,9 +9,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Controller\Auth\LoginController;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\GetMeController;
+use App\Controller\User\PatchMeController;
 use App\Repository\UserRepository;
 use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,44 +37,46 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: RegistrationController::class
         ),
         new Post(
-            uriTemplate: '/login',
-            normalizationContext: ['groups' => 'user:login'],
-            denormalizationContext: ['groups' => 'user:login'],
-            controller: LoginController::class
-        ),
-        new Post(
+            security: 'is_granted("ROLE_ADMIN")',
             denormalizationContext: ['groups' => 'user:create'],
-            normalizationContext: ['groups' => 'user:read']
-        ),
-        new Get(
             normalizationContext: ['groups' => 'user:read']
         ),
         new Get(
             security: 'is_granted("ROLE_USER")',
             uriTemplate: '/users/me',
-            normalizationContext: ['groups' => 'user:me'],
+            normalizationContext: ['groups' => 'user:read:me'],
             controller: GetMeController::class
         ),
-        new Put(),
+        new Get(
+            normalizationContext: ['groups' => 'user:read']
+        ),
         new Patch(
             security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/users/me',
+            denormalizationContext: ['groups' => 'user:patch:me'],
+            controller: PatchMeController::class
+        ),
+        new Patch(
+            security: 'is_granted("ROLE_ADMIN")',
             denormalizationContext: ['groups' => 'user:patch'],
             normalizationContext: ['groups' => 'user:read']
         ),
-        new Delete()
+        new Delete(
+            security: 'is_granted("ROLE_ADMIN")',
+        )
     ],
     paginationEnabled: false
 )]
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'user:collection', 'user:me'])]
+    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'user:register', 'user:login', 'user:patch', 'user:me'])]
+    #[Groups(['user:read', 'user:register', 'user:login', 'user:patch', 'user:read:me'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     #[ORM\Column(length: 180, unique: true)]
@@ -84,39 +86,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[Groups(['user:register', 'user:login', 'user:patch'])]
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:register', 'user:patch', 'user:collection', 'user:me'])]
+    #[Groups(['user:read', 'user:register', 'user:patch', 'user:collection', 'user:read:me'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:me'])]
+    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
-    #[Groups(['user:read', 'user:register', 'user:patch', 'user:me'])]
+    #[Groups(['user:read', 'user:register', 'user:patch', 'user:read:me'])]
     #[ORM\Column]
     private ?bool $isProfessional = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:me'])]
+    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isBanned = false;
 
-    #[Groups(['user:read', 'user:patch', 'user:me'])]
+    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:me'])]
+    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isVerified = false;
 
-    #[Groups(['user:read', 'user:me'])]
+    #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
-    #[Groups(['user:read', 'user:me'])]
+    #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
 
