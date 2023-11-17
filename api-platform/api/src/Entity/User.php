@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
@@ -32,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             uriTemplate: '/register',
-            normalizationContext: ['groups' => 'user:register'],
+            normalizationContext: ['groups' => 'user:register:read'],
             denormalizationContext: ['groups' => 'user:register'],
             controller: RegistrationController::class
         ),
@@ -45,7 +44,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_USER")',
             uriTemplate: '/users/me',
             normalizationContext: ['groups' => 'user:read:me'],
-            controller: GetMeController::class
+            controller: GetMeController::class,
+            read: false
         ),
         new Get(
             normalizationContext: ['groups' => 'user:read']
@@ -76,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'user:register', 'user:login', 'user:patch', 'user:read:me'])]
+    #[Groups(['user:read', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     #[ORM\Column(length: 180, unique: true)]
@@ -91,15 +91,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:register', 'user:patch', 'user:collection', 'user:read:me'])]
+    #[Groups(['user:read', 'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me'])]
+    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
-    #[Groups(['user:read', 'user:register', 'user:patch', 'user:read:me'])]
+    #[Groups(['user:read', 'user:register', 'user:register:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column]
     private ?bool $isProfessional = null;
 
