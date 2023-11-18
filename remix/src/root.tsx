@@ -9,7 +9,7 @@ import {
 import { LinksFunction, json } from '@remix-run/node'
 import { GoogleTagManager, GoogleTagManagerIframe } from './utils/gtm/GoogleTagManager'
 import { getEnvironnement } from './utils/gtm/env/environnement.server'
-import stylesheet from './tailwind.css'
+import stylesheet from './style/tailwind.css'
 import driverJSStyle from 'driver.js/dist/driver.css'
 
 export const links: LinksFunction = () => [

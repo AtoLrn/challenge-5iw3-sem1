@@ -42,6 +42,15 @@ export async function action ({ request }: ActionFunctionArgs) {
 	}
 }
 
+export function meta() {
+	return [
+		{
+			title: 'INKIT',
+			description: 'Find your tattoo artist',
+		},
+	]
+}
+
 export default function MainPage() { 
 	const [ isLoading, setLoading ] = useState<boolean>()
 
