@@ -4,7 +4,7 @@ import { Title } from 'src/components/Title'
 import { Map, Marker } from 'mapbox-gl'
 import { LinksFunction, json } from '@remix-run/node'
 import { motion as m } from 'framer-motion'
-import { FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
+import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
 import stylesheet from '../style/profile.css'
 import ProfileForm from 'src/components/ProfileForm'
 
@@ -247,7 +247,7 @@ export default function () {
 								title="See all appointments"
 								className="bg-red-950 text-white px-4 py-2 rounded-md shadow-md mt-4 hover:bg-red-900 edit-btn"
 							>
-								See {appointments.length - 3} more
+								See {appointments.length - 3} more <FaArrowRight className="inline-block mb-[.115rem]" />
 							</a>
 						)}
 					</m.div>
