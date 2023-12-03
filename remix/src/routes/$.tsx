@@ -1,6 +1,6 @@
 import {  Link, MetaFunction } from '@remix-run/react'
 import { Title } from 'src/components/Title'
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [{
@@ -9,7 +9,7 @@ export const meta: MetaFunction = () => {
 }
 
 export function ErrorBoundary() {
-	const { t } = useTranslation();
+	const { t } = useTranslation()
 	return <main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
 		<div className='z-20 flex flex-col items-center align-middle'>
 			<Title kind="h1" className='z-20 pb-20'>{t('Huho...')}</Title>
@@ -26,7 +26,7 @@ export function ErrorBoundary() {
   
 
 export default function NotFoundPage () {
-	const { t } = useTranslation();
+	const { t } = useTranslation()
 	return <main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
 		<div className='z-20 flex flex-col items-center align-middle'>
 			<Title kind="h1" className='z-20 pb-20'>{t('Page not found ;(')}</Title>
