@@ -4,6 +4,7 @@ import { Title } from 'src/components/Title'
 import { LinksFunction } from '@remix-run/node'
 import stylesheet from '../style/profile.css'
 import React, { useState } from 'react'
+import ProfileForm from 'src/components/ProfileForm'
 
 export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: stylesheet }]
@@ -35,7 +36,7 @@ export default function ProfilePage() {
 	const profile: ProfileData = {
 		username: 'John Doe',
 		avatarUrl: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
-		isProfessional: true,
+		isProfessional: false,
 		isAdmin: false,
 		email: 'test@test.com'
 	}
@@ -115,68 +116,7 @@ export default function ProfilePage() {
 						</a>
 					</div>
 					{isEditing && (
-						<form className={`bg-neutral-800 p-5 text-white shadow-lg w-full lg:w-1/4 md:w-1/3 user-sidebar md:absolute md:top-0 md:left-[22.5rem] z-10 ${isEditing ? 'slide-in-left' : 'slide-out-left'}`}
-							onSubmit={handleSubmit}>
-							<div className="flex flex-col gap-4">
-								<div className="flex flex-col gap-2">
-									<label htmlFor="username">Username</label>
-									<input
-										type="text"
-										name="username"
-										id="username"
-										placeholder="John Doe"
-										className="bg-transparent border-b border-white text-white"
-										defaultValue={profile.username}
-									/>
-								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="email">Email</label>
-									<input
-										type="email"
-										name="email"
-										id="email"
-										placeholder="test@test.com"
-										className="bg-transparent border-b border-white text-white"
-										defaultValue={profile.email}
-									/>
-								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="password">Password</label>
-									<input
-										type="password"
-										name="password"
-										id="password"
-										placeholder="********"
-										className="bg-transparent border-b border-white text-white"
-									/>
-								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="confirm-password">Confirm Password</label>
-									<input
-										type="password"
-										name="confirm-password"
-										id="confirm-password"
-										placeholder="********"
-										className="bg-transparent border-b border-white text-white"
-									/>
-								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="avatar">Avatar</label>
-									<input
-										type="file"
-										name="avatar"
-										id="avatar"
-										className="bg-transparent border-b border-white text-white"
-									/>
-								</div>
-							</div>
-							<button
-								type="submit"
-								className="px-4 py-2 rounded-md shadow-md mt-4 bg-red-950 text-white hover:bg-red-900 edit-btn"
-							>
-            Save Changes
-							</button>
-						</form>
+						<ProfileForm profile={profile} isEditing={isEditing} handleSubmit={handleSubmit} />
 					)}
 				</m.section>
 

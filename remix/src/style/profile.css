@@ -10,6 +10,14 @@
   }
 }
 
+.slide-in-top {
+  animation: 0.5s ease-out 0s 1 slideInFromTop;
+}
+
+.slide-out-top {
+  animation: 0.5s ease-out 0s 1 slideInFromBottom;
+}
+
 .instagram-btn,
 .edit-btn {
   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -45,5 +53,23 @@
   }
   100% {
     transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
