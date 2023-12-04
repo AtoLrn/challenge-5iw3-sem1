@@ -1,6 +1,6 @@
-import {AiOutlineArrowRight} from "react-icons/ai";
-import {Form} from "@remix-run/react";
-import {ResultCard} from "../components/ResultCard.tsx";
+import {AiOutlineArrowRight} from 'react-icons/ai'
+import {Form} from '@remix-run/react'
+import {ResultCard} from '../components/ResultCard.tsx'
 
 
 
@@ -18,8 +18,8 @@ export default function MainPage() {
 			</Form>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-16">
-				<ResultCard kind={"artist"} name={"Tattoueur sympa"} rating={3} nbReviews={20} description={"Super description"} picture={"https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg"} />
-				<ResultCard kind={"studio"} name={"Cool studio"} location={"Paris"} description={"Super descr."} picture={"https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg"} />
+				<ResultCard kind={'artist'} name={'Tattoueur sympa'} rating={3} nbReviews={20} description={'Super description'} picture={'https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg'} />
+				<ResultCard kind={'studio'} name={'Cool studio'} location={'Paris'} description={'Super descr.'} picture={'https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg'} />
 			</div>
 
 		</main>
