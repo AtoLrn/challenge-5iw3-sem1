@@ -1,15 +1,6 @@
-type ProfileFormProps = {
-  profile: {
-      username: string;
-      email: string;
-      isProfessional: boolean;
-      instagramToken?: string;
-  };
-  isEditing: boolean;
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
-};
+import { ProfileForm } from 'src/utils/types/profileForm'
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ profile, isEditing, handleSubmit }) => {
+const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }) => {
 	const formClasses = !profile.isProfessional ? 'lg:w-1/4 md:w-1/3 user-sidebar md:absolute md:top-0 md:left-[22.5rem]' : ''
 	const animationClasses = isEditing ? (profile.isProfessional ? 'slide-in-top' : 'slide-in-left') : (profile.isProfessional ? 'slide-out-top' : 'slide-out-left')
 	return (
