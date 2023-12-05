@@ -14,14 +14,14 @@ export default function MainPage() {
 
 					{/* PAGE TITLE */}
 					<Title kind="h1" className="z-20 pb-20">
-                        {t('sign-up')}
+						{t('sign-up')}
 					</Title>
 					{/* /PAGE TITLE */}
 
 					{/* REGISTER FORM */}
 					<form action="" className="flex flex-col">
 						<Title kind="h4" className="z-20 pb-4">
-                            {t('identity')}
+							{t('identity')}
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
 							<input type="text" name="firstname" placeholder="First Name" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
@@ -29,7 +29,7 @@ export default function MainPage() {
 							<input type="text" name="nickname" placeholder="Nickname" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<Title kind="h4" className="z-20 pb-4 pt-2">
-                            {t('account')}
+							{t('account')}
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
 							<input type="email" name="email" placeholder="Email Address" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
@@ -48,12 +48,12 @@ export default function MainPage() {
 						</div>
 						<div className="flex items-center justify-between">
 							<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-                                {t('create-your-account')}
+								{t('create-your-account')}
 							</button>
 
 							<a href="#" className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all">
 								<NavLink to='/login'>
-                                    {t('already-have-an-account')}
+									{t('already-have-an-account')}
 								</NavLink>
 							</a>
 						</div>

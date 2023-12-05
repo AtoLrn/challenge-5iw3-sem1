@@ -77,7 +77,7 @@ const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, handl
 				type="submit"
 				className="px-4 py-2 rounded-md shadow-md mt-4 bg-red-950 text-white hover:bg-red-900 edit-btn"
 			>
-  {('save-changes')}
+				{('save-changes')}
 			</button>
 		</form>
 	)

@@ -139,7 +139,7 @@ export default function () {
 		}
 	}, [])
 
-  const moreCount = appointments.length - 3;
+	const moreCount = appointments.length - 3
 
 	return (
 		<div className="flex-1 p-8 flex flex-col gap-8 text-white">
@@ -206,7 +206,7 @@ export default function () {
 					{/* My latest appointments */}
 					<div>
 						<Title kind="h2" className="text-xl font-bold text-white mb-4">
-						{t('my-latests-appointments')}
+							{t('my-latests-appointments')}
 						</Title>
 						<m.div
 							initial="hidden"
@@ -250,7 +250,7 @@ export default function () {
 									title={t('see-more-appointments')}
 									className="bg-red-950 text-white px-4 py-2 rounded-md shadow-md mt-4 hover:bg-red-900 edit-btn"
 								>
-								{t('see-more-appointments-count', { count: moreCount })} <FaArrowRight className="inline-block mb-[.115rem]" />
+									{t('see-more-appointments-count', { count: moreCount })} <FaArrowRight className="inline-block mb-[.115rem]" />
 								</a>
 							)}
 						</m.div>
