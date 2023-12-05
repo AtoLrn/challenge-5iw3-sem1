@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import { Title } from 'src/components/Title'
 
 export default function MainPage() {
@@ -12,7 +13,7 @@ export default function MainPage() {
 
 					{/* PAGE TITLE */}
 					<Title kind="h1" className="z-20 pb-20">
-                        Login
+                        {t('login')}
 					</Title>
 					{/* /PAGE TITLE */}
 
@@ -23,11 +24,11 @@ export default function MainPage() {
 
 						<div className="flex items-center justify-between">
 							<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-                                Login to your account
+                                {t('login-to-your-account')}
 							</button>
 
 							<a href="#" className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all">
-                                Forgot Password ?
+                                {t('forgot-password')}
 							</a>
 						</div>
 					</form>

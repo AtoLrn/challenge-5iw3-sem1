@@ -12,8 +12,8 @@ export function ErrorBoundary() {
 	const { t } = useTranslation()
 	return <main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
 		<div className='z-20 flex flex-col items-center align-middle'>
-			<Title kind="h1" className='z-20 pb-20'>{t('Huho...')}</Title>
-			<Title kind="h2" className='z-20 pb-10'>{t('Looks like you found an error. No worries, we are reporting errors')}.</Title>
+			<Title kind="h1" className='z-20 pb-20'>{t('huho')}</Title>
+			<Title kind="h2" className='z-20 pb-10'>{t('looks-you-found-an-error')}.</Title>
 			<Link to='/'>{t('Home page')}</Link>
 		</div>
 
@@ -29,9 +29,9 @@ export default function NotFoundPage () {
 	const { t } = useTranslation()
 	return <main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
 		<div className='z-20 flex flex-col items-center align-middle'>
-			<Title kind="h1" className='z-20 pb-20'>{t('Page not found ;(')}</Title>
-			<Title kind="h2" className='z-20 pb-10'>{t('You might have navigated to an unknown or an old page')}</Title>
-			<Link to='/'>{t('Homepage')}</Link>
+			<Title kind="h1" className='z-20 pb-20'>{t('page-not-found')}</Title>
+			<Title kind="h2" className='z-20 pb-10'>{t('unknow-old-page')}</Title>
+			<Link to='/'>{t('homepage')}</Link>
 		</div>
 
 		<div className='absolute top-0 left-1/2 w-1/2 h-screen object-cover z-10 bg-black' style={{ boxShadow: '-50px 0px 50px 13px rgba(0,0,0,9)' }}></div>

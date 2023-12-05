@@ -25,6 +25,4 @@ i18n
 		debug: true
 	})
 
-console.log('i18n', i18n)
-
 export default i18n

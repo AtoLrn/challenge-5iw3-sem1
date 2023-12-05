@@ -7,6 +7,7 @@ import { motion as m } from 'framer-motion'
 import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
 import stylesheet from '../style/profile.css'
 import ProfileForm from 'src/components/ProfileForm'
+import { t } from 'i18next'
 
 export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: stylesheet }]
@@ -138,9 +139,11 @@ export default function () {
 		}
 	}, [])
 
+  const moreCount = appointments.length - 3;
+
 	return (
 		<div className="flex-1 p-8 flex flex-col gap-8 text-white">
-			<Title kind="h2">Profile</Title>
+			<Title kind="h2">{t('profile')}</Title>
 
 			<div className="container mx-auto flex flex-col gap-10 relative">
 				{/* Profile card with glass effect - make this a sidebar on desktop */}
@@ -203,7 +206,7 @@ export default function () {
 					{/* My latest appointments */}
 					<div>
 						<Title kind="h2" className="text-xl font-bold text-white mb-4">
-						My Latests appointments
+						{t('my-latests-appointments')}
 						</Title>
 						<m.div
 							initial="hidden"
@@ -216,10 +219,10 @@ export default function () {
 							<table className="w-full mb-6">
 								<thead>
 									<tr>
-										<th className="px-4 py-2 border">Date</th>
-										<th className="px-4 py-2 border">Time</th>
-										<th className="px-4 py-2 border">Client</th>
-										<th className="px-4 py-2 border">Status</th>
+										<th className="px-4 py-2 border">{t('date')}</th>
+										<th className="px-4 py-2 border">{t('time')}</th>
+										<th className="px-4 py-2 border">{t('client')}</th>
+										<th className="px-4 py-2 border">{t('status')}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -244,10 +247,10 @@ export default function () {
 							{appointments.length > 5 && (
 								<a
 									href={'/pro/dashboard'}
-									title="See all appointments"
+									title={t('see-more-appointments')}
 									className="bg-red-950 text-white px-4 py-2 rounded-md shadow-md mt-4 hover:bg-red-900 edit-btn"
 								>
-								See {appointments.length - 3} more <FaArrowRight className="inline-block mb-[.115rem]" />
+								{t('see-more-appointments-count', { count: moreCount })} <FaArrowRight className="inline-block mb-[.115rem]" />
 								</a>
 							)}
 						</m.div>

@@ -5,6 +5,7 @@ import { LinksFunction } from '@remix-run/node'
 import stylesheet from '../style/profile.css'
 import React, { useState } from 'react'
 import ProfileForm from 'src/components/ProfileForm'
+import { t } from 'i18next'
 
 export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: stylesheet }]
@@ -124,7 +125,7 @@ export default function ProfilePage() {
 					{/* My latest appointments */}
 					<div>
 						<Title kind="h2" className="text-xl font-bold text-white mb-4">
-              My Latests appointments
+							{t('my-latests-appointments')}
 						</Title>
 						<m.div
 							initial="hidden"
@@ -134,7 +135,7 @@ export default function ProfilePage() {
 							variants={cardVariants}
 							className="bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg"
 						>
-							<p>You don't have any appointments yet.</p>
+							<p>{t('no-appointments-yet.')}</p>
 						</m.div>
 					</div>
 				</section>

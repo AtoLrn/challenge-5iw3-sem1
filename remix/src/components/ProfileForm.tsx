@@ -1,6 +1,7 @@
-import { ProfileForm } from 'src/utils/types/profileForm'
+import { t } from 'i18next'
+import { ProfileFormInterface } from 'src/utils/types/profileForm'
 
-const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }) => {
+const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, handleSubmit }) => {
 	const formClasses = !profile.isProfessional ? 'lg:w-1/4 md:w-1/3 user-sidebar md:absolute md:top-0 md:left-[22.5rem]' : ''
 	const animationClasses = isEditing ? (profile.isProfessional ? 'slide-in-top' : 'slide-in-left') : (profile.isProfessional ? 'slide-out-top' : 'slide-out-left')
 	return (
@@ -8,7 +9,7 @@ const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }
 			onSubmit={handleSubmit}>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col gap-2">
-					<label htmlFor="username">Username</label>
+					<label htmlFor="username">{t('username')}</label>
 					<input
 						type="text"
 						name="username"
@@ -30,7 +31,7 @@ const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }
 					/>
 				</div>
 				<div className="flex flex-col gap-2">
-					<label htmlFor="password">Password</label>
+					<label htmlFor="password">{t('password')}</label>
 					<input
 						type="password"
 						name="password"
@@ -40,7 +41,7 @@ const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }
 					/>
 				</div>
 				<div className="flex flex-col gap-2">
-					<label htmlFor="confirm-password">Confirm Password</label>
+					<label htmlFor="confirm-password">{t('confirm-password')}</label>
 					<input
 						type="password"
 						name="confirm-password"
@@ -50,7 +51,7 @@ const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }
 					/>
 				</div>
 				<div className="flex flex-col gap-2">
-					<label htmlFor="avatar">Avatar</label>
+					<label htmlFor="avatar">{t('avatar')}</label>
 					<input
 						type="file"
 						name="avatar"
@@ -76,7 +77,7 @@ const ProfileForm: React.FC<ProfileForm> = ({ profile, isEditing, handleSubmit }
 				type="submit"
 				className="px-4 py-2 rounded-md shadow-md mt-4 bg-red-950 text-white hover:bg-red-900 edit-btn"
 			>
-  Save Changes
+  {('save-changes')}
 			</button>
 		</form>
 	)
