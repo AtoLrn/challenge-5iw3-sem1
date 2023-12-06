@@ -32,7 +32,6 @@ class RegistrationController
         $emailInput = $request->request->get('email');
         $passwordInput = $request->request->get('password');
         $isProfessionalInput = $request->request->get('isProfessional');
-        $kbisFile = $request->request->get('kbisFile');
 
         $user = $this->userRepository->findOneBy(['email' => $emailInput]);
 
@@ -59,6 +58,7 @@ class RegistrationController
 
         $roles = ['ROLE_USER'];
 
+        // hardcode check because form-data return string only
         if($isProfessionalInput == 'true') {
             if(!$request->files->get('kbisFile')) {
                 throw new UnprocessableEntityHttpException('KBIS file needed if you are a professionnal');
@@ -69,7 +69,7 @@ class RegistrationController
             $idGenerator = Uuid::uuid4();
             $kbisFileId = $idGenerator->toString();
 
-            // TODO : UPLOAD FILE TO S3
+            // TODO : UPLOAD FILE TO S3 + check file
 
             $user->setKbisFileUrl('https://dummy-s3-host.fr/'.$kbisFileId);
 
