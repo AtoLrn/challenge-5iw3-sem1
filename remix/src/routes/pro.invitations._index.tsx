@@ -20,23 +20,36 @@ export interface Studio {
 export const meta: MetaFunction = () => {
 	return [
 		{
-			title: 'Studios | INKIT'
+			title: 'Invitations | INKIT'
 		}
 	]
 }
 
 
-export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
-	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
+export const InvitationItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
+	return <div className='grid grid-cols-6 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
 		<span>
 			<Badge state={item.state} />
 		</span>
 		<span>{ item.title }</span>
 		<span>{ item.description }</span>
-		<span className='text-right'>{ item.available } / { item.seats }</span>
-		<div className='flex items-center justify-end'>
-			<Link to={`/pro/studios/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>View</Link>
-		</div>	</div>
+		<span className='text-right col-span-2 flex gap-2 justify-center items-center'>
+			<b>
+				2023-10-20
+			</b>
+			<span>
+				to
+			</span>
+			<b>
+				2024-10-20
+			</b>
+		</span>
+		<div className='flex items-center gap-2 justify-end'>
+			<Link to={`/pro/invitations/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>Accepter</Link>
+			<Link to={`/pro/invitations/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>Refuser</Link>
+
+		</div>
+	</div>
 }
 
 
@@ -72,15 +85,15 @@ export default function () {
 				name: 'Home',
 				url: '/pro'
 			},{
-				name: 'Studios',
-				url: '/pro/studios'
+				name: 'Invitations',
+				url: '/pro/invitations'
 			}
 		]}/>
-		<Title kind="h2">{t('studios')}</Title>
-		<Link to={'/pro/studios/add'}>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>
+		<Title kind="h2">{t('invitations')}</Title>
+		<Link to={'/pro/invitations/new'}>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('new-request')}</button>
 		</Link>
-		<List items={studio} ListItem={StudioItem} />
+		<List items={studio} ListItem={InvitationItem} />
 	</div>
 }
 

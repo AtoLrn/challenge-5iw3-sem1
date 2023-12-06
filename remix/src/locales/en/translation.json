@@ -36,5 +36,7 @@
   "already-have-an-account": "Already have an account ?",
   "login": "Login",
   "login-to-your-account": "Login to your account",
-  "forgot-password": "Forgot password ?"
+  "forgot-password": "Forgot password ?",
+  "new-request": "New request",
+  "invitations": "Invitations"
 }

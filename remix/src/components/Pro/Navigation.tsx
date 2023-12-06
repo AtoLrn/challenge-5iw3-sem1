@@ -26,6 +26,10 @@ const links = [
 		name: 'Chat',
 		url: '/pro/chat'
 	},
+	{
+		name: 'Invitations',
+		url: '/pro/invitations'
+	}
 ]
 
 export const ProNavigation = () => {

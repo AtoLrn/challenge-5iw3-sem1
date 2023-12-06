@@ -6,10 +6,10 @@
   "page-not-found": "Page non trouvée :(",
   "unknow-old-page": "Vous avez peut-être navigué vers une page inconnue ou obsolète",
   "homepage": "Page d'accueil",
-  "huho" : "Oups...",
+  "huho": "Oups...",
   "looks-you-found-an-error": "Il semblerait que vous ayez trouvé une erreur. Pas de soucis, nous rapportons les erreurs",
   "my-latests-appointments": "Mes derniers rendez-vous",
-  "no-appointments-yet." : "Vous n'avez pas encore de rendez-vous.",
+  "no-appointments-yet.": "Vous n'avez pas encore de rendez-vous.",
   "studios": "Studios",
   "add": "Ajouter",
   "profile": "Profil",
@@ -36,5 +36,7 @@
   "already-have-an-account": "Vous avez déjà un compte ?",
   "login": "Connexion",
   "login-to-your-account": "Connectez-vous à votre compte",
-  "forgot-password": "Mot de passe oublié ?"
+  "forgot-password": "Mot de passe oublié ?",
+  "new-request": "Nouvelle demande",
+  "invitations": "Invitations"
 }
