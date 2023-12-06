@@ -41,5 +41,7 @@
   "booking-page": "Booking page",
   "minutes": "minutes",
   "export-appointements-csv": "Export appointments to CSV",
-  "see": "See"
+  "see": "See",
+  "new-request": "New request",
+  "invitations": "Invitations"
 }

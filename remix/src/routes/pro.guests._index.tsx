@@ -24,14 +24,19 @@ export const meta: MetaFunction = () => {
 }
 
 export const GuestsItem: React.FC<ListItemProps<Guest>> = ({ item }) => {
-	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
+	return <div className='grid grid-cols-6 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
 		<span>
 			<Badge state={item.state} />
 		</span>
 		<span><img src={item.avatarUrl} alt={item.name} className='w-8 h-8 rounded-full' /></span>
 		<span>{ item.name }</span>
 		<span>{ item.reserved }</span>
-		<Link to={`/pro/guests/${item.id}`} className='text-center'>View</Link>
+		<span>
+			<Link to={'/pro/studios/poivre-noir'}>Poivre Noir</Link>
+		</span>
+		<div className='flex items-center justify-end'>
+			<Link to={`/pro/guests/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>View</Link>
+		</div>
 	</div>
 }
 
@@ -74,6 +79,11 @@ export default function () {
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Invite</button>
 		</Link>
 		<List items={studio} ListItem={GuestsItem} />
+		<hr className='w-full opacity-30'/>
+		<Title kind="h3">Your requests</Title>
+
+		<List items={studio} ListItem={GuestsItem} />
+
 	</div>
 }
 

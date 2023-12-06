@@ -6,10 +6,10 @@
   "page-not-found": "Page non trouvée :(",
   "unknow-old-page": "Vous avez peut-être navigué vers une page inconnue ou obsolète",
   "homepage": "Page d'accueil",
-  "huho" : "Oups...",
+  "huho": "Oups...",
   "looks-you-found-an-error": "Il semblerait que vous ayez trouvé une erreur. Pas de soucis, nous rapportons les erreurs",
   "my-latests-appointments": "Mes derniers rendez-vous",
-  "no-appointments-yet." : "Vous n'avez pas encore de rendez-vous.",
+  "no-appointments-yet.": "Vous n'avez pas encore de rendez-vous.",
   "studios": "Studios",
   "add": "Ajouter",
   "profile": "Profil",
@@ -41,5 +41,7 @@
   "booking-page": "Page de réservation",
   "minutes": "minutes",
   "export-appointements-csv": "Exporter les rendez-vous en CSV",
-  "see": "Voir"
+  "see": "Voir",
+  "new-request": "Nouvelle demande",
+  "invitations": "Invitations"
 }

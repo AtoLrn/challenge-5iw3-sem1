@@ -46,11 +46,11 @@ export default function () {
 				name: 'Home',
 				url: '/pro'
 			},{
-				name: 'Guests',
-				url: '/pro/guests'
+				name: 'Invitations',
+				url: '/pro/invitations'
 			}
 		]}/>
-		<Title kind="h2">Invite Guest</Title>
+		<Title kind="h2">Request a studio</Title>
 		<Link to={'/pro/guests'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Return</button>
 		</Link>
@@ -60,7 +60,7 @@ export default function () {
 				<div className='relative'>
 					<div className='flex flex-col gap-2 absolute w-full h-48'>
 
-						<span className='text-base px-4 py-1 rounded-lg cursor-pointer w-full bg-black bg-opacity-30 text-white border-1 border-transparent hover:border-gray-700 duration-300' onClick={() => setGuest('Mathias Campistron')}>Mathias Campistron</span>
+						<span className='text-base px-4 py-1 rounded-lg cursor-pointer w-full bg-black bg-opacity-30 text-white border-1 border-transparent hover:border-gray-700 duration-300' onClick={() => setGuest('Poivre Noir')}>Poivre Noir</span>
 					</div>
 				</div>
 				<div className='w-full flex flex-col gap-1'>
@@ -80,7 +80,7 @@ export default function () {
 
 				</textarea>
 			</div>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Invite</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Send Request</button>
 		</Form>
 	</div>
 }
