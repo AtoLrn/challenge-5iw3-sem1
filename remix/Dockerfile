@@ -22,6 +22,7 @@ FROM builder AS prod
 ENV NODE_ENV=production
 
 COPY --from=builder /app ./
+COPY --from=builder /app ./
 
 EXPOSE 3000
 

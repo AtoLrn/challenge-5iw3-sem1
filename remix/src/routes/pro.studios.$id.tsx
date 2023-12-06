@@ -37,11 +37,17 @@ export default function () {
 		<section className='flex items-center justify-between w-full'>
 			<Title kind='h1'>Poivre Noir</Title>
 
-			<Link to={'/pro/studios/poivre-noir/edit'}>
-				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Edit</button>
-			</Link>
+			<div className='flex items-center gap-2'>
+				<Link to={'/pro/studios/poivre-noir/edit'}>
+					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Add Closing Day</button>
+				</Link>
+				<Link to={'/pro/studios/poivre-noir/edit'}>
+					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Edit</button>
+				</Link>
+			</div>
+			
 		</section>
-		<hr className='w-full'/>
+		<hr className='w-full opacity-30'/>
 		<Title kind='h3' className='mt-4'>
 			Your Guests
 		</Title>
@@ -78,6 +84,8 @@ export default function () {
 			</Dialog.Root>
 
 		</section>
+		<hr className='mt-8 w-full opacity-30'/>
+
 		<Calendar />
 	</div>
 }
