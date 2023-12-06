@@ -14,7 +14,7 @@ export function ErrorBoundary() {
 		<div className='z-20 flex flex-col items-center align-middle'>
 			<Title kind="h1" className='z-20 pb-20'>{t('huho')}</Title>
 			<Title kind="h2" className='z-20 pb-10'>{t('looks-you-found-an-error')}.</Title>
-			<Link to='/'>{t('Home page')}</Link>
+			<Link to='/'>{t('homepage')}</Link>
 		</div>
 
 		<div className='absolute top-0 left-1/2 w-1/2 h-screen object-cover z-10 bg-black' style={{ boxShadow: '-50px 0px 50px 13px rgba(0,0,0,9)' }}></div>
