@@ -1,8 +1,10 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { t } from 'i18next'
-import {Title} from '../components/Title.tsx'
-import { useState } from 'react'
-import {AppointmentRow} from '../components/AppointmentRow.tsx'
+import {Title} from "../components/Title.tsx";
+import { useState } from 'react';
+import {FiMapPin} from 'react-icons/fi';
+import { LuCalendarClock } from "react-icons/lu";
+import * as Avatar from '@radix-ui/react-avatar';
 
 export function meta() {
 	return [
