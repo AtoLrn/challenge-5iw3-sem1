@@ -12,6 +12,7 @@ use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
+use App\Controller\User\ProfilePictureController;
 use App\Controller\User\UpdatePasswordController;
 use App\Repository\UserRepository;
 use DateTimeZone;
@@ -68,7 +69,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                                         'format' => 'binary',
                                     ],
                                 ],
-                                //'required' => ['email', 'password', 'username', 'isProfessional']
+                                'required' => ['email', 'password', 'username', 'isProfessional']
                             ]
                         ]
                     ]
@@ -131,6 +132,31 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ]
             ]
         ),
+        // single POST route needed because of PATCH don't support form-data files
+        new Post(
+            uriTemplate: '/users/me/update-profil-picture',
+            normalizationContext: ['groups' => 'user:read:me'],
+            controller: ProfilePictureController::class,
+            deserialize: false,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'profilePictureFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['profilePictureFile']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ),
         new Patch(
             //security: 'is_granted("ROLE_ADMIN")',
             denormalizationContext: ['groups' => 'user:patch'],
@@ -177,7 +203,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
-    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[Groups(['user:read', 'user:patch'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isBanned = false;
 
