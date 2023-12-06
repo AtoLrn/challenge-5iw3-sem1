@@ -7,6 +7,7 @@ import { ListItemProps } from 'src/components/Pro/ListItem'
 import { Title } from 'src/components/Title'
 import { Validation } from 'src/utils/types/validation'
 
+
 export interface Studio {
 	id: string,
 	title: string,
@@ -24,6 +25,7 @@ export const meta: MetaFunction = () => {
 	]
 }
 
+
 export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
 		<span>
@@ -35,6 +37,7 @@ export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 		<Link to={`/pro/studios/${item.id}`} className='text-center'>View</Link>
 	</div>
 }
+
 
 export default function () {
 	const studio: Studio[] = [{

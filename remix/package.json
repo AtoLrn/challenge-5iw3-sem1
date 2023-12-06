@@ -16,6 +16,8 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.0.7",
+    "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-toggle": "^1.0.3",
     "@remix-run/dev": "^2.1.0",
     "@remix-run/express": "^2.0.1",
     "@remix-run/node": "^2.0.1",

@@ -1,5 +1,5 @@
-import { ActionFunctionArgs, json } from '@remix-run/node'
-import { Form, Link, MetaFunction, useLoaderData } from '@remix-run/react'
+import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { Form, Link, MetaFunction, useActionData, useLoaderData } from '@remix-run/react'
 import { Map, Marker } from 'mapbox-gl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
@@ -8,12 +8,22 @@ import { withDebounce } from 'src/utils/debounce'
 import { AddressSearchResult } from './api.address.$search'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import * as Switch from '@radix-ui/react-switch'
 
 const schema = z.object({
-	name: z.string(),
-	description: z.string(),
-	addressId: z.string(),
+	name: z.string().min(1),
+	description: z.string().min(1),
+	addressId: z.string().min(1),
 	seats: z.coerce.number(),
+	openingTime: z.string().min(1),
+	closingTime: z.string().min(1),
+	monday: zx.CheckboxAsString,
+	tuesday: zx.CheckboxAsString,
+	wednesday: zx.CheckboxAsString,
+	thursday: zx.CheckboxAsString,
+	friday: zx.CheckboxAsString,
+	saturday: zx.CheckboxAsString,
+	sunday: zx.CheckboxAsString,
 })
 
 export const meta: MetaFunction = () => {
@@ -26,12 +36,23 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	try {
-		const { name, description, addressId, seats } = await zx.parseForm(request, schema)
-		console.log(name, description, addressId, seats)
+		const result = await zx.parseFormSafe(request, schema)
+		if (!result.success) {
+			return json({
+				errors:  result.error.formErrors.fieldErrors
+			})
+		}
+
+		return redirect(`/pro/studios/${result.data.name}`)
+
 	} catch (err) {
 		console.log(err)
 	} 
-	return json({})
+	return json({
+		errors: {
+			server: 'An unknown error occured'
+		}
+	})
 }
 
 export const loader = () => {
@@ -41,12 +62,13 @@ export const loader = () => {
 export default function () {
 	const mapRef = useRef<Map>()
 	const markerRef = useRef<Marker>()
+
+	const actionData = useActionData<typeof action>()
 	const { accessToken } = useLoaderData<typeof loader>()
 
 	const [ isLoading, setLoading ] = useState<boolean>(false)
 	const [ searchResults, SetSearchResults ] = useState<Array<AddressSearchResult>>()
 	const [ address, setAddress ] = useState<AddressSearchResult>()
-
 
 
 	const onSeach = useCallback(withDebounce( async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +127,12 @@ export default function () {
 		<Link to={'/pro/studios'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Return</button>
 		</Link>
+		<div className='w-full flex flex-col gap-2'>
+			{ actionData?.errors && Object.entries(actionData.errors).map(([key, value]) => {
+				return <div className='w-full'><b>{key}</b>: {value}</div>
+			})}
+		</div>
+		
 		<Form method='POST' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>
 				<input placeholder='Name' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
@@ -130,8 +158,43 @@ export default function () {
 				</div>
 				<section id='map' className='h-48 w-full overflow-hidden'></section>
 				<input placeholder='Number of employees' type="number" name='seats' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-				<input placeholder='Document' type="file" name='seats' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
+				<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
+				
+				<div className='grid grid-cols-2 gap-2'>
+					<div className='w-full flex flex-col gap-1'>
+						<span className='text-sm'>Opening Time</span>
+						<input placeholder='Starting Date' type="time" name='openingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					</div>
+					<div className='w-full flex flex-col gap-1'>
+						<span className='text-sm'>Closing Time</span>
+						<input placeholder='Starting Date' type="time" name='closingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					</div>
+				</div>
+				<div className='flex items-center gap-2 flex-wrap'>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='monday' asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Monday</span>
+					</Switch.Root>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='tuesday' asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Tuesday</span>
+					</Switch.Root>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='wednesday' asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Wednesday</span>
+					</Switch.Root>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='thursday'  asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Thursday</span>
+					</Switch.Root>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='friday' asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Friday</span>
+					</Switch.Root>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='saturday' asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Saturday</span>
+					</Switch.Root>
+					<Switch.Root className="Toggle" aria-label="Toggle italic" name='sunday' asChild>
+						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Sunday</span>
+					</Switch.Root>
 
+				</div>
+				
 			</div>
 			
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Create</button>
