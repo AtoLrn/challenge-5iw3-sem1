@@ -36,5 +36,10 @@
   "already-have-an-account": "Already have an account ?",
   "login": "Login",
   "login-to-your-account": "Login to your account",
-  "forgot-password": "Forgot password ?"
+  "forgot-password": "Forgot password ?",
+  "booking-title": "Booking",
+  "booking-page": "Booking page",
+  "minutes": "minutes",
+  "export-appointements-csv": "Export appointments to CSV",
+  "see": "See"
 }
