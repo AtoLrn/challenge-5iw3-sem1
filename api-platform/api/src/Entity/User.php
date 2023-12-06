@@ -38,7 +38,42 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/register',
             normalizationContext: ['groups' => 'user:register:read'],
             denormalizationContext: ['groups' => 'user:register'],
-            controller: RegistrationController::class
+            controller: RegistrationController::class,
+            deserialize: false,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'email' => [
+                                        'type' => 'string',
+                                        'default' => 'user@example.com'
+                                    ],
+                                    'password' => [
+                                        'type' => 'string',
+                                        'default' => 'password'
+                                    ],
+                                    'username' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                    'isProfessional' => [
+                                        'type' => 'boolean',
+                                        'default' => 'false'
+                                    ],
+                                    'kbisFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                //'required' => ['email', 'password', 'username', 'isProfessional']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ),
         new Post(
             security: 'is_granted("ROLE_ADMIN")',
@@ -172,6 +207,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[Groups(['user:read', 'user:read:me'])]
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $kbisFileUrl = null;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -376,6 +415,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getKbisFileUrl(): ?string
+    {
+        return $this->kbisFileUrl;
+    }
+
+    public function setKbisFileUrl(?string $kbisFileUrl): static
+    {
+        $this->kbisFileUrl = $kbisFileUrl;
 
         return $this;
     }
