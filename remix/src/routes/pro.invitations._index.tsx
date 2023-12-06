@@ -90,7 +90,7 @@ export default function () {
 			}
 		]}/>
 		<Title kind="h2">{t('invitations')}</Title>
-		<Link to={'/pro/invitations/new'}>
+		<Link to={'/pro/invitations/request'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('new-request')}</button>
 		</Link>
 		<List items={studio} ListItem={InvitationItem} />
