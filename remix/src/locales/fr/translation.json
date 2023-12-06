@@ -38,5 +38,7 @@
   "login-to-your-account": "Connectez-vous à votre compte",
   "forgot-password": "Mot de passe oublié ?",
   "new-request": "Nouvelle demande",
-  "invitations": "Invitations"
+  "invitations": "Invitations",
+  "upcoming-appointments": "Rendez-vous à venir",
+  "past-appointments": "Rendez-vous passés"
 }

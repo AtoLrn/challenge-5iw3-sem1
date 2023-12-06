@@ -18,7 +18,7 @@
   "date": "Date",
   "time": "Time",
   "client": "Client",
-  "status": "Statut",
+  "status": "Status",
   "posts": "Posts",
   "create": "Create",
   "dashboard": "Dashboard",
@@ -38,5 +38,7 @@
   "login-to-your-account": "Login to your account",
   "forgot-password": "Forgot password ?",
   "new-request": "New request",
-  "invitations": "Invitations"
+  "invitations": "Invitations",
+  "upcoming-appointments": "Upcoming appointments",
+  "past-appointments": "Past appointments"
 }
