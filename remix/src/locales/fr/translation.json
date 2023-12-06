@@ -17,6 +17,7 @@
   "see-more-appointments-count": "Voir {{count}} de plus",
   "date": "Date",
   "time": "Heure",
+  "date-time-location": "Date, time & location",
   "client": "Client",
   "status": "Statut",
   "posts": "Publications",
@@ -40,5 +41,9 @@
   "new-request": "Nouvelle demande",
   "invitations": "Invitations",
   "upcoming-appointments": "Rendez-vous à venir",
-  "past-appointments": "Rendez-vous passés"
+  "past-appointments": "Rendez-vous passés",
+  "project-description": "Description du projet",
+  "cancel": "Annuler",
+  "reschedule": "Replanifier",
+  "artist": "Artiste"
 }
