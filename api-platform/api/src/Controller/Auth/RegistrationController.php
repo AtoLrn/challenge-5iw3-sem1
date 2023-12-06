@@ -49,7 +49,7 @@ class RegistrationController
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['password']));
         $user->setEmail($data['email']);
         $user->setUsername($data['username']);
-        $user->setIsProfessional($data['isProfessional']);
+        $user->setRoles(['ROLE_USER']);
 
         return $user;
     }

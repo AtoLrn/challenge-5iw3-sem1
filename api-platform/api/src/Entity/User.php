@@ -11,8 +11,10 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
+use App\Controller\User\UpdatePasswordController;
 use App\Repository\UserRepository;
 use DateTimeZone;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -57,7 +59,36 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: PatchMeController::class
         ),
         new Patch(
-            security: 'is_granted("ROLE_ADMIN")',
+            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/users/me/update-password',
+            denormalizationContext: ['groups' => 'user:patch:password'],
+            normalizationContext: ['groups' => 'user:read:me'],
+            controller: UpdatePasswordController::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'application/merge-patch+json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'currentPassword' => [
+                                        'description' => 'Current password of User',
+                                        'type' => 'string'
+                                    ],
+                                    'newPassword' => [
+                                        'description' => 'New password to use for User',
+                                        'type' => 'string'
+                                    ]
+                                ],
+                                'required' => ['currentPassword', 'newPassword']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ),
+        new Patch(
+            //security: 'is_granted("ROLE_ADMIN")',
             denormalizationContext: ['groups' => 'user:patch'],
             normalizationContext: ['groups' => 'user:read']
         ),
@@ -82,10 +113,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
+    #[Groups(['user:patch', 'user:read', 'user:collection'])]
     #[ORM\Column]
+    # Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
     private array $roles = [];
 
-    #[Groups(['user:register', 'user:login', 'user:patch'])]
+    #[Groups(['user:register', 'user:login', 'user:patch:password'])]
     #[Assert\NotBlank]
     #[ORM\Column]
     private ?string $password = null;
@@ -99,10 +132,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
-
-    #[Groups(['user:read', 'user:register', 'user:register:read', 'user:patch', 'user:read:me'])]
-    #[ORM\Column]
-    private ?bool $isProfessional = null;
 
     #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
@@ -123,6 +152,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
+
+    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -231,18 +264,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isIsProfessional(): ?bool
-    {
-        return $this->isProfessional;
-    }
-
-    public function setIsProfessional(bool $isProfessional): static
-    {
-        $this->isProfessional = $isProfessional;
-
-        return $this;
-    }
-
     public function isIsBanned(): ?bool
     {
         return $this->isBanned;
@@ -299,6 +320,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
