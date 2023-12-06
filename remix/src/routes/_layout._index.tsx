@@ -9,6 +9,8 @@ import { AiOutlineArrowRight } from 'react-icons/ai'
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { withDebounce } from 'src/utils/debounce'
 import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { t } from 'i18next'
 
 const formSchema = z.object({
 	title: z.string()
@@ -46,12 +48,13 @@ export function meta() {
 	return [
 		{
 			title: 'INKIT',
-			description: 'Find your tattoo artist',
+			description: t('find-your-tattoo-artist'),
 		},
 	]
 }
 
 export default function MainPage() { 
+	const { t } = useTranslation()
 	const [ isLoading, setLoading ] = useState<boolean>()
 
 	const posts  = useFetcher<typeof loader>()
@@ -67,7 +70,7 @@ export default function MainPage() {
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
-			<Title kind="h1" className='z-20 pb-20'>Find Your Tattoo Artist</Title>
+			<Title kind="h1" className='z-20 pb-20'>{t('find-your-tattoo-artist')}</Title>
 			
 			<m.div 
 				initial={{ opacity: 0, transform: 'translateY(100%)' }}
@@ -78,7 +81,7 @@ export default function MainPage() {
 						setLoading(true)
 						debounce(event)
 					}} autoComplete='off' name="title" type="text" className='bg bg-transparent h-16 w-4/5 border-b-2 border-white text-2xl outline-none' placeholder='Search for tattoos, cities, studios & artists'/>
-					<button className='border-b-2 h-16 border-white w-1/5 cursor-pointer text-2xl flex  justify-center items-center gap-2' ><span>Search</span> <AiOutlineArrowRight /></button>
+					<button className='border-b-2 h-16 border-white w-1/5 cursor-pointer text-2xl flex  justify-center items-center gap-2' ><span>{t('search')}</span> <AiOutlineArrowRight /></button>
 				</Form>
 
 				<section className='z-20 w-full flex flex-col items-stretch justify-center absolute left-0 top-full  backdrop-blur gap-1'> 
@@ -111,7 +114,7 @@ export default function MainPage() {
 									initial={{ opacity: 0 }}
 									animate= {{ opacity: 1 }}
 									exit={{ opacity: 0 }}
-									key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>No results</m.div>
+									key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>{t('no-results')}</m.div>
 								: <></>
 						}
 						{
@@ -119,7 +122,7 @@ export default function MainPage() {
 								initial={{ opacity: 0 }}
 								animate= {{ opacity: 1 }}
 								exit={{ opacity: 0 }}
-								key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>Loading...</m.div> : <></>
+								key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>{t('loading')}</m.div> : <></>
 						}
 					</AnimatePresence>
 

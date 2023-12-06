@@ -1,4 +1,5 @@
 import { Link, MetaFunction } from '@remix-run/react'
+import { t } from 'i18next'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Badge } from 'src/components/Pro/Badge'
 import { List } from 'src/components/Pro/List'
@@ -71,9 +72,9 @@ export default function () {
 				url: '/pro/studios'
 			}
 		]}/>
-		<Title kind="h2">Studios</Title>
+		<Title kind="h2">{t('studios')}</Title>
 		<Link to={'/pro/studios/add'}>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Add</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>
 		</Link>
 		<List items={studio} ListItem={StudioItem} />
 	</div>

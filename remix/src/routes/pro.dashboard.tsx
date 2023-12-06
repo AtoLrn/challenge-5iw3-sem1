@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Title } from 'src/components/Title'
 import { Map, Marker } from 'mapbox-gl'
 import { json } from '@remix-run/node'
+import { t } from 'i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -43,11 +44,11 @@ export default function () {
 	}, [])
 
 	return <div className="flex-1 p-8 flex flex-col gap-8 text-white">
-		<Title kind="h2">Dashboard</Title>
+		<Title kind="h2">{t('dashboard')}</Title>
 		<div className='flex w-full space-between gap-4'>
 			<section id='map' className='w-4/5 h-96 rounded-md overflow-hidden'></section>
 			<section className='flex flex-col gap-4 items-center w-1/5 bg-zinc-950 p-4 rounded-md'>
-				<span className='font-bold'>Your nexts appointements</span>
+				<span className='font-bold'>{t('your-nexts-appointements')}</span>
 				{ clients.map((client, index) => {
 					return <div key={client} className='flex w-full p-2 cursor-pointer border-b-1 border-gray-200 border-opacity-30 gap-2'>
 						<img key={index} className={ 'rounded-full relative border-2 border-gray-900 object-cover w-8 h-8' } src={client}/>

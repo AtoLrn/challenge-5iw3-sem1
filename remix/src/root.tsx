@@ -11,6 +11,7 @@ import { GoogleTagManager, GoogleTagManagerIframe } from './utils/gtm/GoogleTagM
 import { getEnvironnement } from './utils/gtm/env/environnement.server'
 import stylesheet from './style/tailwind.css'
 import driverJSStyle from 'driver.js/dist/driver.css'
+import './i18n'
 
 export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: stylesheet },

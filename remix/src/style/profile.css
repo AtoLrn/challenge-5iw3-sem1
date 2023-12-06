@@ -2,12 +2,6 @@
   .user-sidebar {
     height: calc(100vh - 9rem);
   }
-  .slide-in-left {
-    animation: 0.5s ease-out 0s 1 slideInFromLeft;
-  }
-  .slide-out-left {
-    animation: 0.5s ease-out 0s 1 slideInFromRight;
-  }
 }
 
 .instagram-btn,
@@ -28,22 +22,4 @@
 
 .edit-btn:hover {
   box-shadow: 0 0 15px 5px #7f1d1d80;
-}
-
-@keyframes slideInFromLeft {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInFromRight {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
 }
