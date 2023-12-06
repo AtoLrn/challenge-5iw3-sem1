@@ -9,7 +9,6 @@ jobs:
   deploy-prod:
     name: Deploy image to docker registry
     runs-on: ubuntu-latest
-    needs: ci-prod
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
