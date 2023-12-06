@@ -26,6 +26,7 @@
   "sign-up": "Sign up",
   "identity": "Identity",
   "username": "Username",
+  "email": "Email",
   "password": "Password",
   "confirm-password": "Confirm password",
   "avatar": "Avatar",
