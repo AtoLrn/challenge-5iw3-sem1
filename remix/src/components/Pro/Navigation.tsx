@@ -49,13 +49,13 @@ export const ProNavigation = () => {
 		</section>
 		<HoverCard.Root>
 			<HoverCard.Trigger asChild>
-				<section className="flex items-center justify-start w-full h-16 py-2 px-8 gap-4 cursor-pointer">
+				<a className="flex items-center justify-start w-full h-16 py-2 px-8 gap-4 cursor-pointer" href='/pro/profile'>
 					<img className="rounded-full" height={32} width={32} src='https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'/>
 					<div className="flex flex-col ">
 						<span className="text-sm">Your name</span>
 						<span className="opacity-70 text-sm">Tattoo artist</span>
 					</div>
-				</section>
+				</a>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
 				<HoverCard.Content className="rounded-xl bg-white text-black shadow-lg w-56" sideOffset={5}>

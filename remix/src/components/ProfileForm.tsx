@@ -1,12 +1,43 @@
 import { t } from 'i18next'
 import { ProfileFormInterface } from 'src/utils/types/profileForm'
+import { motion as m } from 'framer-motion'
 
 const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, handleSubmit }) => {
 	const formClasses = !profile.isProfessional ? 'lg:w-1/4 md:w-1/3 user-sidebar md:absolute md:top-0 md:left-[22.5rem]' : ''
-	const animationClasses = isEditing ? (profile.isProfessional ? 'slide-in-top' : 'slide-in-left') : (profile.isProfessional ? 'slide-out-top' : 'slide-out-left')
+	const slideInFromLeft = {
+		visible: { 
+			x: 0,
+			transition: { duration: 1, ease: 'easeOut' }
+		}
+	};
+	const slideInFromTop = {
+		visible: { 
+			y: 0,
+			transition: { duration: 1, ease: 'easeOut' }
+		}
+	};
+	const slideOutToLeft = {
+		hidden: { 
+			x: -100,
+			transition: { duration: 1, ease: 'easeOut' }
+		}
+	};
+	const slideOutToTop = {
+		hidden: { 
+			y: -100,
+			transition: { duration: 1, ease: 'easeOut' }
+		}
+	};
+	const animationClasses = isEditing ? (profile.isProfessional ? slideInFromTop : slideInFromLeft) : (profile.isProfessional ? slideOutToLeft : slideOutToTop)
 	return (
-		<form className={`bg-neutral-800 p-5 text-white shadow-lg w-full z-10 ${formClasses} ${animationClasses}`}
-			onSubmit={handleSubmit}>
+		<m.form
+			className={`bg-neutral-800 p-5 text-white shadow-lg w-full z-10 ${formClasses}`}
+			onSubmit={handleSubmit}
+			initial="hidden"
+			animate="visible"
+			custom={profile.isProfessional ? 0 : 1}
+			variants={animationClasses}
+		>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col gap-2">
 					<label htmlFor="username">{t('username')}</label>
@@ -79,7 +110,7 @@ const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, handl
 			>
 				{('save-changes')}
 			</button>
-		</form>
+		</m.form>
 	)
 }
 
