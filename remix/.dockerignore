@@ -14,6 +14,6 @@
 tests/
 build/ 
 node_modules/ 
-public/
+public/build
 .eslintrc.json
 nginx/

@@ -1,17 +1,14 @@
-import { MetaFunction, useLoaderData } from '@remix-run/react'
-import { useEffect, useState } from 'react'
+import { MetaFunction } from '@remix-run/react'
+import { useState } from 'react'
 import { Title } from 'src/components/Title'
-import { Map, Marker } from 'mapbox-gl'
-import { LinksFunction, json } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import { motion as m } from 'framer-motion'
 import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
-import stylesheet from '../style/profile.css'
 import ProfileForm from 'src/components/ProfileForm'
 import { t } from 'i18next'
+import { Validation } from 'src/utils/types/validation'
+import { Badge } from 'src/components/Pro/Badge'
 
-export const links: LinksFunction = () => {
-	return [{ rel: 'stylesheet', href: stylesheet }]
-}
 
 type ProfileData = {
   username: string;
@@ -50,53 +47,24 @@ export default function () {
 	}
 
 	const appointments = [
-		{
-			date: '20/04/2021',
-			time: '14:00',
-			client: 'John Doe',
-			status: 'Confirmed'
-		},
-		{
-			date: '21/04/2021',
-			time: '15:30',
-			client: 'Jane Smith',
-			status: 'Pending'
-		},
-		{
-			date: '22/04/2021',
-			time: '10:00',
-			client: 'Alice Johnson',
-			status: 'Cancelled'
-		},
-		{
-			date: '23/04/2021',
-			time: '16:45',
-			client: 'Bob Williams',
-			status: 'Cancelled'
-		},
-		{
-			date: '24/04/2021',
-			time: '12:30',
-			client: 'Emma Davis',
-			status: 'Confirmed'
-		},
+
 		{
 			date: '25/04/2021',
 			time: '09:15',
 			client: 'Michael Brown',
-			status: 'Pending'
+			status: Validation.ACCEPTED
 		},
 		{
 			date: '20/04/2021',
 			time: '14:00',
 			client: 'John Doe',
-			status: 'Confirmed'
+			status: Validation.ACCEPTED
 		},
 		{
 			date: '20/04/2021',
 			time: '14:00',
 			client: 'John Doe',
-			status: 'Confirmed'
+			status: Validation.PENDING
 		},
 	]
 
@@ -121,23 +89,6 @@ export default function () {
 		setIsEditing(false)
 	}
 	
-	const { accessToken } = useLoaderData<typeof loader>()
-
-	useEffect(() => {
-		if (accessToken) {
-			const map = new Map({
-				accessToken,
-				container: 'map',
-				center: [2.333333, 48.866667], // [lng, lat]
-				zoom: 11, 
-				style: 'mapbox://styles/atolrn/clopw3ubf00j401nzaayg87wt',		
-			})
-	
-			const marker = new Marker()
-	
-			marker.setLngLat([2.333333, 48.866667]).addTo(map)
-		}
-	}, [])
 
 	const moreCount = appointments.length - 3
 
@@ -231,15 +182,7 @@ export default function () {
 											<td className="px-4 py-2 border">{appointment.date}</td>
 											<td className="px-4 py-2 border">{appointment.time}</td>
 											<td className="px-4 py-2 border">{appointment.client}</td>
-											{appointment.status === 'Confirmed' ? (
-												<td className="px-4 py-2 border text-green-500">{appointment.status}</td>
-											) : appointment.status === 'Pending' ? (
-												<td className="px-4 py-2 border text-yellow-500">{appointment.status}</td>
-											) : appointment.status === 'Cancelled' ? (
-												<td className="px-4 py-2 border text-red-500">{appointment.status}</td>
-											) : (
-												<td className="px-4 py-2 border">{appointment.status}</td>
-											)}
+											<td className="px-4 py-2 border"> <Badge state={appointment.status}/></td>
 										</tr>
 									))}
 								</tbody>
