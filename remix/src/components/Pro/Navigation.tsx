@@ -29,7 +29,7 @@ const links = [
 ]
 
 export const ProNavigation = () => {
-	return <nav className="flex flex-col items-strech justify-between h-full w-64 text-white z-10 bg-opacity-20 bg-zinc-950 shadow-2xl backdrop-blur-3xl">
+	return <nav className="flex flex-col items-strech justify-between h-full w-64 text-white z-10 bg-opacity-30 bg-zinc-950 shadow-2xl backdrop-blur-3xl">
 		<section className="flex flex-col gap-4">
 			<div className="w-full h-24 flex items-center justify-center">
 				<h1 className="text-2xl font-bold text-center tracking-widest">INKIT</h1>
@@ -58,7 +58,7 @@ export const ProNavigation = () => {
 				</section>
 			</HoverCard.Trigger>
 			<HoverCard.Portal>
-				<HoverCard.Content className="rounded-xl bg-white text-black shadow-lg w-56" sideOffset={5}>
+				<HoverCard.Content className="rounded-xl bg-white text-black shadow-lg w-56 z-10" sideOffset={5}>
 					<section className="flex  flex-col items-center justify-start w-full py-2 px-8 gap-4 cursor-pointer">
 						<div className="flex flex-col ">
 							<span className="text-sm">You've done 14 tattoos</span>
