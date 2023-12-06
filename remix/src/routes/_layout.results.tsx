@@ -9,9 +9,9 @@ export default function MainPage() {
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
 
-			<Form className='flex justify-center h-20 items-center mx-auto mt-28 w-1/3' method='POST'>
-				<input id='search-bar' autoComplete='off' name="title" type="text" className='w-10/12 bg bg-transparent h-12 border-b-2 border-white text-base outline-none' placeholder='Search for tattoos, cities, studios & artists'/>
-				<button className='w-2/12 border-b-2 h-12 border-white cursor-pointer text-base'>
+			<Form className='flex justify-center h-20 items-center mx-auto mt-28 w-1/4' method='POST'>
+				<input id='search-bar' autoComplete='off' name="title" type="text" className='w-11/12 bg bg-transparent h-12 border-b-2 border-white text-base outline-none' placeholder='Search for tattoos, cities, studios & artists'/>
+				<button className='w-1/12 border-b-2 h-12 border-white cursor-pointer text-base'>
 					<AiOutlineArrowRight className="ml-auto" />
 				</button>
 			</Form>
