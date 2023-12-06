@@ -13,6 +13,8 @@ use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Repository\UserRepository;
 use DateTimeZone;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -123,6 +125,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
+    private Collection $studios;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: StudioRequest::class, orphanRemoval: true)]
+    private Collection $studioRequests;
+
+    public function __construct()
+    {
+        $this->studios = new ArrayCollection();
+        $this->studioRequests = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -299,6 +313,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Studio>
+     */
+    public function getStudios(): Collection
+    {
+        return $this->studios;
+    }
+
+    public function addStudio(Studio $studio): static
+    {
+        if (!$this->studios->contains($studio)) {
+            $this->studios->add($studio);
+            $studio->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudio(Studio $studio): static
+    {
+        if ($this->studios->removeElement($studio)) {
+            // set the owning side to null (unless already changed)
+            if ($studio->getOwner() === $this) {
+                $studio->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StudioRequest>
+     */
+    public function getStudioRequests(): Collection
+    {
+        return $this->studioRequests;
+    }
+
+    public function addStudioRequest(StudioRequest $studioRequest): static
+    {
+        if (!$this->studioRequests->contains($studioRequest)) {
+            $this->studioRequests->add($studioRequest);
+            $studioRequest->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudioRequest(StudioRequest $studioRequest): static
+    {
+        if ($this->studioRequests->removeElement($studioRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($studioRequest->getOwner() === $this) {
+                $studioRequest->setOwner(null);
+            }
+        }
 
         return $this;
     }
