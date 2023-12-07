@@ -254,7 +254,7 @@ export default function () {
 		csvContent += headers
 
 		clients.forEach((client) => {
-			const location = client.prestation.location.replace(/,/g, '\\,')
+			const location = client.prestation.location.replace(/,/g, '')
 			const row = [
 				client.profile.username,
 				client.profile.email,
