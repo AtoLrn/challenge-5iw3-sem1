@@ -1,4 +1,5 @@
 import { Link, MetaFunction } from '@remix-run/react'
+import { t } from 'i18next'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Badge } from 'src/components/Pro/Badge'
 import { List } from 'src/components/Pro/List'
@@ -35,7 +36,7 @@ export const GuestsItem: React.FC<ListItemProps<Guest>> = ({ item }) => {
 			<Link to={'/pro/studios/poivre-noir'}>Poivre Noir</Link>
 		</span>
 		<div className='flex items-center justify-end'>
-			<Link to={`/pro/guests/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>View</Link>
+			<Link to={`/pro/guests/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>{t('view')}</Link>
 		</div>
 	</div>
 }
