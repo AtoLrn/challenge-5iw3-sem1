@@ -5,6 +5,7 @@ export interface ProfileFormInterface {
 }
 
 export interface ProfileInterface {
+  avatar: string;
   username: string;
   email: string;
   isProfessional: boolean;

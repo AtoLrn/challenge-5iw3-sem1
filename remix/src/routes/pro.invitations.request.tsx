@@ -1,11 +1,8 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
-import { Form, Link, MetaFunction, useLoaderData } from '@remix-run/react'
-import { Map, Marker } from 'mapbox-gl'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Form, Link, MetaFunction } from '@remix-run/react'
+import { useState } from 'react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
-import { withDebounce } from 'src/utils/debounce'
-import { AddressSearchResult } from './api.address.$search'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
@@ -36,7 +33,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 
 export default function () {
-	const [ isLoading, setLoading ] = useState<boolean>(false)
 	const [ guest, setGuest ] = useState<string>()
 
 

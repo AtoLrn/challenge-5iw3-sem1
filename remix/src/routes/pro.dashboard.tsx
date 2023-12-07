@@ -1,4 +1,4 @@
-import { MetaFunction, useLoaderData } from '@remix-run/react'
+import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import { useEffect } from 'react'
 import { Title } from 'src/components/Title'
 import { Map, Marker } from 'mapbox-gl'
@@ -64,7 +64,7 @@ export default function () {
 					</div> 
 					
 				}) }
-				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white w-full'>Go to list</button>
+				<Link to={'/pro/booking'} className='px-4 py-2 bg-gray-700 rounded-lg text-white w-full'>{t('go-to-list')}</Link>
 
 			</section>
 
