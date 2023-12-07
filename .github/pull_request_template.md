@@ -12,6 +12,7 @@ I attest on my honor that:
 - [ ] I formatted my code
 - [ ] I commented my code
 - [ ] I made my code as clear as possible
+- [ ] I have updated the translation file, **en** and **fr**
 - [ ] I ran all the test and that they successfully pass
 - [ ] I named my commit by following a good convention
 - [ ] I didn't push conflicted code
