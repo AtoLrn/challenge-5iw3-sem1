@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Entity;
+
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Enum\InviteStatus;
+use App\Repository\StudioRequestRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ApiResource(
+    operations: [
+      new GetCollection(
+          security: "is_granted('ROLE_ADMIN')"
+      ),
+      new Post(
+          security: "is_granted('ROLE_ADMIN')"
+      ),
+      new Get(
+          security: "is_granted('ROLE_ADMIN')"
+      ),
+      new Patch(
+          security: "is_granted('ROLE_ADMIN')"
+      ),
+      new Delete(
+          security: "is_granted('ROLE_ADMIN')"
+      ),
+    ],
+    paginationEnabled: false
+)]
+#[ORM\Entity(repositoryClass: StudioRequestRepository::class)]
+class StudioRequest
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column]
+    private ?int $professionnal = null;
+
+    #[ORM\Column]
+    private ?int $studio = null;
+
+    #[ORM\Column]
+    private ?int $documents = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private InviteStatus $status;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getProfessionnal(): ?int
+    {
+        return $this->professionnal;
+    }
+
+    public function setProfessionnal(int $professionnal): static
+    {
+        $this->professionnal = $professionnal;
+
+        return $this;
+    }
+
+    public function getStudio(): ?int
+    {
+        return $this->studio;
+    }
+
+    public function setStudio(int $studio): static
+    {
+        $this->studio = $studio;
+
+        return $this;
+    }
+
+    public function getDocuments(): ?int
+    {
+        return $this->documents;
+    }
+
+    public function setDocuments(int $documents): static
+    {
+        $this->documents = $documents;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getStatus(): InviteStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(InviteStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+}
