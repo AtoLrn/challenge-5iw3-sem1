@@ -3,36 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
 use App\Repository\StudioRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ApiResource(
-    operations: [
-      new GetCollection(
-          security: "is_granted('ROLE_USER')"
-      ),
-      new Post(
-          security: "is_granted('ROLE_USER')"
-      ),
-      new Get(
-          security: "is_granted('ROLE_USER')"
-      ),
-      new Patch(
-          security: "is_granted('ROLE_USER')"
-      ),
-      new Delete(
-          security: "is_granted('ROLE_USER')"
-      ),
-    ],
-    paginationEnabled: false
-)]
 #[ORM\Entity(repositoryClass: StudioRequestRepository::class)]
+#[ApiResource]
 class StudioRequest
 {
     #[ORM\Id]
@@ -49,11 +25,11 @@ class StudioRequest
     #[ORM\Column]
     private ?int $documents = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    private ?\DateTimeImmutable $date = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $status;
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
 
     public const VALID_STATUSES = ['pending', 'accepted', 'rejected'];
 
@@ -98,24 +74,24 @@ class StudioRequest
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(\DateTimeImmutable $date): static
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(string $status): static
     {
         if (!in_array($status, self::VALID_STATUSES)) {
             throw new \InvalidArgumentException('Invalid status value');
