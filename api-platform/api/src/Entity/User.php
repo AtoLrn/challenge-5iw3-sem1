@@ -13,6 +13,8 @@ use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Repository\UserRepository;
 use DateTimeZone;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -123,6 +125,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'ownedBy', targetEntity: Studio::class, orphanRemoval: true)]
+    private Collection $studios;
+
+    public function __construct()
+    {
+        $this->studios = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -299,6 +309,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Studio>
+     */
+    public function getStudios(): Collection
+    {
+        return $this->studios;
+    }
+
+    public function addStudio(Studio $studio): static
+    {
+        if (!$this->studios->contains($studio)) {
+            $this->studios->add($studio);
+            $studio->setOwnedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudio(Studio $studio): static
+    {
+        if ($this->studios->removeElement($studio)) {
+            // set the owning side to null (unless already changed)
+            if ($studio->getOwnedBy() === $this) {
+                $studio->setOwnedBy(null);
+            }
+        }
 
         return $this;
     }

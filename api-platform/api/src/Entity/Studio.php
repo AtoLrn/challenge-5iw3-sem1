@@ -21,9 +21,6 @@ class Studio
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
-    #[ORM\Column]
-    private ?int $ownedBy = null;
-
     #[ORM\Column(length: 255)]
     private ?string $picture = null;
 
@@ -32,6 +29,10 @@ class Studio
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'studios')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $ownedBy = null;
 
     public function getId(): ?int
     {
@@ -58,18 +59,6 @@ class Studio
     public function setLocation(string $location): static
     {
         $this->location = $location;
-
-        return $this;
-    }
-
-    public function getOwnedBy(): ?int
-    {
-        return $this->ownedBy;
-    }
-
-    public function setOwnedBy(int $ownedBy): static
-    {
-        $this->ownedBy = $ownedBy;
 
         return $this;
     }
@@ -106,6 +95,18 @@ class Studio
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getOwnedBy(): ?User
+    {
+        return $this->ownedBy;
+    }
+
+    public function setOwnedBy(?User $ownedBy): static
+    {
+        $this->ownedBy = $ownedBy;
 
         return $this;
     }
