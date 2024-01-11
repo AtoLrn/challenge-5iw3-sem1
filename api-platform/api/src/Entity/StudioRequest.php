@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Enum\InviteStatus;
 use App\Repository\StudioRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,19 +15,19 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
       new GetCollection(
-          security: "is_granted('ROLE_ADMIN')"
+          security: "is_granted('ROLE_USER')"
       ),
       new Post(
-          security: "is_granted('ROLE_ADMIN')"
+          security: "is_granted('ROLE_USER')"
       ),
       new Get(
-          security: "is_granted('ROLE_ADMIN')"
+          security: "is_granted('ROLE_USER')"
       ),
       new Patch(
-          security: "is_granted('ROLE_ADMIN')"
+          security: "is_granted('ROLE_USER')"
       ),
       new Delete(
-          security: "is_granted('ROLE_ADMIN')"
+          security: "is_granted('ROLE_USER')"
       ),
     ],
     paginationEnabled: false
@@ -54,7 +53,9 @@ class StudioRequest
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private InviteStatus $status;
+    private string $status;
+
+    public const VALID_STATUSES = ['pending', 'accepted', 'rejected'];
 
     public function getId(): ?int
     {
@@ -109,13 +110,17 @@ class StudioRequest
         return $this;
     }
 
-    public function getStatus(): InviteStatus
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(InviteStatus $status): static
+    public function setStatus(string $status): self
     {
+        if (!in_array($status, self::VALID_STATUSES)) {
+            throw new \InvalidArgumentException('Invalid status value');
+        }
+
         $this->status = $status;
 
         return $this;
