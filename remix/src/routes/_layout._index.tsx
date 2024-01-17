@@ -4,7 +4,7 @@ import { zx } from 'zodix'
 import { Form, Link, useFetcher } from '@remix-run/react'
 import { Title } from 'src/components/Title'
 import { AnimatePresence, motion as m } from 'framer-motion'
-import { getPosts } from '../utils/requests/posts'
+import { getArtists } from '../utils/requests/artists'
 import { AiOutlineArrowRight } from 'react-icons/ai'
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { withDebounce } from 'src/utils/debounce'
@@ -22,10 +22,10 @@ export async function loader({ request } : LoaderFunctionArgs) {
 	const title = search.get('title')
 
 	if (!title || typeof title !== 'string') {
-		return json({ posts: [] }) 
+		return json({ artists: [] }) 
 	}
 
-	return json({ posts: await getPosts({ title }) })
+	return json({ artists: await getArtists({ name: title }) })
 } 
 
 
@@ -68,6 +68,8 @@ export default function MainPage() {
 
 	const isSearchLoading =  isLoading || posts.state === 'loading'
 
+	console.log('ANTOINE2: ', posts.data)
+
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
 			<Title kind="h1" className='z-20 pb-20'>{t('find-your-tattoo-artist')}</Title>
@@ -87,7 +89,7 @@ export default function MainPage() {
 				<section className='z-20 w-full flex flex-col items-stretch justify-center absolute left-0 top-full  backdrop-blur gap-1'> 
 					<AnimatePresence mode='popLayout'>
 
-						{ posts.data?.posts.slice(1, 5).map((post, index, arr) => {
+						{ posts.data?.artists.slice(0, 5).map((artist, index, arr) => {
 							const interval = 0.05
 							const baseIndex = 50
 							return <m.div 
@@ -101,15 +103,15 @@ export default function MainPage() {
 									delay: interval * (arr.length - index) 
 								} }}
 							
-								className='w-full cursor-pointer ' key={post.id}>
-								<Link to={`/search/${encodeURIComponent(post.title.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
-									<img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" alt="" className='rounded-full w-10 h-10' />
-									{post.title}
+								className='w-full cursor-pointer ' key={artist.username}>
+								<Link to={`/search/${encodeURIComponent(artist.username.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
+									<img src={artist.picture} alt="" className='rounded-full w-10 h-10' />
+									{artist.username}
 								</Link>
 							</m.div>
 						})}
 						{
-							posts.data?.posts.length === 0 && !isSearchLoading ? 
+							posts.data?.artists.length === 0 && !isSearchLoading ? 
 								<m.div
 									initial={{ opacity: 0 }}
 									animate= {{ opacity: 1 }}
