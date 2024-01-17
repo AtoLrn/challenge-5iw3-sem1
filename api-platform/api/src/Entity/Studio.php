@@ -61,7 +61,7 @@ class Studio
 
     #[Groups(['studio:admin:control', 'studio:read'])]
     #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
-    private ?string $status = "PENDING";
+    private ?string $status = null;
 
     public function getId(): ?int
     {
