@@ -12,7 +12,7 @@ import { Badge } from 'src/components/Pro/Badge'
 
 type ProfileData = {
   username: string;
-  avatarUrl: string;
+  avatar: string;
   email: string;
   isProfessional: boolean;
   isAdmin: boolean;
@@ -39,7 +39,7 @@ export default function () {
    */
 	const profile: ProfileData = {
 		username: 'Jerry Gollet',
-		avatarUrl: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
+		avatar: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
 		isProfessional: true,
 		isAdmin: false,
 		email: 'test@test.com',
@@ -108,7 +108,7 @@ export default function () {
 					<div className="flex items-end justify-between bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg w-full z-20 relative">
 						<div className="flex items-center space-x-4 w-full">
 							<img
-								src={profile.avatarUrl}
+								src={profile.avatar}
 								alt="Profile avatar"
 								className="w-20 h-20 rounded-full object-cover max-w-xs"
 							/>
