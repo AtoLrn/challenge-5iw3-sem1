@@ -25,6 +25,9 @@ export default {
 		{
 			pattern: /-left-(4|8|12|16|20)/, // Force the -left-x
 		},
+		{
+			pattern: /col-span-(1|2|3|4|5|6|7)/, // Force the col-span-x
+		},
 	],
 	plugins: [],
 } satisfies Config

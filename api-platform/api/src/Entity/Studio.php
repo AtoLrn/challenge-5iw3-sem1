@@ -3,11 +3,29 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\StudioRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/verify',
+            security: 'is_granted("ROLE_ADMIN")',
+            denormalizationContext: ['groups' => 'studio:admin:control', 'studio:creation',],
+            normalizationContext: ['groups' => 'studio:read'],
+        ),
+        new Post(
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'studio:creation', 'skip_null_values' => false],
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+        ),
+
+    ]
+)]
 #[ORM\Entity(repositoryClass: StudioRepository::class)]
 class Studio
 {
@@ -16,27 +34,34 @@ class Studio
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
-    #[ORM\Column]
-    private ?int $max_capacity = null;
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $maxCapacity = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\ManyToOne(inversedBy: 'studios')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    #[ORM\OneToOne(mappedBy: 'studio', cascade: ['persist', 'remove'])]
-    private ?StudioRequest $studioRequest = null;
+    #[Groups(['studio:admin:control', 'studio:read'])]
+    #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
+    private ?string $status = "PENDING";
 
     public function getId(): ?int
     {
@@ -69,12 +94,12 @@ class Studio
 
     public function getMaxCapacity(): ?int
     {
-        return $this->max_capacity;
+        return $this->maxCapacity;
     }
 
-    public function setMaxCapacity(int $max_capacity): static
+    public function setMaxCapacity(int $maxCapacity): static
     {
-        $this->max_capacity = $max_capacity;
+        $this->maxCapacity = $maxCapacity;
 
         return $this;
     }
@@ -115,19 +140,28 @@ class Studio
         return $this;
     }
 
-    public function getStudioRequest(): ?StudioRequest
+    public function getStatus(): ?string
     {
-        return $this->studioRequest;
+        return $this->status;
     }
 
-    public function setStudioRequest(StudioRequest $studioRequest): static
+    public function setStatus(string $status): static
     {
-        // set the owning side of the relation if necessary
-        if ($studioRequest->getStudio() !== $this) {
-            $studioRequest->setStudio($this);
-        }
+        $this->status = $status ?? "PENDING";
 
-        $this->studioRequest = $studioRequest;
+        return $this;
+    }
+
+    public function approve(): static
+    {
+        $this->status = "APPROVED";
+
+        return $this;
+    }
+
+    public function deny(): static
+    {
+        $this->status = "APPROVED";
 
         return $this;
     }

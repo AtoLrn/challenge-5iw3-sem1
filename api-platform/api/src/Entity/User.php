@@ -129,13 +129,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: StudioRequest::class, orphanRemoval: true)]
-    private Collection $studioRequests;
-
     public function __construct()
     {
         $this->studios = new ArrayCollection();
-        $this->studioRequests = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -341,36 +337,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($studio->getOwner() === $this) {
                 $studio->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, StudioRequest>
-     */
-    public function getStudioRequests(): Collection
-    {
-        return $this->studioRequests;
-    }
-
-    public function addStudioRequest(StudioRequest $studioRequest): static
-    {
-        if (!$this->studioRequests->contains($studioRequest)) {
-            $this->studioRequests->add($studioRequest);
-            $studioRequest->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStudioRequest(StudioRequest $studioRequest): static
-    {
-        if ($this->studioRequests->removeElement($studioRequest)) {
-            // set the owning side to null (unless already changed)
-            if ($studioRequest->getOwner() === $this) {
-                $studioRequest->setOwner(null);
             }
         }
 
