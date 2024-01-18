@@ -5,6 +5,7 @@ namespace App\Controller\Auth;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -12,6 +13,9 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 #[AsController]
 class RegistrationController
@@ -22,6 +26,8 @@ class RegistrationController
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $userPasswordHasher,
         private UserRepository $userRepository,
+        private MailerInterface $mailer,
+        private JWTTokenManagerInterface $jwtManager,
     )
     {}
 
@@ -82,6 +88,15 @@ class RegistrationController
         }
 
         $user->setRoles($roles);
+
+        $jwt = $this->jwtManager->create($user);
+
+        $email = (new Email())
+            ->from('inkit@no-reply.fr')
+            ->to($user->getEmail())
+            ->text("Votre compte a bien été créé, veuillez vérifier votre email à cette url: https://".$request->getHost()."/verify?token=".$jwt);
+
+        $this->mailer->send($email);
 
         return $user;
     }

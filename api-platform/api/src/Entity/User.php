@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
+use App\Controller\Auth\VerifyController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Controller\User\ProfilePictureController;
@@ -34,6 +35,27 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => 'user:collection']
+        ),
+        new Post(
+            uriTemplate: '/verify',
+            normalizationContext: ['groups' => 'user:register:read'],
+            controller: VerifyController::class,
+            deserialize: false,
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'name' => 'token',
+                        'in' => 'query',
+                        'description' => 'token to validate email',
+                        'required' => true,
+                        'type' => 'string'
+                    ]
+                ],
+                'requestBody' => [
+                    'required' => false,
+                    'content' => []
+                ]
+            ]
         ),
         new Post(
             uriTemplate: '/register',
@@ -163,7 +185,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'user:read']
         ),
         new Delete(
-            security: 'is_granted("ROLE_ADMIN")',
+            //security: 'is_granted("ROLE_ADMIN")',
         )
     ],
     paginationEnabled: false
@@ -211,7 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isVerified = false;
 
