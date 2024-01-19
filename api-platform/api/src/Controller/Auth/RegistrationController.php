@@ -5,20 +5,20 @@ namespace App\Controller\Auth;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Utils\Files;
 
 #[AsController]
-class RegistrationController
+class RegistrationController extends AbstractController
 {
     public function __construct(
         protected Security $security,
@@ -28,6 +28,7 @@ class RegistrationController
         private UserRepository $userRepository,
         private MailerInterface $mailer,
         private JWTTokenManagerInterface $jwtManager,
+        private Files $files,
     )
     {}
 
@@ -72,12 +73,11 @@ class RegistrationController
 
             array_push($roles, 'ROLE_PRO');
 
-            $idGenerator = Uuid::uuid4();
-            $kbisFileId = $idGenerator->toString();
+            $kbisFile = $request->files->get('kbisFile');
 
-            // TODO : UPLOAD FILE TO S3 + check file
+            $kbisFileUrl = $this->files->upload($kbisFile, $this->getParameter('kernel.project_dir'));
 
-            $user->setKbisFileUrl('https://dummy-s3-host.fr/'.$kbisFileId);
+            $user->setKbisFileUrl($kbisFileUrl);
 
         } else if ($isProfessionalInput == 'false') {
             if($request->files->get('kbisFile')) {
@@ -94,7 +94,8 @@ class RegistrationController
         $email = (new Email())
             ->from('inkit@no-reply.fr')
             ->to($user->getEmail())
-            ->text("Votre compte a bien été créé, veuillez vérifier votre email à cette url: https://".$request->getHost()."/verify?token=".$jwt);
+            ->subject('Inkit: vérifiez votre email')
+            ->text("Votre compte a bien été créé, veuillez vérifier votre email à cette url:".$_ENV['FRONT_APP_URL']."/verify?token=".$jwt);
 
         $this->mailer->send($email);
 

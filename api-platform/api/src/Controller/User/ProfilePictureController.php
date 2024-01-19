@@ -11,10 +11,11 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Ramsey\Uuid\Uuid;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Utils\Files;
 
 #[AsController]
-class ProfilePictureController
+class ProfilePictureController extends AbstractController
 {
     public function __construct(
         protected Security $security,
@@ -22,6 +23,7 @@ class ProfilePictureController
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $userPasswordHasher,
         private UserRepository $userRepository,
+        private Files $files,
     )
     {}
 
@@ -33,12 +35,11 @@ class ProfilePictureController
             throw new UnprocessableEntityHttpException('File needed');
         }
 
-        $idGenerator = Uuid::uuid4();
-        $pictureFileId = $idGenerator->toString();
+        $pictureFile = $request->files->get('profilePictureFile');
 
-        // TODO : UPLOAD FILE TO S3 + check file
+        $pictureFileUrl = $this->files->upload($pictureFile, $this->getParameter('kernel.project_dir'));
 
-        $user->setPicture('https://dummy-s3-host.fr/'.$pictureFileId);
+        $user->setPicture($pictureFileUrl);
 
         return $user;
     }
