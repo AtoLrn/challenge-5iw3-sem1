@@ -21,8 +21,6 @@ export const getArtists = async (options?: { name: string}): Promise<Artist[]> =
 				return username.includes(options.name)
 			})
 
-			console.log('ANTOINE:' , x)
-
 			return x
 		}
 
