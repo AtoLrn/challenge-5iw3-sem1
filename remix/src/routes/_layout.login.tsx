@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { Form, useLoaderData, useNavigation } from '@remix-run/react'
+import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
 import { t } from 'i18next'
 import { Title } from 'src/components/Title'
 import { commitSession, getSession } from 'src/session.server'
@@ -63,7 +63,7 @@ export default function MainPage() {
 					{/* /PAGE TITLE */}
 
 					{ errors.map((error) => {
-						return <div className='mb-16 text-lg font-bold text-red-600 border-b border-white self-start' key={error}>
+						return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
 							{error}
 						</div>
 					})}
@@ -78,9 +78,9 @@ export default function MainPage() {
 								{navigation.state === 'submitting' ? t('loading') : t('login-to-your-account')}
 							</button>
 
-							<a href="#" className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all">
+							<Link to='/sign-up' className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all">
 								{t('forgot-password')}
-							</a>
+							</Link>
 						</div>
 					</Form>
 					{/* /LOGIN FORM */}
