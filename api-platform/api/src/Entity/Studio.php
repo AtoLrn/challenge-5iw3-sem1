@@ -14,14 +14,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Post(
             uriTemplate: '/verify',
-            security: 'is_granted("ROLE_ADMIN")',
-            denormalizationContext: ['groups' => 'studio:admin:control', 'studio:creation',],
             normalizationContext: ['groups' => 'studio:read'],
+            denormalizationContext: ['groups' => 'studio:admin:control', 'studio:creation',],
+            security: 'is_granted("ROLE_ADMIN")',
         ),
         new Post(
-            security: 'is_granted("ROLE_USER")',
-            denormalizationContext: ['groups' => 'studio:creation', 'skip_null_values' => false],
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+            denormalizationContext: ['groups' => 'studio:creation', 'skip_null_values' => false],
+            security: 'is_granted("ROLE_USER")',
         ),
 
     ]
