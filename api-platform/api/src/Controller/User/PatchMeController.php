@@ -41,7 +41,21 @@ class PatchMeController
             }
         }
 
-        $this->serializer->deserialize($request->getContent(), User::class, 'json', ['object_to_populate' => $user]);
+        $this->serializer->deserialize($request->getContent(), User::class, 'json', ['object_to_populate' => $user, 'ignored_attributes' => ['roles']]);
+
+        if(isset($data['isStudio'])){
+            $roles = $user->getRoles();
+
+            if($data['isStudio']){
+                array_push($roles, 'ROLE_STUDIO');
+            } else {
+                if(in_array('ROLE_STUDIO', $roles)) {
+                    array_splice($roles, array_search('ROLE_STUDIO', $roles), 1);
+                }
+            }
+
+            $user->setRoles($roles);
+        }
 
         return $user;
     }
