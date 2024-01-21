@@ -3,11 +3,30 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\StudioRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/verify',
+            security: 'is_granted("ROLE_ADMIN")',
+            denormalizationContext: ['groups' => 'studio:admin:control', 'studio:creation',],
+            normalizationContext: ['groups' => 'studio:read'],
+        ),
+        new Post(
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'studio:creation', 'skip_null_values' => false],
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+        ),
+
+    ]
+)]
 #[ORM\Entity(repositoryClass: StudioRepository::class)]
-#[ApiResource]
 class Studio
 {
     #[ORM\Id]
@@ -15,24 +34,34 @@ class Studio
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $picture = null;
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $maxCapacity = null;
 
-    #[ORM\Column]
-    private ?int $max_capacity = null;
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updatedAt = null;
 
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\ManyToOne(inversedBy: 'studios')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $ownedBy = null;
+    private ?User $owner = null;
+
+    #[Groups(['studio:admin:control', 'studio:read'])]
+    #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
+    private ?string $status = null;
 
     public function getId(): ?int
     {
@@ -63,50 +92,76 @@ class Studio
         return $this;
     }
 
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    public function setPicture(string $picture): static
-    {
-        $this->picture = $picture;
-
-        return $this;
-    }
-
     public function getMaxCapacity(): ?int
     {
-        return $this->max_capacity;
+        return $this->maxCapacity;
     }
 
-    public function setMaxCapacity(int $max_capacity): static
+    public function setMaxCapacity(int $maxCapacity): static
     {
-        $this->max_capacity = $max_capacity;
+        $this->maxCapacity = $maxCapacity;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getOwnedBy(): ?User
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->ownedBy;
+        return $this->updatedAt;
     }
 
-    public function setOwnedBy(?User $ownedBy): static
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
     {
-        $this->ownedBy = $ownedBy;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status ?? "PENDING";
+
+        return $this;
+    }
+
+    public function approve(): static
+    {
+        $this->status = "APPROVED";
+
+        return $this;
+    }
+
+    public function deny(): static
+    {
+        $this->status = "APPROVED";
 
         return $this;
     }

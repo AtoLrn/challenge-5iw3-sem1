@@ -37,6 +37,11 @@
   "login": "Connexion",
   "login-to-your-account": "Connectez-vous à votre compte",
   "forgot-password": "Mot de passe oublié ?",
+  "booking-title": "Réservation",
+  "booking-page": "Page de réservation",
+  "minutes": "minutes",
+  "export-appointements-csv": "Exporter les rendez-vous en CSV",
+  "see": "Voir",
   "new-request": "Nouvelle demande",
   "invitations": "Invitations"
 }

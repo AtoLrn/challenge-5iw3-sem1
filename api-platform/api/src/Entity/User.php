@@ -126,7 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'ownedBy', targetEntity: Studio::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
     public function __construct()
@@ -325,7 +325,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->studios->contains($studio)) {
             $this->studios->add($studio);
-            $studio->setOwnedBy($this);
+            $studio->setOwner($this);
         }
 
         return $this;
@@ -335,8 +335,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->studios->removeElement($studio)) {
             // set the owning side to null (unless already changed)
-            if ($studio->getOwnedBy() === $this) {
-                $studio->setOwnedBy(null);
+            if ($studio->getOwner() === $this) {
+                $studio->setOwner(null);
             }
         }
 
