@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\RegistrationController;
+use App\Controller\User\ArtistController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Repository\UserRepository;
@@ -47,6 +48,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/users/me',
             normalizationContext: ['groups' => 'user:read:me'],
             controller: GetMeController::class,
+            read: false
+        ),
+        new Get(
+            uriTemplate: '/artists',
+            normalizationContext: ['groups' => 'user:read:artist'],
+            controller: ArtistController::class,
             read: false
         ),
         new Get(
@@ -93,12 +100,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 

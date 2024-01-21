@@ -1,9 +1,56 @@
 import { Title } from 'src/components/Title'
-import {NavLink} from '@remix-run/react'
+import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
 import { t } from 'i18next'
+import { z } from 'zod'
+import { zx } from 'zodix'
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
+import { useState } from 'react'
+import { register } from 'src/utils/requests/register'
+
+const schema = z.object({
+	firstname: z.string().min(1),
+	lastname: z.string().min(1),
+	username: z.string().min(1),
+	email: z.string().min(1),
+	password: z.string().min(1),
+	tattooArtist: zx.CheckboxAsString
+}) 
+
+export const loader = ({ request }: LoaderFunctionArgs) => {
+	const url = new URL(request.url)
+	const error = url.searchParams.get('error')
+
+	return json({
+		errors: [error] 
+	})
+}
+
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+	try {
+		const body = await zx.parseForm(request, schema)
+
+		await register({
+			...body,
+			isProfessional: body.tattooArtist
+		})
+
+		return redirect('/login')
+	} catch (e) {
+		if (e instanceof Error)
+			return redirect(`/sign-up?error=${e.message}`)
+
+		return redirect(`/sign-up?error=${'Unexpected Error'}`)
+	}
+
+}
 
 export default function MainPage() {
-
+	const { errors } = useLoaderData<typeof loader>()
+	const navigation = useNavigation()
+	
+	const [ password, setPassword ] = useState('')
+	const [ passwordConfirmation, setPasswordConfirmation ] = useState('')
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
@@ -18,15 +65,21 @@ export default function MainPage() {
 					</Title>
 					{/* /PAGE TITLE */}
 
+					{ errors.map((error) => {
+						return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+							{error}
+						</div>
+					})}
+
 					{/* REGISTER FORM */}
-					<form action="" className="flex flex-col">
+					<Form method='POST' className="flex flex-col">
 						<Title kind="h4" className="z-20 pb-4">
 							{t('identity')}
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
 							<input type="text" name="firstname" placeholder="First Name" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 							<input type="text" name="lastname" placeholder="Last Name" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-							<input type="text" name="nickname" placeholder="Nickname" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input type="text" name="username" placeholder="Nickname" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<Title kind="h4" className="z-20 pb-4 pt-2">
 							{t('account')}
@@ -35,9 +88,16 @@ export default function MainPage() {
 							<input type="email" name="email" placeholder="Email Address" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<div className="flex flex-row gap-4 mb-10">
-							<input type="password" name="password" placeholder="Password" className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-							<input type="password" name="passwordConfirm" placeholder="Confirm Password" className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" name="password" placeholder="Password" className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.currentTarget.value)} type="password" name="passwordConfirm" placeholder="Confirm Password" className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
+						{ password !== passwordConfirmation && 
+						
+						<div className="flex flex-row gap-4 mb-10 font-bold text-red-600 border-b border-white self-start">
+							{t('no-match')}
+						</div>
+						}
+						
 						<div className="checkbox-container flex flex-row gap-3 mb-4 items-center">
 							<input id="tattooArtist" type="checkbox" name="tattooArtist" className="checkBox cursor-pointer"/>
 							<label htmlFor="tattooArtist" className="cursor-pointer">I am a tattoo artist</label>
@@ -47,17 +107,15 @@ export default function MainPage() {
 							<label htmlFor="shopOwner" className="cursor-pointer">I am a tattoo-shop owner</label>
 						</div>
 						<div className="flex items-center justify-between">
-							<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-								{t('create-your-account')}
+							<button disabled={password !== passwordConfirmation || navigation.state === 'submitting'} type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+								{navigation.state === 'submitting' ? t('loading') : t('create-your-account')}
 							</button>
 
-							<a href="#" className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all">
-								<NavLink to='/login'>
-									{t('already-have-an-account')}
-								</NavLink>
-							</a>
+							<Link className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all" to='/login'>
+								{t('already-have-an-account')}
+							</Link>
 						</div>
-					</form>
+					</Form>
 					{/* /REGISTER FORM */}
 				</div>
 

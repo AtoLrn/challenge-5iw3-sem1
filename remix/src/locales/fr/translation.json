@@ -28,6 +28,7 @@
   "username": "Nom d'utilisateur",
   "email": "Email",
   "password": "Mot de passe",
+  "no-match": "Les mot de passes ne correspondent pas",
   "confirm-password": "Confirmer le mot de passe",
   "avatar": "Avatar",
   "save-changes": "Enregistrer les modifications",

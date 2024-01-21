@@ -28,6 +28,7 @@
   "username": "Username",
   "email": "Email",
   "password": "Password",
+  "no-match": "Passwords do not matches",
   "confirm-password": "Confirm password",
   "avatar": "Avatar",
   "save-changes": "Save changes",

@@ -1,18 +1,41 @@
 import {  Outlet, useLoaderData } from '@remix-run/react'
 import { Navigation } from 'src/components/Navigation'
-import { User } from './../utils/types/user'
-import { json } from '@remix-run/node'
+import { LoaderFunctionArgs, json } from '@remix-run/node'
+import { getSession } from 'src/session.server'
+import { me } from 'src/utils/requests/me'
+import { User } from 'src/utils/types/user'
 
-export async function loader() {
-	const user: User = {
-		name: 'Placeholder',
-		avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
+export interface LoaderReturnType {
+	user?: User
+}
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const token = session.get('token')
+
+	if (!token) {
+		return json<LoaderReturnType>({
+			user: undefined
+		})
 	}
 
-	return json({ user })
+	try {
+		const user = await me({
+			token
+		})
+		return json<LoaderReturnType>({ user })
+
+	} catch {
+		return json<LoaderReturnType>({
+			user: undefined
+		})
+	}
 }
+
 export default function() {
 	const { user } = useLoaderData<typeof loader>()
+
 
 	return <>
 		<Navigation user={user} />
