@@ -51,6 +51,7 @@
   "artist": "Artist",
   "conversations": "Conversations",
   "details": "Details"
+<<<<<<< HEAD
   "booking-title": "Booking",
   "booking-page": "Booking page",
   "your-nexts-appointement": "Your next appointments",
@@ -71,4 +72,6 @@
   "add-outlook-calendar": "Add to Outlook Calendar",
   "download-as-ics": "Download as ICS",
   "ok": "Ok !"
+=======
+>>>>>>> dac30f3... feat(remix): finished integration for appointments
 }
