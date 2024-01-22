@@ -46,7 +46,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 					{user ? (
 						<>
 							<li className="cursor-pointer">
-								<NavLink to="/appointements">Appointements</NavLink>
+								<NavLink to="/appointments">Appointments</NavLink>
 							</li>
 							<li className="cursor-pointer">
 								<NavLink to="/messages">Messages</NavLink>

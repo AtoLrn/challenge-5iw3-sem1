@@ -17,6 +17,7 @@
   "see-more-appointments-count": "Voir {{count}} de plus",
   "date": "Date",
   "time": "Heure",
+  "location": "Localisation",
   "client": "Client",
   "status": "Statut",
   "posts": "Publications",
@@ -44,5 +45,15 @@
   "export-appointements-csv": "Exporter les rendez-vous en CSV",
   "see": "Voir",
   "new-request": "Nouvelle demande",
-  "invitations": "Invitations"
+  "invitations": "Invitations",
+  "upcoming-appointments": "Rendez-vous à venir",
+  "past-appointments": "Rendez-vous passés",
+  "project-description": "Description du projet",
+  "cancel-appointment": "Annuler le rendez-vous",
+  "reschedule": "Replanifier",
+  "new-appointment": "Nouveau rendez-vous",
+  "review": "Avis",
+  "artist": "Artiste",
+  "conversations": "Conversations",
+  "details": "Détails"
 }
