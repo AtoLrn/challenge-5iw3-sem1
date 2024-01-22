@@ -15,7 +15,7 @@ export default function MainPage() {
 				</div>
 				<div className="w-2/3 p-16 overflow-y-auto max-h-screen">
 					<div className="flex flex-col gap-8">
-						<Title kind="h1" className='font-title'>John Doe</Title>
+						<Title kind="h1">John Doe</Title>
 						<Form className='flex flex-col gap-4' method='POST'>
 							<Title kind="h4" className='font-title'>Choose a prestation</Title>
 							<PrestationButtons />
