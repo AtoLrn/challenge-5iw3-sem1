@@ -17,7 +17,7 @@
   "see-more-appointments-count": "See {{count}} more appointments",
   "date": "Date",
   "time": "Time",
-  "date-time-location": "Date, time & location",
+  "location": "Location",
   "client": "Client",
   "status": "Status",
   "posts": "Posts",
@@ -43,7 +43,11 @@
   "upcoming-appointments": "Upcoming appointments",
   "past-appointments": "Past appointments",
   "project-description": "Project description",
-  "cancel": "Cancel",
+  "cancel-appointment": "Cancel appointment",
   "reschedule": "Reschedule",
-  "artist": "Artist"
+  "new-appointment": "New appointment",
+  "review": "Review",
+  "artist": "Artist",
+  "conversations": "Conversations",
+  "details": "Details"
 }
