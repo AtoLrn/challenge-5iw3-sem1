@@ -15,7 +15,7 @@ export default function MainPage() {
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-row justify-between">
 							<div>
-								<Title kind="h1" className='z-20 pb-2 font-title'>John Doe</Title>
+								<Title kind="h1" className='z-20 pb-2'>John Doe</Title>
 								<div className="flex gap-2">
 									<span className="font-bold">Rating :</span>
 									<div className="flex">
@@ -55,7 +55,7 @@ export default function MainPage() {
 							</div>
 						</div>
 						<div className="pt-12">
-							<Title kind="h3" className='z-20 pb-4 font-title'>Portfolio</Title>
+							<Title kind="h3" className='z-20 pb-4'>Portfolio</Title>
 							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
 								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
@@ -64,7 +64,7 @@ export default function MainPage() {
 							</div>
 						</div>
 						<div className="pt-12">
-							<Title kind="h2" className='z-20 pb-4 font-title'>Flashes</Title>
+							<Title kind="h2" className='z-20 pb-4'>Flashes</Title>
 							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
 								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
