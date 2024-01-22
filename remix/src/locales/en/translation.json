@@ -50,8 +50,7 @@
   "review": "Review",
   "artist": "Artist",
   "conversations": "Conversations",
-  "details": "Details"
-<<<<<<< HEAD
+  "details": "Details",
   "booking-title": "Booking",
   "booking-page": "Booking page",
   "your-nexts-appointement": "Your next appointments",
@@ -67,11 +66,8 @@
   "view": "View",
   "with": "with",
   "duration": "Duration",
-  "location": "Location",
   "add-google-calendar": "Add to Google Calendar",
   "add-outlook-calendar": "Add to Outlook Calendar",
   "download-as-ics": "Download as ICS",
   "ok": "Ok !"
-=======
->>>>>>> dac30f3... feat(remix): finished integration for appointments
 }
