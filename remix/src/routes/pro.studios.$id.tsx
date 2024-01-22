@@ -1,9 +1,33 @@
 import { Link, MetaFunction } from '@remix-run/react'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { BreadCrumb } from 'src/components/Breadcrumb'
-import { Calendar } from 'src/components/Calendar'
 import { Title } from 'src/components/Title'
 import * as Dialog from '@radix-ui/react-dialog'
+import { List } from 'src/components/Pro/List'
+import { ListItemProps } from 'src/components/Pro/ListItem'
+import { TimePicker, TimePickerKind } from 'src/components/Calendar'
+
+export interface Appointement {
+	id: string,
+	name: string,
+	with: string
+	date: Date
+}
+
+export const AppointementItem: React.FC<ListItemProps<Appointement>> = ({ item }) => {
+	const h = item.date.getHours().toString().padStart(2, '0')
+	const m = item.date.getMinutes().toString().padStart(2, '0')
+
+
+	const formattedDate = `${h}h${m}`
+	return <div className='grid grid-cols-3 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
+		<span>{ item.name }</span>
+		<span>{ item.with }</span>
+		<span><b>{ formattedDate }</b></span>
+		{/* <span className='text-right'>{ item.available } / { item.seats }</span> */}
+
+	</div>
+}
 
 export const meta: MetaFunction = () => {
 	return [
@@ -14,6 +38,19 @@ export const meta: MetaFunction = () => {
 }
 
 export default function () {
+	const appointements: Appointement[] = [{
+		id: '1',
+		name: 'Lucas Campistron',
+		with: 'Erromis',
+		date: new Date()
+	},
+	{
+		id: '12',
+		name: 'Izia Crinier',
+		with: 'Matin',
+		date: new Date()
+	}] 
+
 	const guests = [
 		'data:image/jpeg;base64,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',
 		'https://img.freepik.com/photos-premium/portrait-bel-homme-masculin-visage-serieux-homme-elegant-magnifique-sexy_265223-11487.jpg',
@@ -51,6 +88,30 @@ export default function () {
 		<Title kind='h3' className='mt-4'>
 			Your Guests
 		</Title>
+		<TimePicker kind={TimePickerKind.SLOT} slots={[
+			new Date('2023-12-16T09:00:00'),
+			new Date('2023-12-16T09:30:00'),
+			new Date('2023-12-10T09:00:00'),
+			new Date('2023-12-10T09:30:00'),
+			new Date('2023-12-16T10:00:00'),
+			new Date('2023-12-16T019:00:00'),
+			new Date('2023-12-16T020:00:00'),	
+			new Date('2023-12-16T11:00:00'),
+			new Date('2023-12-16T18:00:00'),
+			new Date('2023-12-16T19:00:00'),
+			new Date('2023-12-16T20:00:00')
+		]} />
+		<TimePicker 
+			kind={TimePickerKind.DAY} 
+			availables={[
+				new Date('2023-12-16T00:00:00'),
+				new Date('2023-12-15T00:00:00'),
+				new Date('2023-12-14T00:00:00')
+			]} 
+			defaultSelectedDay={new Date('2023-12-17T00:00:00')}
+		/>
+
+		<TimePicker kind={TimePickerKind.RANGE} minDate={new Date()} />
 		<section className='flex items-center justify-start gap-6'>
 			{ guests.map((guest, index) => {
 				return  <img key={index} className={ 'rounded-full relative object-cover w-28 h-28 cursor-pointer' } src={guest}/>
@@ -85,8 +146,12 @@ export default function () {
 
 		</section>
 		<hr className='mt-8 w-full opacity-30'/>
-
-		<Calendar />
+		<div className='w-1/2 flex flex-col gap-4'>
+			<Title kind='h3' className='mt-4'>
+				Today's Appointements
+			</Title>
+			<List items={appointements} ListItem={AppointementItem} />
+		</div>
 	</div>
 }
 

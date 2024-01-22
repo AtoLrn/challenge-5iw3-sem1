@@ -9,10 +9,17 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\RegistrationController;
+use App\Controller\User\ArtistController;
+use App\Controller\Auth\VerifyController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
+use App\Controller\User\ProfilePictureController;
+use App\Controller\User\UpdatePasswordController;
 use App\Repository\UserRepository;
 use DateTimeZone;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -30,10 +37,66 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'user:collection']
         ),
         new Post(
+            uriTemplate: '/verify',
+            normalizationContext: ['groups' => 'user:register:read'],
+            controller: VerifyController::class,
+            deserialize: false,
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'name' => 'token',
+                        'in' => 'query',
+                        'description' => 'token to validate email',
+                        'required' => true,
+                        'type' => 'string'
+                    ]
+                ],
+                'requestBody' => [
+                    'required' => false,
+                    'content' => []
+                ]
+            ]
+        ),
+        new Post(
             uriTemplate: '/register',
             normalizationContext: ['groups' => 'user:register:read'],
             denormalizationContext: ['groups' => 'user:register'],
-            controller: RegistrationController::class
+            controller: RegistrationController::class,
+            deserialize: false,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'email' => [
+                                        'type' => 'string',
+                                        'default' => 'user@example.com'
+                                    ],
+                                    'password' => [
+                                        'type' => 'string',
+                                        'default' => 'password'
+                                    ],
+                                    'username' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                    'isProfessional' => [
+                                        'type' => 'boolean',
+                                        'default' => 'false'
+                                    ],
+                                    'kbisFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['email', 'password', 'username', 'isProfessional']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ),
         new Post(
             security: 'is_granted("ROLE_ADMIN")',
@@ -48,6 +111,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             read: false
         ),
         new Get(
+            uriTemplate: '/artists',
+            normalizationContext: ['groups' => 'user:read:artist'],
+            controller: ArtistController::class,
+            read: false
+        ),
+        new Get(
             normalizationContext: ['groups' => 'user:read']
         ),
         new Patch(
@@ -57,12 +126,66 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: PatchMeController::class
         ),
         new Patch(
-            security: 'is_granted("ROLE_ADMIN")',
+            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/users/me/update-password',
+            denormalizationContext: ['groups' => 'user:patch:password'],
+            normalizationContext: ['groups' => 'user:read:me'],
+            controller: UpdatePasswordController::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'application/merge-patch+json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'currentPassword' => [
+                                        'description' => 'Current password of User',
+                                        'type' => 'string'
+                                    ],
+                                    'newPassword' => [
+                                        'description' => 'New password to use for User',
+                                        'type' => 'string'
+                                    ]
+                                ],
+                                'required' => ['currentPassword', 'newPassword']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ),
+        // single POST route needed because of PATCH don't support form-data files
+        new Post(
+            uriTemplate: '/users/me/update-profil-picture',
+            normalizationContext: ['groups' => 'user:read:me'],
+            controller: ProfilePictureController::class,
+            deserialize: false,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'profilePictureFile' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['profilePictureFile']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ),
+        new Patch(
+            //security: 'is_granted("ROLE_ADMIN")',
             denormalizationContext: ['groups' => 'user:patch'],
             normalizationContext: ['groups' => 'user:read']
         ),
         new Delete(
-            security: 'is_granted("ROLE_ADMIN")',
+            //security: 'is_granted("ROLE_ADMIN")',
         )
     ],
     paginationEnabled: false
@@ -82,29 +205,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
+    #[Groups(['user:patch', 'user:read', 'user:collection'])]
     #[ORM\Column]
+    # Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
     private array $roles = [];
 
-    #[Groups(['user:register', 'user:login', 'user:patch'])]
+    #[Groups(['user:register', 'user:login', 'user:patch:password'])]
     #[Assert\NotBlank]
     #[ORM\Column]
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
-    #[Groups(['user:read', 'user:register', 'user:register:read', 'user:patch', 'user:read:me'])]
-    #[ORM\Column]
-    private ?bool $isProfessional = null;
-
-    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[Groups(['user:read', 'user:patch'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isBanned = false;
 
@@ -112,7 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
 
-    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isVerified = false;
 
@@ -123,6 +244,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
+    private Collection $studios;
+
+    public function __construct()
+    {
+        $this->studios = new ArrayCollection();
+    }
+    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[Groups(['user:read', 'user:read:me'])]
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $kbisFileUrl = null;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -231,18 +367,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isIsProfessional(): ?bool
-    {
-        return $this->isProfessional;
-    }
-
-    public function setIsProfessional(bool $isProfessional): static
-    {
-        $this->isProfessional = $isProfessional;
-
-        return $this;
-    }
-
     public function isIsBanned(): ?bool
     {
         return $this->isBanned;
@@ -299,6 +423,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Studio>
+     */
+    public function getStudios(): Collection
+    {
+        return $this->studios;
+    }
+
+    public function addStudio(Studio $studio): static
+    {
+        if (!$this->studios->contains($studio)) {
+            $this->studios->add($studio);
+            $studio->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudio(Studio $studio): static
+    {
+        if ($this->studios->removeElement($studio)) {
+            // set the owning side to null (unless already changed)
+            if ($studio->getOwner() === $this) {
+                $studio->setOwner(null);
+            }
+        }
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getKbisFileUrl(): ?string
+    {
+        return $this->kbisFileUrl;
+    }
+
+    public function setKbisFileUrl(?string $kbisFileUrl): static
+    {
+        $this->kbisFileUrl = $kbisFileUrl;
 
         return $this;
     }

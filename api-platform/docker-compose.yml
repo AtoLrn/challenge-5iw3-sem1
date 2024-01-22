@@ -64,6 +64,12 @@ services:
       # On Linux, you may want to comment the following line for improved performance
       WATCHPACK_POLLING: "true"
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+      
 ###> doctrine/doctrine-bundle ###
   database:
     container_name: postgres-db

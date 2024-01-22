@@ -13,7 +13,7 @@ export const links: LinksFunction = () => {
 
 type ProfileData = {
   username: string;
-  avatarUrl: string;
+  avatar: string;
   email: string;
   isProfessional: boolean;
   isAdmin: boolean;
@@ -36,7 +36,7 @@ export default function ProfilePage() {
    */
 	const profile: ProfileData = {
 		username: 'John Doe',
-		avatarUrl: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
+		avatar: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
 		isProfessional: false,
 		isAdmin: false,
 		email: 'test@test.com'
@@ -77,7 +77,7 @@ export default function ProfilePage() {
 					<div className="flex md:flex-col items-end md:items-center justify-between bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg w-full user-sidebar z-20 relative">
 						<div className="flex md:flex-col items-center md:space-y-4 md:space-x-0 space-x-4 w-full">
 							<img
-								src={profile.avatarUrl}
+								src={profile.avatar}
 								alt="Profile avatar"
 								className="w-20 h-20 md:w-full md:h-full rounded-full md:rounded-md object-cover max-w-xs"
 							/>

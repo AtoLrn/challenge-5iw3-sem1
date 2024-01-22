@@ -1,5 +1,6 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 import { Form, Link, MetaFunction } from '@remix-run/react'
+import { t } from 'i18next'
 import { useState } from 'react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
@@ -46,9 +47,9 @@ export default function () {
 				url: '/pro/guests'
 			}
 		]}/>
-		<Title kind="h2">Invite Guest</Title>
+		<Title kind="h2">{t('invite-guest')}</Title>
 		<Link to={'/pro/guests'}>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Return</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{('return')}</button>
 		</Link>
 		<Form method='POST' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>
@@ -60,23 +61,23 @@ export default function () {
 					</div>
 				</div>
 				<div className='w-full flex flex-col gap-1'>
-					<span className='text-sm'>Start date</span>
-					<input placeholder='Starting Date' type="date" name='startDate' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					<span className='text-sm'>{t('start-date')}</span>
+					<input placeholder={t('starting-date')} type="date" name='startDate' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 				</div>
 					
 				<div className='w-full flex flex-col gap-1'>
-					<span className='text-sm'>End date</span>
-					<input placeholder='Starting Date' type="date" name='endDate' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					<span className='text-sm'>{t('end-date')}</span>
+					<input placeholder={t('ending-date')} type="date" name='endDate' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 				</div>			
 			</div>
 			<hr className='w-full opacity-30'/>
 			<div className='w-full flex flex-col gap-1'>
-				<span className='text-sm'>Message</span>
-				<textarea cols={2}  placeholder='Starting Date' name='message' className='outline-none resize-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' >
+				<span className='text-sm'>{t('message')}</span>
+				<textarea cols={2}  placeholder={t('message')} name='message' className='outline-none resize-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' >
 
 				</textarea>
 			</div>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Invite</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>{t('invite')}</button>
 		</Form>
 	</div>
 }
