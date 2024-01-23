@@ -9,14 +9,13 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\RegistrationController;
-use App\Controller\User\ArtistController;
 use App\Controller\Auth\VerifyController;
+use App\Controller\User\ArtistController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Controller\User\ProfilePictureController;
 use App\Controller\User\UpdatePasswordController;
 use App\Repository\UserRepository;
-use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -48,13 +47,13 @@ use Symfony\Component\Validator\Constraints as Assert;
                         'in' => 'query',
                         'description' => 'token to validate email',
                         'required' => true,
-                        'type' => 'string'
-                    ]
+                        'type' => 'string',
+                    ],
                 ],
                 'requestBody' => [
                     'required' => false,
-                    'content' => []
-                ]
+                    'content' => [],
+                ],
             ]
         ),
         new Post(
@@ -72,30 +71,30 @@ use Symfony\Component\Validator\Constraints as Assert;
                                 'properties' => [
                                     'email' => [
                                         'type' => 'string',
-                                        'default' => 'user@example.com'
+                                        'default' => 'user@example.com',
                                     ],
                                     'password' => [
                                         'type' => 'string',
-                                        'default' => 'password'
+                                        'default' => 'password',
                                     ],
                                     'username' => [
                                         'type' => 'string',
-                                        'default' => 'string'
+                                        'default' => 'string',
                                     ],
                                     'isProfessional' => [
                                         'type' => 'boolean',
-                                        'default' => 'false'
+                                        'default' => 'false',
                                     ],
                                     'kbisFile' => [
                                         'type' => 'string',
                                         'format' => 'binary',
                                     ],
                                 ],
-                                'required' => ['email', 'password', 'username', 'isProfessional']
-                            ]
-                        ]
-                    ]
-                ]
+                                'required' => ['email', 'password', 'username', 'isProfessional'],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         ),
         new Post(
@@ -140,18 +139,18 @@ use Symfony\Component\Validator\Constraints as Assert;
                                 'properties' => [
                                     'currentPassword' => [
                                         'description' => 'Current password of User',
-                                        'type' => 'string'
+                                        'type' => 'string',
                                     ],
                                     'newPassword' => [
                                         'description' => 'New password to use for User',
-                                        'type' => 'string'
-                                    ]
+                                        'type' => 'string',
+                                    ],
                                 ],
-                                'required' => ['currentPassword', 'newPassword']
-                            ]
-                        ]
-                    ]
-                ]
+                                'required' => ['currentPassword', 'newPassword'],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         ),
         // single POST route needed because of PATCH don't support form-data files
@@ -172,25 +171,25 @@ use Symfony\Component\Validator\Constraints as Assert;
                                         'format' => 'binary',
                                     ],
                                 ],
-                                'required' => ['profilePictureFile']
-                            ]
-                        ]
-                    ]
-                ]
+                                'required' => ['profilePictureFile'],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         ),
         new Patch(
-            //security: 'is_granted("ROLE_ADMIN")',
+            // security: 'is_granted("ROLE_ADMIN")',
             denormalizationContext: ['groups' => 'user:patch'],
             normalizationContext: ['groups' => 'user:read']
         ),
         new Delete(
-            //security: 'is_granted("ROLE_ADMIN")',
-        )
+            // security: 'is_granted("ROLE_ADMIN")',
+        ),
     ],
     paginationEnabled: false
 )]
-//#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
+// #[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups(['user:read', 'user:collection', 'user:read:me'])]
@@ -207,7 +206,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['user:patch', 'user:read', 'user:collection'])]
     #[ORM\Column]
-    # Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
+    // Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
     private array $roles = [];
 
     #[Groups(['user:register', 'user:login', 'user:patch:password'])]
@@ -222,11 +221,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
-    #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
+    #[ORM\Column(length: 255, options: ['default' => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
     #[Groups(['user:read', 'user:patch'])]
-    #[ORM\Column(options: ["default" => false])]
+    #[ORM\Column(options: ['default' => false])]
     private ?bool $isBanned = false;
 
     #[Groups(['user:read', 'user:patch', 'user:read:me'])]
@@ -234,7 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $instagramToken = null;
 
     #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
-    #[ORM\Column(options: ["default" => false])]
+    #[ORM\Column(options: ['default' => false])]
     private ?bool $isVerified = false;
 
     #[Groups(['user:read', 'user:read:me'])]
@@ -251,6 +250,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->studios = new ArrayCollection();
+        $this->professionnalRequests = new ArrayCollection();
     }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -260,17 +260,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
 
+    #[ORM\OneToMany(mappedBy: 'requestedBy', targetEntity: ProfessionnalRequest::class, orphanRemoval: true)]
+    private Collection $professionnalRequests;
+
     #[ORM\PrePersist]
     public function prePersist()
     {
-        $this->createdAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
-        $this->updatedAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $this->createdAt = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $this->updatedAt = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
     }
 
     #[ORM\PreUpdate]
     public function preUpdate()
     {
-        $this->updatedAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $this->updatedAt = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
     }
 
     public function getId(): ?int
@@ -475,6 +478,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setKbisFileUrl(?string $kbisFileUrl): static
     {
         $this->kbisFileUrl = $kbisFileUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProfessionnalRequest>
+     */
+    public function getProfessionnalRequests(): Collection
+    {
+        return $this->professionnalRequests;
+    }
+
+    public function addProfessionnalRequest(ProfessionnalRequest $professionnalRequest): static
+    {
+        if (!$this->professionnalRequests->contains($professionnalRequest)) {
+            $this->professionnalRequests->add($professionnalRequest);
+            $professionnalRequest->setRequestedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProfessionnalRequest(ProfessionnalRequest $professionnalRequest): static
+    {
+        if ($this->professionnalRequests->removeElement($professionnalRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($professionnalRequest->getRequestedBy() === $this) {
+                $professionnalRequest->setRequestedBy(null);
+            }
+        }
 
         return $this;
     }
