@@ -18,8 +18,6 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
 	const success = url.searchParams.get('success')
-    console.log("lucas: ", error)
-    console.log("lucas2: ", success)
 
 	return json({
 		errors: [error],
@@ -39,7 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
         await register(formData)
 
-		return redirect(`/sign-up?success=true`)
+		return redirect('/sign-up?success=true')
 	} catch (e) {
 		if (e instanceof Error)
 			return redirect(`/sign-up?error=${e.message}`)
@@ -81,7 +79,7 @@ export default function MainPage() {
 					})}
                     {success ?
 						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
-                            You're account has been successfully created, an email has been sent to verify your account
+                            {t('email-verify-send')}
 						</div> : null
                     }
 

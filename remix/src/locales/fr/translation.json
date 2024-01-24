@@ -55,5 +55,8 @@
   "review": "Avis",
   "artist": "Artiste",
   "conversations": "Conversations",
-  "details": "Détails"
+  "details": "Détails",
+  "email-verify": "Vérification de votre email",
+  "email-verify-send": "Votre compte a bien été crée ! Un email vous a été envoyé pour vérifier votre compte.",
+  "email-verified": "Votre compte a bien été vérifié ! Vous pouvez maintenant accéder au site."
 }
