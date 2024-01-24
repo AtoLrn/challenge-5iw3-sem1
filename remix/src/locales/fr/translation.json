@@ -58,5 +58,11 @@
   "details": "Détails",
   "email-verify": "Vérification de votre email",
   "email-verify-send": "Votre compte a bien été crée ! Un email vous a été envoyé pour vérifier votre compte.",
-  "email-verified": "Votre compte a bien été vérifié ! Vous pouvez maintenant accéder au site."
+  "email-verified": "Votre compte a bien été vérifié ! Vous pouvez maintenant accéder au site.",
+  "forget-password-title": "Mot de passe oublié ?",
+  "reset-password-link": "Recevoir un lien",
+  "reset-password-success": "Mot de passe réinitialiser avec succès !",
+  "send-link-success": "Un lien pour réinitialiser votre mot de pass a été envoyé.",
+  "reset-password-title": "Réinitialiser votre mot de passe",
+  "reset-password-button": "Réinitialiser"
 }

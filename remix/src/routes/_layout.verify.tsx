@@ -31,7 +31,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 }
 
-export default function MainPage() {
+export default function Verify() {
 	const { errors, success } = useLoaderData<typeof loader>()
 
 	return (

@@ -2,51 +2,47 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-r
 import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
 import { t } from 'i18next'
 import { Title } from 'src/components/Title'
-import { commitSession, getSession } from 'src/session.server'
-import { login } from 'src/utils/requests/login'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import { commitSession, getSession } from 'src/session.server'
+import { resetPassword } from 'src/utils/requests/resetPassword'
 
 const schema = z.object({
-	email: z.string().min(1),
-	password: z.string().min(1)
-})
+	password: z.string().min(1),
+}) 
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
+	const success = url.searchParams.get('success')
 
 	return json({
-		errors: [error] 
+		errors: [error],
+		success: success
 	})
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+    const url = new URL(request.url)
+    const token = url.searchParams.get('token')
+
 	try {
-		const session = await getSession(request.headers.get('Cookie'))
-		
 		const body = await zx.parseForm(request, schema)
 
-		const token = await login(body)
+        await resetPassword(body, token as string)
 
-		session.set('token', token)
-
-		return redirect('/', {
-			headers: {
-				'Set-Cookie': await commitSession(session),
-			}
-		})
-
+		return redirect('/reset-password?success=true')
 	} catch (e) {
 		if (e instanceof Error)
-			return redirect(`/login?error=${e.message}`)
-		
-		return redirect(`/login?error=${'Unexpected Error'}`)
+			return redirect(`/reset-password?token=${token}&error=${e.message}`)
+
+		return redirect(`/reset-password?token=${token}&error=${'Unexpected Error'}`)
 	}
+
 }
 
-export default function MainPage() {
-	const { errors } = useLoaderData<typeof loader>()
+export default function ResetPassword() {
+	const { errors, success } = useLoaderData<typeof loader>()
 	const navigation = useNavigation()
 
 	return (
@@ -58,7 +54,7 @@ export default function MainPage() {
 
 					{/* PAGE TITLE */}
 					<Title kind="h1" className="z-20 pb-20">
-						{t('login')}
+						{t('reset-password-title')}
 					</Title>
 					{/* /PAGE TITLE */}
 
@@ -67,23 +63,23 @@ export default function MainPage() {
 							{error}
 						</div>
 					})}
+                    {success ?
+						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
+                            {t('reset-password-success')}
+						</div> : null
+                    }
 
-					{/* LOGIN FORM */}
+					{/* RESET PASSWORD FORM */}
 					<Form method='POST' className="flex flex-col">
-						<input id="email" type="email" name="email" placeholder="Email Address" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
-						<input id="password" type="password" name="password" placeholder="Password" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
-
-						<div className="flex items-center justify-between">
-							<button disabled={navigation.state === 'submitting'} type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-								{navigation.state === 'submitting' ? t('loading') : t('login-to-your-account')}
-							</button>
-
-							<Link to='/forgot-password' className="inline-block align-baseline font-bold text-sm text-gray-300 hover:text-white transition-all">
-								{t('forgot-password')}
-							</Link>
+						<div className="flex flex-row gap-4 mb-8">
+							<input type="password" required name="password" placeholder="password" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
+							<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+								{navigation.state === 'submitting' ? t('loading') : t('reset-password-button')}
+							</button>
 					</Form>
-					{/* /LOGIN FORM */}
+					{/* /RESET PASSWORD FORM */}
+
 				</div>
 
 				<div className="hidden sm:w-full"></div>
