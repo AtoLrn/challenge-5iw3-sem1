@@ -1,21 +1,6 @@
-import { z } from 'zod'
-
-const schema = z.object({
-	detail: z.string().optional()
-})
-
-
 export const register = async (props: FormData): Promise<true> => {
-    for (const value of props.values()) {
-        console.log(value)
-    }
-
 	const res = await fetch(`${process.env.API_URL}/register`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'multipart/form-data',
-            'accept': 'application/ld+json'
-		},
 		body: props
 	})
 
@@ -29,9 +14,7 @@ export const register = async (props: FormData): Promise<true> => {
 	
 	console.log('ANTOINE2: ', body)
 
-	//const { detail } = schema.parse(body)
-
-	throw new Error('Error in the request')
+	throw new Error(body["hydra:description"] ?? 'Error in the request')
 }
 
 export interface Register {

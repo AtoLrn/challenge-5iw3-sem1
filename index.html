@@ -21,15 +21,14 @@
             
             const res = await fetch(`https://localhost/register`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'accept': 'application/ld+json'
-                },
+                <!--headers: {-->
+                    <!--'Content-Type': 'multipart/form-data',-->
+                <!--},-->
                 body: fd
             })
 
             const data = await res.json()
-            console.log(data)
+            console.log(data["hydra:description"])
         })
     </script>
 </html>

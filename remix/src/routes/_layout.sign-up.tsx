@@ -17,9 +17,13 @@ const schema = z.object({
 export const loader = ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
+	const success = url.searchParams.get('success')
+    console.log("lucas: ", error)
+    console.log("lucas2: ", success)
 
 	return json({
-		errors: [error] 
+		errors: [error],
+		success: success
 	})
 }
 
@@ -35,7 +39,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
         await register(formData)
 
-        return redirect('/login')
+		return redirect(`/sign-up?success=true`)
 	} catch (e) {
 		if (e instanceof Error)
 			return redirect(`/sign-up?error=${e.message}`)
@@ -46,7 +50,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 export default function MainPage() {
-	const { errors } = useLoaderData<typeof loader>()
+	const { errors, success } = useLoaderData<typeof loader>()
 	const navigation = useNavigation()
 	
 	const [ password, setPassword ] = useState('')
@@ -75,6 +79,11 @@ export default function MainPage() {
 							{error}
 						</div>
 					})}
+                    {success ?
+						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
+                            You're account has been successfully created, an email has been sent to verify your account
+						</div> : null
+                    }
 
 					{/* REGISTER FORM */}
 					<Form method='POST' encType="multipart/form-data" className="flex flex-col">
