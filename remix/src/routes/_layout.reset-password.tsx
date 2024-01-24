@@ -1,10 +1,9 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
+import { Form, useLoaderData, useNavigation } from '@remix-run/react'
 import { t } from 'i18next'
 import { Title } from 'src/components/Title'
 import { z } from 'zod'
 import { zx } from 'zodix'
-import { commitSession, getSession } from 'src/session.server'
 import { resetPassword } from 'src/utils/requests/resetPassword'
 
 const schema = z.object({
@@ -23,13 +22,13 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const url = new URL(request.url)
-    const token = url.searchParams.get('token')
+	const url = new URL(request.url)
+	const token = url.searchParams.get('token')
 
 	try {
 		const body = await zx.parseForm(request, schema)
 
-        await resetPassword(body, token as string)
+		await resetPassword(body, token as string)
 
 		return redirect('/reset-password?success=true')
 	} catch (e) {
@@ -63,20 +62,20 @@ export default function ResetPassword() {
 							{error}
 						</div>
 					})}
-                    {success ?
+					{success ?
 						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
-                            {t('reset-password-success')}
+							{t('reset-password-success')}
 						</div> : null
-                    }
+					}
 
 					{/* RESET PASSWORD FORM */}
 					<Form method='POST' className="flex flex-col">
 						<div className="flex flex-row gap-4 mb-8">
 							<input type="password" required name="password" placeholder="password" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
-							<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-								{navigation.state === 'submitting' ? t('loading') : t('reset-password-button')}
-							</button>
+						<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+							{navigation.state === 'submitting' ? t('loading') : t('reset-password-button')}
+						</button>
 					</Form>
 					{/* /RESET PASSWORD FORM */}
 

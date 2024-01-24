@@ -28,14 +28,14 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	try {
-        const { isProfessional } = await zx.parseForm(request, schema)
+		const { isProfessional } = await zx.parseForm(request, schema)
 
-        const formData = await request.formData()
+		const formData = await request.formData()
 
-        formData.set("isProfessional", isProfessional.toString())
-        formData.delete("passwordConfirm")
+		formData.set('isProfessional', isProfessional.toString())
+		formData.delete('passwordConfirm')
 
-        await register(formData)
+		await register(formData)
 
 		return redirect('/sign-up?success=true')
 	} catch (e) {
@@ -53,11 +53,11 @@ export default function MainPage() {
 	
 	const [ password, setPassword ] = useState('')
 	const [ passwordConfirmation, setPasswordConfirmation ] = useState('')
-    const [ showFileButton, setShowFileButton ] = useState(false)
+	const [ showFileButton, setShowFileButton ] = useState(false)
 
-    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setShowFileButton(event.target.checked)
-    }
+	const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setShowFileButton(event.target.checked)
+	}
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
@@ -77,11 +77,11 @@ export default function MainPage() {
 							{error}
 						</div>
 					})}
-                    {success ?
+					{success ?
 						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
-                            {t('email-verify-send')}
+							{t('email-verify-send')}
 						</div> : null
-                    }
+					}
 
 					{/* REGISTER FORM */}
 					<Form method='POST' encType="multipart/form-data" className="flex flex-col">

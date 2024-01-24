@@ -1,10 +1,9 @@
 import { Title } from 'src/components/Title'
-import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
+import { Form, useLoaderData, useNavigation } from '@remix-run/react'
 import { t } from 'i18next'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { useState } from 'react'
 import { sendLink } from 'src/utils/requests/resetPassword'
 
 const schema = z.object({
@@ -26,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	try {
 		const body = await zx.parseForm(request, schema)
 
-        await sendLink(body)
+		await sendLink(body)
 
 		return redirect('/forgot-password?success=true')
 	} catch (e) {
@@ -60,20 +59,20 @@ export default function ForgotPassword() {
 							{error}
 						</div>
 					})}
-                    {success ?
+					{success ?
 						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
-                            {t('send-link-success')}
+							{t('send-link-success')}
 						</div> : null
-                    }
+					}
 
 					{/* FORGOT PASSWORD FORM */}
 					<Form method='POST' className="flex flex-col">
 						<div className="flex flex-row gap-4 mb-8">
 							<input type="text" required name="email" placeholder="email" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
-							<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-								{navigation.state === 'submitting' ? t('loading') : t('reset-password-link')}
-							</button>
+						<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+							{navigation.state === 'submitting' ? t('loading') : t('reset-password-link')}
+						</button>
 					</Form>
 					{/* /FORGOT PASSWORD FORM */}
 				</div>

@@ -10,7 +10,7 @@ export const register = async (props: FormData): Promise<true> => {
 
 	const body = await res.json()
 
-	throw new Error(body["hydra:description"] ?? 'Error in the request')
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
 
 export interface Register {

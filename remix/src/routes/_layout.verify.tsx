@@ -1,33 +1,32 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
+import { LoaderFunctionArgs, json } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
 import { t } from 'i18next'
 import { Title } from 'src/components/Title'
-import { commitSession, getSession } from 'src/session.server'
 import { verify } from 'src/utils/requests/verify'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const token = url.searchParams.get('token')
 
-    try {
-        await verify(token as string)
+	try {
+		await verify(token as string)
 
-        return json({
-            errors: [],
-            success: true
-        })
-    } catch (e) {
-        if (e instanceof Error)
-            return json({
-                errors: [e.message],
-                success: false
-            })
+		return json({
+			errors: [],
+			success: true
+		})
+	} catch (e) {
+		if (e instanceof Error)
+			return json({
+				errors: [e.message],
+				success: false
+			})
 
-        return json({
-            errors: ['Unexpected Error'],
-            success: false
-        })
-    }
+		return json({
+			errors: ['Unexpected Error'],
+			success: false
+		})
+	}
 
 }
 
@@ -52,11 +51,11 @@ export default function Verify() {
 							{error}
 						</div>
 					})}
-                    {success ?
+					{success ?
 						<div className='mb-16 font-bold text-green-600 border-b border-white self-start'>
-                            {t('email-verified')}
+							{t('email-verified')}
 						</div> : null
-                    }
+					}
 
 				</div>
 
