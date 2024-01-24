@@ -22,7 +22,7 @@ security:
                 check_path: login_route
                 username_path: email
                 password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
+                success_handler: App\Security\Authentication\AuthenticationSuccessHandler
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             stateless: true
             jwt: ~
