@@ -14,11 +14,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Utils\Files;
 
 #[AsController]
-class RegistrationController extends AbstractController
+class RegistrationController
 {
     public function __construct(
         protected Security $security,
@@ -34,7 +33,6 @@ class RegistrationController extends AbstractController
 
     public function __invoke(Request $request): User
     {
-
         $usernameInput = $request->request->get('username');
         $emailInput = $request->request->get('email');
         $passwordInput = $request->request->get('password');
@@ -75,7 +73,7 @@ class RegistrationController extends AbstractController
 
             $kbisFile = $request->files->get('kbisFile');
 
-            $kbisFileUrl = $this->files->upload($kbisFile, $this->getParameter('kernel.project_dir'));
+            $kbisFileUrl = $this->files->upload($kbisFile);
 
             $user->setKbisFileUrl($kbisFileUrl);
 

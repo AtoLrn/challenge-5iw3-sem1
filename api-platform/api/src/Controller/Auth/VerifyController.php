@@ -20,7 +20,6 @@ class VerifyController
 
     public function __invoke(Request $request): User
     {
-        $user = $this->userRepository->findOneBy(['id'  => 1]);
         $jwt = $request->query->get('token');
 
         if (!$jwt){

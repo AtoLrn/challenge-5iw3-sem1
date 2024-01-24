@@ -6,14 +6,22 @@ use Ramsey\Uuid\Uuid;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class Files
 {
-    public function upload(mixed $file, string $root): string {
+    private $appKernel;
+
+    public function __construct(KernelInterface $appKernel)
+    {
+        $this->appKernel = $appKernel;
+    }
+
+    public function upload(mixed $file): string {
         $idGenerator = UUid::uuid4();
         $fileName = $idGenerator->toString().".".$file->guessExtension();
 
-        $destination = $root."/files";
+        $destination = $this->appKernel->getProjectDir()."/files";
         $file->move($destination, $fileName);
 
         $s3 = new S3Client([
