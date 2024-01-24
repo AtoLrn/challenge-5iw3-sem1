@@ -251,6 +251,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->studios = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
     }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -259,6 +260,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
+
+    #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Prestation::class)]
+    private Collection $prestations;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -475,6 +479,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setKbisFileUrl(?string $kbisFileUrl): static
     {
         $this->kbisFileUrl = $kbisFileUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Prestation>
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestation $prestation): static
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations->add($prestation);
+            $prestation->setProposedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestation $prestation): static
+    {
+        if ($this->prestations->removeElement($prestation)) {
+            // set the owning side to null (unless already changed)
+            if ($prestation->getProposedBy() === $this) {
+                $prestation->setProposedBy(null);
+            }
+        }
 
         return $this;
     }
