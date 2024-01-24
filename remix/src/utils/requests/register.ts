@@ -5,16 +5,21 @@ const schema = z.object({
 })
 
 
-export const register = async (props: Register): Promise<true> => {
+export const register = async (props: FormData): Promise<true> => {
+    for (const value of props.values()) {
+        console.log(value)
+    }
+
 	const res = await fetch(`${process.env.API_URL}/register`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/ld+json'
+			'Content-Type': 'multipart/form-data',
+            'accept': 'application/ld+json'
 		},
-		body: JSON.stringify(props)
+		body: props
 	})
 
-	console.log('ANTOINE: ', res.status)
+	console.log('ANTOINE fd: ', res)
 
 	if (res.status === 201) {
 		return true
@@ -24,9 +29,9 @@ export const register = async (props: Register): Promise<true> => {
 	
 	console.log('ANTOINE2: ', body)
 
-	const { detail } = schema.parse(body)
+	//const { detail } = schema.parse(body)
 
-	throw new Error(detail ?? 'Error in the request')
+	throw new Error('Error in the request')
 }
 
 export interface Register {

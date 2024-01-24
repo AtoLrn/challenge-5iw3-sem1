@@ -8,12 +8,10 @@ import { useState } from 'react'
 import { register } from 'src/utils/requests/register'
 
 const schema = z.object({
-	firstname: z.string().min(1),
-	lastname: z.string().min(1),
 	username: z.string().min(1),
 	email: z.string().min(1),
 	password: z.string().min(1),
-	tattooArtist: zx.CheckboxAsString
+	isProfessional: zx.CheckboxAsString
 }) 
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
@@ -28,14 +26,16 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	try {
-		const body = await zx.parseForm(request, schema)
+        const { isProfessional } = await zx.parseForm(request, schema)
 
-		await register({
-			...body,
-			isProfessional: body.tattooArtist
-		})
+        const formData = await request.formData()
 
-		return redirect('/login')
+        formData.set("isProfessional", isProfessional.toString())
+        formData.delete("passwordConfirm")
+
+        await register(formData)
+
+        return redirect('/login')
 	} catch (e) {
 		if (e instanceof Error)
 			return redirect(`/sign-up?error=${e.message}`)
@@ -51,6 +51,11 @@ export default function MainPage() {
 	
 	const [ password, setPassword ] = useState('')
 	const [ passwordConfirmation, setPasswordConfirmation ] = useState('')
+    const [ showFileButton, setShowFileButton ] = useState(false)
+
+    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setShowFileButton(event.target.checked)
+    }
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
@@ -72,14 +77,12 @@ export default function MainPage() {
 					})}
 
 					{/* REGISTER FORM */}
-					<Form method='POST' className="flex flex-col">
+					<Form method='POST' encType="multipart/form-data" className="flex flex-col">
 						<Title kind="h4" className="z-20 pb-4">
 							{t('identity')}
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
-							<input type="text" name="firstname" placeholder="First Name" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-							<input type="text" name="lastname" placeholder="Last Name" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-							<input type="text" name="username" placeholder="Nickname" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input type="text" name="username" placeholder="Username" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<Title kind="h4" className="z-20 pb-4 pt-2">
 							{t('account')}
@@ -99,13 +102,13 @@ export default function MainPage() {
 						}
 						
 						<div className="checkbox-container flex flex-row gap-3 mb-4 items-center">
-							<input id="tattooArtist" type="checkbox" name="tattooArtist" className="checkBox cursor-pointer"/>
-							<label htmlFor="tattooArtist" className="cursor-pointer">I am a tattoo artist</label>
+							<input id="isProfessional" type="checkbox" name="isProfessional" className="checkBox cursor-pointer" onChange={handleCheck}/>
+							<label htmlFor="isProfessional" className="cursor-pointer">I am a tattoo artist</label>
 						</div>
-						<div className="checkbox-container flex flex-row gap-3 mb-10 items-center">
-							<input id="shopOwner" type="checkbox" name="shopOwner" className="checkBox cursor-pointer"/>
-							<label htmlFor="shopOwner" className="cursor-pointer">I am a tattoo-shop owner</label>
-						</div>
+						{showFileButton && <div className="flex flex-row gap-3 mb-4 items-center">
+							<input id="kbisFile" type="file" required name="kbisFile" className="cursor-pointer" accept="image/png, image/jpeg, application/pdf"/>
+							<label htmlFor="kbisFile" className="cursor-pointer">KBIS File</label>
+						</div>}
 						<div className="flex items-center justify-between">
 							<button disabled={password !== passwordConfirmation || navigation.state === 'submitting'} type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 								{navigation.state === 'submitting' ? t('loading') : t('create-your-account')}

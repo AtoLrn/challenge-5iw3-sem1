@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <button id="test">Click</button>
+    </body>
+    <script>
+        const button = document.getElementById("test")
+
+        button.addEventListener('click', async () => {
+            const fd = new FormData()
+            fd.append('username', 'test12345')
+            fd.append('password', 'test12345')
+            fd.append('email', 'campistron.lucas@gmail.com')
+            fd.append('isProfessional', 'false')
+            
+            const res = await fetch(`https://localhost/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'accept': 'application/ld+json'
+                },
+                body: fd
+            })
+
+            const data = await res.json()
+            console.log(data)
+        })
+    </script>
+</html>
