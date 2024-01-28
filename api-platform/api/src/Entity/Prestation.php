@@ -3,11 +3,102 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\User\ProfilePictureController;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PrestationRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+      new GetCollection(
+          normalizationContext: ['groups' => 'prestation:collection']
+      ),
+      new Post(
+          openapiContext: [
+            'requestBody' => [
+              'content' => [
+                'multipart/form-data' => [
+                  'schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                      'name' => [
+                        'type' => 'string',
+                        'default' => 'John Doe',
+                      ],
+                      'kind' => [
+                        'type' => 'string',
+                        'default' => 'TATTOO',
+                      ],
+                      'location' => [
+                        'type' => 'string',
+                        'default' => 'Paris',
+                      ],
+                      'proposedBy' => [
+                        'type' => 'string',
+                        'default' => '1',
+                      ],
+                      'picture' => [
+                        'type' => 'string',
+                        'format' => 'binary',
+                      ],
+                    ],
+                    'required' => [
+                      'name',
+                      'kind',
+                      'location',
+                      'proposedBy',
+                    ],
+                  ],
+                ],
+              ],
+            ],
+          ],
+          normalizationContext: ['groups' => 'user:register:read'],
+          denormalizationContext: ['groups' => 'user:register'],
+          deserialize: false
+      ),
+      new Post(
+          normalizationContext: ['groups' => 'prestation:read'],
+          denormalizationContext: ['groups' => 'prestation:create'],
+          security: 'is_granted("ROLE_ADMIN")'
+      ),
+      new Post(
+          uriTemplate: '/prestations/update-profil-picture',
+          controller: ProfilePictureController::class,
+          openapiContext: [
+            'requestBody' => [
+              'content' => [
+                'multipart/form-data' => [
+                  'schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                      'profilePictureFile' => [
+                        'type' => 'string',
+                        'format' => 'binary',
+                      ],
+                    ],
+                    'required' => ['profilePictureFile'],
+                  ],
+                ],
+              ],
+            ],
+          ],
+          normalizationContext: ['groups' => 'prestation:read:me'],
+          deserialize: false
+      ),
+      new Get(
+          normalizationContext: ['groups' => 'prestation:read']
+      ),
+      new Patch(
+          normalizationContext: ['groups' => 'prestation:read'],
+          denormalizationContext: ['groups' => 'prestation:patch']
+      ),
+    ]
+)]
 class Prestation
 {
     #[ORM\Id]
@@ -19,7 +110,7 @@ class Prestation
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $kind = null;
+    private ?\App\Enum\Kind $kind = null;
 
     #[ORM\Column(length: 255)]
     private ?string $location = null;
@@ -50,12 +141,12 @@ class Prestation
         return $this;
     }
 
-    public function getKind(): ?string
+    public function getKind(): ?\App\Enum\Kind
     {
         return $this->kind;
     }
 
-    public function setKind(string $kind): static
+    public function setKind(\App\Enum\Kind $kind): self
     {
         $this->kind = $kind;
 
