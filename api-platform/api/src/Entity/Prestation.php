@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Prestation\PrestationController;
 use App\Controller\User\ProfilePictureController;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
           normalizationContext: ['groups' => 'prestation:collection']
       ),
       new Post(
+          controller: PrestationController::class,
           openapiContext: [
             'requestBody' => [
               'content' => [
@@ -57,18 +59,11 @@ use Doctrine\ORM\Mapping as ORM;
               ],
             ],
           ],
-          normalizationContext: ['groups' => 'user:register:read'],
-          denormalizationContext: ['groups' => 'user:register'],
           deserialize: false
       ),
       new Post(
-          normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:create'],
-          security: 'is_granted("ROLE_ADMIN")'
-      ),
-      new Post(
-          uriTemplate: '/prestations/update-profil-picture',
-          controller: ProfilePictureController::class,
+          uriTemplate: '/prestations/{id}/picture',
+          controller: PrestationController::class,
           openapiContext: [
             'requestBody' => [
               'content' => [
@@ -76,12 +71,14 @@ use Doctrine\ORM\Mapping as ORM;
                   'schema' => [
                     'type' => 'object',
                     'properties' => [
-                      'profilePictureFile' => [
+                      'prestationPictureFile' => [
                         'type' => 'string',
                         'format' => 'binary',
                       ],
                     ],
-                    'required' => ['profilePictureFile'],
+                    'required' => [
+                      'prestationPictureFile',
+                    ],
                   ],
                 ],
               ],
