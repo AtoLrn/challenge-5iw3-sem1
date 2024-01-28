@@ -5,6 +5,10 @@ import { t } from 'i18next'
 import { useEffect } from 'react'
 import { json } from '@remix-run/node'
 import { Map, Marker } from 'mapbox-gl'
+import { ListItemProps } from 'src/components/Pro/ListItem'
+import { Prestation } from './pro.prestations._index'
+import { List } from 'src/components/Pro/List'
+import { Kind } from 'src/utils/types/kind'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -19,6 +23,16 @@ export const loader = () => {
 }
 
 export default function () {
+	const prestation: Prestation[] = [{
+		id: '1',
+		name: 'Incroyable tatouage',
+		kind: Kind.TATTOO,
+		location: 'Paris',
+		proposedBy: 'Lucas Campistron',
+		picture: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
+		createdAt: '2021-01-01'
+	}]
+
 	const { accessToken } = useLoaderData<typeof loader>()
 
 	const guests = [
@@ -81,6 +95,11 @@ id: string,
 	picture: string,
 	createdAt: string
 		</section>
+		<hr className='mt-8 w-full opacity-30'/>
+		<div className='w-1/2 flex flex-col gap-4'>
+			<Title kind='h3' className='mt-4'>
+				Description
+			</Title>
+		</div>
 	</div>
 }
-

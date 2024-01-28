@@ -8,9 +8,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Prestation\PrestationController;
-use App\Controller\User\ProfilePictureController;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrestationRepository::class)]
 #[ApiResource(
@@ -33,7 +33,7 @@ use Doctrine\ORM\Mapping as ORM;
                       ],
                       'kind' => [
                         'type' => 'string',
-                        'default' => 'TATTOO',
+                        'default' => 'Tattoo',
                       ],
                       'location' => [
                         'type' => 'string',
@@ -41,7 +41,8 @@ use Doctrine\ORM\Mapping as ORM;
                       ],
                       'proposedBy' => [
                         'type' => 'string',
-                        'default' => '1',
+                        'format' => 'iri-reference',
+                        'default' => '43',
                       ],
                       'picture' => [
                         'type' => 'string',
@@ -61,34 +62,9 @@ use Doctrine\ORM\Mapping as ORM;
           ],
           deserialize: false
       ),
-      new Post(
-          uriTemplate: '/prestations/{id}/picture',
-          controller: PrestationController::class,
-          openapiContext: [
-            'requestBody' => [
-              'content' => [
-                'multipart/form-data' => [
-                  'schema' => [
-                    'type' => 'object',
-                    'properties' => [
-                      'prestationPictureFile' => [
-                        'type' => 'string',
-                        'format' => 'binary',
-                      ],
-                    ],
-                    'required' => [
-                      'prestationPictureFile',
-                    ],
-                  ],
-                ],
-              ],
-            ],
-          ],
-          normalizationContext: ['groups' => 'prestation:read:me'],
-          deserialize: false
-      ),
       new Get(
-          normalizationContext: ['groups' => 'prestation:read']
+          normalizationContext: ['groups' => 'prestation:read'],
+          denormalizationContext: ['groups' => 'prestation:read']
       ),
       new Patch(
           normalizationContext: ['groups' => 'prestation:read'],
@@ -98,26 +74,34 @@ use Doctrine\ORM\Mapping as ORM;
 )]
 class Prestation
 {
+    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column(length: 255)]
     private ?\App\Enum\Kind $kind = null;
 
+    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
+    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\ManyToOne(inversedBy: 'prestations')]
     private ?User $proposedBy = null;
 
-    #[ORM\Column(length: 1024)]
+
+    #[Groups(['prestation:collection', 'prestation:read'])]
+    #[ORM\Column(length: 1024, nullable: true)]
     private ?string $picture = null;
 
+    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 

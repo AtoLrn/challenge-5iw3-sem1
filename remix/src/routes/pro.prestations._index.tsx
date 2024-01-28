@@ -42,7 +42,6 @@ export const PrestationItem: React.FC<ListItemProps<Prestation>> = ({ item }) =>
 		</div>	</div>
 }
 
-/*
 export const loader: LoaderFunction = async ({ request }) => {
 	const session = await getSession(request.headers.get('Cookie'))
 	const response = await fetch('https://localhost/prestations/', {
@@ -58,40 +57,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const prestations = await response.json();
 	return json(prestations);
 };
-*/
-
 
 export default function Prestations() {
 
-	const prestation: Prestation[] = [{
-		id: '123',
-		name: 'Super tattoo',
-		kind: Kind.BARBER,
-		location: 'Studio d\'Antouane, 2 rue de la paix, 75000 Paris',
-		proposedBy: 'Antouane',
-		picture: 'https://picsum.photos/200/300',
-		createdAt: '2021-05-01T00:00:00Z'
-	},
-	{
-		id: '1232',
-		name: 'Encore un super tattoo',
-		kind: Kind.JEWELERY,
-		location: 'Studio d\'Antouane, 2 rue de la paix, 75000 Paris',
-		proposedBy: 'Antouane',
-		picture: 'https://picsum.photos/200/300',
-		createdAt: '2021-05-01T00:00:00Z'
-	},
-	{
-		id: '12324',
-		name: 'Encore un autre super tattoo',
-		kind: Kind.TATTOO,
-		location: 'Studio d\'Antouane, 2 rue de la paix, 75000 Paris',
-		proposedBy: 'Antouane',
-		picture: 'https://picsum.photos/200/300',
-		createdAt: '2021-05-01T00:00:00Z'
-	}]
+	const data = useLoaderData();
 
-	const prestations = useLoaderData<Prestation[]>();
+	const prestations = data['hydra:member'];
+	console.log(prestations)
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
@@ -107,7 +79,7 @@ export default function Prestations() {
 		<Link to={'/pro/prestations/add'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>
 		</Link>
-		<List items={prestation} ListItem={PrestationItem} />
+		<List items={prestations} ListItem={PrestationItem} />
 	</div>
 }
 

@@ -3,7 +3,9 @@
 namespace App\Controller\Prestation;
 
 use App\Entity\Prestation;
+use App\Enum\Kind;
 use App\Repository\PrestationRepository;
+use App\Repository\UserRepository;
 use App\Utils\Files;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -23,6 +25,7 @@ class PrestationController
         private UserPasswordHasherInterface $userPasswordHasher,
         private PrestationRepository $prestationRepository,
         private readonly Files $files,
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -31,19 +34,28 @@ class PrestationController
         $nameInput = $request->request->get('name');
         $kindInput = $request->request->get('kind');
         $locationInput = $request->request->get('location');
-        $proposedByInput = $request->request->get('proposedBy');
+        $proposedByIri = $request->request->get('proposedBy');
+
+        $user = $this->userRepository->findOneBy(['id' => $proposedByIri]);
 
         $prestation = new Prestation();
 
+        try {
+            $kind = Kind::from($kindInput);
+        } catch (\ValueError $e) {
+            throw new UnprocessableEntityHttpException('Invalid kind value');
+        }
+
         $prestation->setName($nameInput);
-        $prestation->setKind($kindInput);
+        $prestation->setKind($kind);
         $prestation->setLocation($locationInput);
-        $prestation->setProposedBy($proposedByInput);
+        $prestation->setProposedBy($user);
+        $prestation->setCreatedAt(new \DateTimeImmutable());
 
         $roles = ['ROLE_USER'];
 
         if (!$request->files->get('prestationPicture')) {
-            throw new UnprocessableEntityHttpException('File needed');
+            return $prestation;
         }
 
         $prestationPicture = $request->files->get('prestationPicture');
