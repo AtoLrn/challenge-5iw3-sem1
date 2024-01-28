@@ -51,19 +51,19 @@ const months = [
 	'Dec'
 ]
 
-const availableSlots = [
-	new Date('2023-12-16T09:00:00'),
-	new Date('2023-12-16T09:30:00'),
-	new Date('2023-12-10T09:00:00'),
-	new Date('2023-12-10T09:30:00'),
-	new Date('2023-12-16T10:00:00'),
-	new Date('2023-12-16T019:00:00'),
-	new Date('2023-12-16T020:00:00'),	
-	new Date('2023-12-16T11:00:00'),
-	new Date('2023-12-16T18:00:00'),
-	new Date('2023-12-16T19:00:00'),
-	new Date('2023-12-16T20:00:00')
-]
+//const availableSlots = [
+//new Date('2023-12-16T09:00:00'),
+//new Date('2023-12-16T09:30:00'),
+//new Date('2023-12-10T09:00:00'),
+//new Date('2023-12-10T09:30:00'),
+//new Date('2023-12-16T10:00:00'),
+//new Date('2023-12-16T019:00:00'),
+//new Date('2023-12-16T020:00:00'),	
+//new Date('2023-12-16T11:00:00'),
+//new Date('2023-12-16T18:00:00'),
+//new Date('2023-12-16T19:00:00'),
+//new Date('2023-12-16T20:00:00')
+//]
 
 export interface CalendarProps {
 	defaultValue?: Date

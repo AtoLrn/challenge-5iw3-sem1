@@ -11,11 +11,10 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Utils\Files;
 
 #[AsController]
-class ProfilePictureController extends AbstractController
+class ProfilePictureController
 {
     public function __construct(
         protected Security $security,
@@ -37,7 +36,7 @@ class ProfilePictureController extends AbstractController
 
         $pictureFile = $request->files->get('profilePictureFile');
 
-        $pictureFileUrl = $this->files->upload($pictureFile, $this->getParameter('kernel.project_dir'));
+        $pictureFileUrl = $this->files->upload($pictureFile);
 
         $user->setPicture($pictureFileUrl);
 

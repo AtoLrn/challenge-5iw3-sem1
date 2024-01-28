@@ -69,5 +69,14 @@
   "add-google-calendar": "Add to Google Calendar",
   "add-outlook-calendar": "Add to Outlook Calendar",
   "download-as-ics": "Download as ICS",
-  "ok": "Ok !"
+  "ok": "Ok !",
+  "email-verify": "Email verification",
+  "email-verify-send": "You're account has been successfully created! An email has been sent to verify your account.",
+  "email-verified": "You account has been verified ! You can now access the website.",
+  "forget-password-title": "Password forgotten ?",
+  "reset-password-link": "Send Link",
+  "reset-password-success": "Password reset successfully !",
+  "send-link-success": "A link to reset your password has been sent.",
+  "reset-password-title": "Reset you password",
+  "reset-password-button": "Reset"
 }

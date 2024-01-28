@@ -8,12 +8,14 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Auth\ForgetPasswordController;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
 use App\Controller\Auth\VerifyController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Controller\User\ProfilePictureController;
+use App\Controller\User\ResetPasswordController;
 use App\Controller\User\UpdatePasswordController;
 use App\Repository\UserRepository;
 use DateTimeZone;
@@ -125,6 +127,29 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => 'user:patch:me'],
             controller: PatchMeController::class
         ),
+        new Post(
+            uriTemplate: '/forget-password',
+            normalizationContext: ['groups' => 'user:forget-password'],
+            denormalizationContext: ['groups' => 'user:forget-password'],
+            controller: ForgetPasswordController::class,
+        ),
+        new Patch(
+            uriTemplate: '/reset-password',
+            denormalizationContext: ['groups' => 'user:patch:password'],
+            normalizationContext: ['groups' => 'user:read:me'],
+            controller: ResetPasswordController::class,
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'name' => 'token',
+                        'in' => 'query',
+                        'description' => 'token to reset password',
+                        'required' => true,
+                        'type' => 'string'
+                    ]
+                ]
+            ]
+        ),
         new Patch(
             security: 'is_granted("ROLE_USER")',
             uriTemplate: '/users/me/update-password',
@@ -199,7 +224,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     #[ORM\Column(length: 180, unique: true)]
@@ -395,7 +420,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isIsVerified(): ?bool
+    public function isVerified(): ?bool
     {
         return $this->isVerified;
     }
