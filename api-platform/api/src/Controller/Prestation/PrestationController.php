@@ -52,17 +52,15 @@ class PrestationController
         $prestation->setProposedBy($user);
         $prestation->setCreatedAt(new \DateTimeImmutable());
 
-        $roles = ['ROLE_USER'];
-
-        if (!$request->files->get('prestationPicture')) {
-            return $prestation;
+        if (!$request->files->get('picture')) {
+            throw new UnprocessableEntityHttpException('File needed');
         }
 
-        $prestationPicture = $request->files->get('prestationPicture');
+        $pictureFile = $request->files->get('picture');
 
-        $prestationPictureUrl = $this->files->upload($prestationPicture);
+        $pictureFileUrl = $this->files->upload($pictureFile);
 
-        $prestation->setPicture($prestationPictureUrl);
+        $user->setPicture($pictureFileUrl);
 
         return $prestation;
     }
