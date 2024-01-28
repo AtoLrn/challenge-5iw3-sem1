@@ -40,6 +40,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function getChannels(User $user)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('c')
+            ->from(Channel::class, 'c')
+            ->where($qb->expr()->orX(
+                $qb->expr()->eq('c.tattooArtist', ':userId'),
+                $qb->expr()->eq('c.requestingUser', ':userId')
+            ))
+            ->setParameter('userId', $user->getId());
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        return $result;
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
