@@ -23,14 +23,14 @@ class ProfilePictureController
         private UserPasswordHasherInterface $userPasswordHasher,
         private UserRepository $userRepository,
         private Files $files,
-    )
-    {}
+    ) {
+    }
 
     public function __invoke(Request $request): User
     {
         $user = $this->security->getUser();
 
-        if(!$request->files->get('profilePictureFile')) {
+        if (!$request->files->get('profilePictureFile')) {
             throw new UnprocessableEntityHttpException('File needed');
         }
 

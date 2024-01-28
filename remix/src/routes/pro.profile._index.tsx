@@ -1,7 +1,6 @@
-import { MetaFunction } from '@remix-run/react'
+import { Link, MetaFunction } from '@remix-run/react'
 import { useState } from 'react'
 import { Title } from 'src/components/Title'
-import { json } from '@remix-run/node'
 import { motion as m } from 'framer-motion'
 import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
 import ProfileForm from 'src/components/ProfileForm'
@@ -25,10 +24,6 @@ export const meta: MetaFunction = () => {
 			title: 'Profile | INKIT',
 		}
 	]
-}
-
-export const loader = () => {
-	return json({ accessToken: process.env.MAP_BOX_TOKEN })
 }
 
 export default function () {
@@ -95,6 +90,9 @@ export default function () {
 	return (
 		<div className="flex-1 p-8 flex flex-col gap-8 text-white">
 			<Title kind="h2">{t('profile')}</Title>
+			<Link to={'/pro/profile/day'}>
+				Day Off
+			</Link>
 
 			<div className="container mx-auto flex flex-col gap-10 relative">
 				{/* Profile card with glass effect - make this a sidebar on desktop */}
