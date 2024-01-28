@@ -28,6 +28,9 @@ export default {
 		{
 			pattern: /col-span-(1|2|3|4|5|6|7)/, // Force the col-span-x
 		},
+		{
+			pattern: /col-start-(1|2|3|4|5|6|7)/, // Force the col-start-x
+		},
 	],
 	plugins: [],
 } satisfies Config

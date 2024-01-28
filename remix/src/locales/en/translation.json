@@ -3,6 +3,7 @@
   "search": "Search",
   "loading": "Loading...",
   "no-results": "No results",
+  "cancel": "Cancel",
   "page-not-found": "Page not found ;(",
   "unknow-old-page": "You might have navigated to an unknown or an old page",
   "homepage": "Homepage",
@@ -78,5 +79,18 @@
   "reset-password-success": "Password reset successfully !",
   "send-link-success": "A link to reset your password has been sent.",
   "reset-password-title": "Reset you password",
-  "reset-password-button": "Reset"
+  "reset-password-button": "Reset",
+  "add-day-off": "Add a day off",
+  "january": "January",
+  "february": "February",
+  "march": "March",
+  "april": "April",
+  "may": "May",
+  "june": "June",
+  "july": "July",
+  "august": "August",
+  "september": "September",
+  "october": "October",
+  "november": "November",
+  "december": "December"
 }
