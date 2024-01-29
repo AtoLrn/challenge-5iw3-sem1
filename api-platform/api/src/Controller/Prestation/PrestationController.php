@@ -4,28 +4,20 @@ namespace App\Controller\Prestation;
 
 use App\Entity\Prestation;
 use App\Enum\Kind;
-use App\Repository\PrestationRepository;
 use App\Repository\UserRepository;
 use App\Utils\Files;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsController]
 class PrestationController
 {
     public function __construct(
         protected Security $security,
-        private SerializerInterface $serializer,
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $userPasswordHasher,
-        private PrestationRepository $prestationRepository,
         private readonly Files $files,
-        private UserRepository $userRepository,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
