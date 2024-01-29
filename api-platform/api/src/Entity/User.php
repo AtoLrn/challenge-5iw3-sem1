@@ -218,7 +218,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
+    #[Groups(['user:read', 'user:collection', 'user:read:me', 'channel:collection'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -277,13 +277,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
-    public function __construct()
-    {
-        $this->studios = new ArrayCollection();
-        $this->prestations = new ArrayCollection();
-        $this->partnerShips = new ArrayCollection();
-        $this->messages = new ArrayCollection();
-    }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -300,6 +293,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
     private Collection $messages;
+
+    public function __construct()
+    {
+        $this->studios = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
+        $this->partnerShips = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function prePersist()

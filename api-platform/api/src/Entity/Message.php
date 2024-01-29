@@ -2,11 +2,56 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\Controller\Message\MessageController;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Channel;
+use DateTimeZone;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
+#[ORM\Table(name: '`message`')]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/send',
+            //normalizationContext: ['groups' => 'message:send'],
+            //denormalizationContext: ['groups' => 'message:send'],
+            controller: MessageController::class,
+            security: 'is_granted("ROLE_USER")',
+            deserialize: false,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'channelId' => [
+                                        'type' => 'string',
+                                        'default' => 'id',
+                                    ],
+                                    'content' => [
+                                        'type' => 'string',
+                                        'default' => 'content',
+                                    ],
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['channelId', 'content']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ),
+    ]
+)]
 class Message
 {
     #[ORM\Id]
@@ -14,19 +59,32 @@ class Message
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['message:send'])]
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $sender = null;
 
+    #[Groups(['message:send'])]
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?channel $channel = null;
 
+    #[Groups(['message:send'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    #[Groups(['message:send'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
+
+    #[ORM\Column]
+    private ?\DateTime $createdAt = null;
+
+    #[ORM\PrePersist]
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+    }
 
     public function getId(): ?int
     {
@@ -77,6 +135,18 @@ class Message
     public function setPicture(?string $picture): static
     {
         $this->picture = $picture;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

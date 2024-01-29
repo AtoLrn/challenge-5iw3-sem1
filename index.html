@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+        test
+
+        <script>
+            console.log("oui")
+
+            const url = new URL("https://localhost/.well-known/mercure")
+            url.searchParams.append('topic', '/messages/channel/1')
+
+            const eventSource = new EventSource(url)
+
+            eventSource.onmessage = e => console.log(e)
+        </script>
+    </body>
+</html>

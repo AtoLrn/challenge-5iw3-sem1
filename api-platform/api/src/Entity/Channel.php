@@ -2,28 +2,90 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\Channel\ChannelCreateController;
+use App\Controller\Channel\ChannelGetController;
 use App\Repository\ChannelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ChannelRepository::class)]
+#[ORM\Table(name: '`channel`')]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            //security: 'is_granted("ROLE_ADMIN")',
+            normalizationContext: ['groups' => 'channel:collection']
+        ),
+        new GetCollection(
+            uriTemplate: '/me/channels',
+            security: 'is_granted("ROLE_USER")',
+            controller: ChannelGetController::class,
+            normalizationContext: ['groups' => 'channel:collection']
+        ),
+        new Post(
+            //security: 'is_granted("ROLE_ADMIN")',
+            normalizationContext: ['groups' => 'channel:create'],
+            controller: ChannelCreateController::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'application/ld+json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'tattooArtistId' => [
+                                        'description' => 'ID of the tatto artist',
+                                        'type' => 'int'
+                                    ],
+                                    'requestingUserId' => [
+                                        'description' => 'ID of the requesting User',
+                                        'type' => 'int'
+                                    ]
+                                ],
+                                'required' => ['tattooArtistId', 'requestingUserId']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ),
+        new Get(
+            denormalizationContext: ['groups' => 'channel:read',],
+            normalizationContext: ['groups' => 'channel:read'],
+        ),
+
+    ],
+    paginationEnabled: false
+)]
 class Channel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
     private ?User $tattooArtist = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
     private ?User $requestingUser = null;
 
     #[ORM\OneToMany(mappedBy: 'channel', targetEntity: Message::class)]
+    #[Groups(['channel:read'])]
     private Collection $messages;
 
     public function __construct()
@@ -36,12 +98,12 @@ class Channel
         return $this->id;
     }
 
-    public function getTattoArtist(): ?User
+    public function getTattooArtist(): ?User
     {
         return $this->tattooArtist;
     }
 
-    public function setTattoArtist(?User $tattooArtist): static
+    public function setTattooArtist(?User $tattooArtist): static
     {
         $this->tattooArtist = $tattooArtist;
 

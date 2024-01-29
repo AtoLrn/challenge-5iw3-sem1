@@ -5,7 +5,6 @@ namespace App\Controller\User;
 use App\Entity\User;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 #[AsController]
 class GetMeController
