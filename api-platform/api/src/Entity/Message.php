@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use App\Controller\Message\MessageController;
+use App\Controller\Message\MessageSendController;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,14 +14,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 #[ORM\Table(name: '`message`')]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new Post(
             uriTemplate: '/send',
-            //normalizationContext: ['groups' => 'message:send'],
-            //denormalizationContext: ['groups' => 'message:send'],
-            controller: MessageController::class,
-            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'message:send'],
+            denormalizationContext: ['groups' => 'message:send'],
+            controller: MessageSendController::class,
+            //security: 'is_granted("ROLE_USER")',
             deserialize: false,
             openapiContext: [
                 'requestBody' => [
@@ -59,24 +60,25 @@ class Message
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['message:send'])]
+    #[Groups(['message:send', 'channel:read'])]
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $sender = null;
 
-    #[Groups(['message:send'])]
+    #[Groups(['message:send', 'channel:read'])]
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?channel $channel = null;
 
-    #[Groups(['message:send'])]
+    #[Groups(['message:send', 'channel:read'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[Groups(['message:send'])]
+    #[Groups(['message:send', 'channel:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 
+    #[Groups(['message:send', 'channel:read'])]
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
@@ -139,12 +141,12 @@ class Message
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 

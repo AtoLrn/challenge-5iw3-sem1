@@ -62,7 +62,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
 
     ],
-    paginationEnabled: false
+    paginationEnabled: false,
 )]
 class Channel
 {
@@ -72,13 +72,13 @@ class Channel
     #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
     private ?User $tattooArtist = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
