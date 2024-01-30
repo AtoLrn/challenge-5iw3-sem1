@@ -14,11 +14,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 #[ORM\Table(name: '`message`')]
-#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new Post(
-            uriTemplate: '/send',
+            uriTemplate: '/messages/send',
             normalizationContext: ['groups' => 'message:send'],
             denormalizationContext: ['groups' => 'message:send'],
             controller: MessageSendController::class,
@@ -60,30 +59,29 @@ class Message
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['message:send', 'channel:read'])]
+    #[Groups(['message:send', 'message:channel:read'])]
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $sender = null;
 
-    #[Groups(['message:send', 'channel:read'])]
+    #[Groups(['message:send'])]
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?channel $channel = null;
 
-    #[Groups(['message:send', 'channel:read'])]
+    #[Groups(['message:send', 'message:channel:read'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[Groups(['message:send', 'channel:read'])]
+    #[Groups(['message:send', 'message:channel:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 
-    #[Groups(['message:send', 'channel:read'])]
+    #[Groups(['message:send', 'message:channel:read'])]
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
-    #[ORM\PrePersist]
-    public function prePersist()
+    public function __construct()
     {
         $this->createdAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
     }

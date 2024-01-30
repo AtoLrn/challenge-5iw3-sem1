@@ -7,17 +7,51 @@
         <link href="css/style.css" rel="stylesheet">
     </head>
     <body>
-        test
+        <input type="number" id="channel" placeholder="channeId">
+        <input type="string" id="content" placeholder="content">
+        <input type="string" id="token" placeholder="token">
+        <button id="submit">submit</button>
 
         <script>
-            console.log("oui")
+            const channel = document.getElementById('channel').value
+            const content = document.getElementById('content').value
+            const token = document.getElementById('token').value
+            const submit = document.getElementById('submit')
+
+            const fd = new FormData
+            fd.set('channelId', channel)
+            fd.set('content', content)
+            fd.set('file', "")
+
+            submit.addEventListener('click', () => {
+                console.log(channel)
+                console.log(content)
+                console.log(token)
+
+                fetch('https://localhost/messages/send', {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: fd
+                })
+            })
+
 
             const url = new URL("https://localhost/.well-known/mercure")
-            url.searchParams.append('topic', '/messages/channel/1')
+            url.searchParams.append('topic', '/messages/channel/3')
 
             const eventSource = new EventSource(url)
 
-            eventSource.onmessage = e => console.log(e)
+            eventSource.onmessage = (e) => {
+                const data = JSON.parse(e.data)
+                const { content, file, createdAt, sender } = data.message
+
+                console.log("content :" + content)
+                console.log(file)
+                console.log(createdAt)
+                console.log(sender)
+            }
         </script>
     </body>
 </html>

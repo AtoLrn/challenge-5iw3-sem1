@@ -11,17 +11,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use App\Utils\Files;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Mercure\Update;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsController]
 class MessageSendController
@@ -29,14 +27,10 @@ class MessageSendController
     public function __construct(
         protected Security $security,
         private SerializerInterface $serializer,
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $userPasswordHasher,
-        private UserRepository $userRepository,
-        private MailerInterface $mailer,
-        private JWTTokenManagerInterface $jwtManager,
         private Files $files,
         private ChannelRepository $channelRepository,
         private MessageRepository $messageRepository,
+        private MessageBusInterface $bus
     )
     {}
 
@@ -50,7 +44,7 @@ class MessageSendController
 
         $channelId = $request->request->get('channelId');
         $content = $request->request->get('content');
-        $file = $request->request->get('file');
+        $file = $request->files->get('file');
 
         $channel = $this->channelRepository->find($channelId);
 
@@ -71,6 +65,23 @@ class MessageSendController
             $fileUrl = $this->files->upload($file);
             $message->setPicture($fileUrl);
         }
+
+        // Serialize message to send on json format
+        $messageSerialized = [
+            'content' => $message->getContent(),
+            'file' => $message->getPicture(),
+            'sender' => [
+                'id' => $sender->getId(),
+                'username' => $sender->getUsername(),
+                'profilPicture' => $sender->getPicture(),
+            ],
+            'createdAt' => $message->getCreatedAt(),
+        ];
+
+        $update = new Update("/messages/channel/" . $channel->getId(), json_encode([
+            "message" => $messageSerialized,
+        ]));
+        $this->bus->dispatch($update);
 
         return $message;
     }

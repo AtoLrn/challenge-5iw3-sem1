@@ -57,8 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ]
         ),
         new Get(
-            denormalizationContext: ['groups' => 'channel:read',],
-            normalizationContext: ['groups' => 'channel:read'],
+            normalizationContext: ['groups' => ['channel:read', 'message:channel:read']],
         ),
 
     ],
@@ -85,7 +84,7 @@ class Channel
     private ?User $requestingUser = null;
 
     #[ORM\OneToMany(mappedBy: 'channel', targetEntity: Message::class)]
-    #[Groups(['channel:read'])]
+    #[Groups(['channel:read', 'message:channel:read'])]
     private Collection $messages;
 
     public function __construct()
