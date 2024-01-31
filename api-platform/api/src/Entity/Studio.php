@@ -4,11 +4,12 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
+use App\Controller\Studio\PostStudioController;
 use App\Repository\StudioRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use DateTimeZone;
 
 #[ApiResource(
     operations: [
@@ -20,8 +21,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Post(
             security: 'is_granted("ROLE_USER")',
-            denormalizationContext: ['groups' => 'studio:creation', 'skip_null_values' => false],
+            denormalizationContext: ['groups' => 'studio:creation'],
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+            controller: PostStudioController::class
         ),
 
     ]
@@ -43,18 +45,18 @@ class Studio
     private ?string $location = null;
 
     #[Groups(['studio:creation', 'studio:read'])]
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column]
     private ?int $maxCapacity = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[Groups(['studio:read'])]
+    #[ORM\Column]
+    private ?\DateTime $createdAt = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    #[Groups(['studio:read'])]
+    #[ORM\Column]
+    private ?\DateTime $updatedAt = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:read'])]
     #[ORM\ManyToOne(inversedBy: 'studios')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
@@ -62,6 +64,23 @@ class Studio
     #[Groups(['studio:admin:control', 'studio:read'])]
     #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
     private ?string $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'studioId')]
+    private ?PartnerShip $partnerShip = null;
+
+    #[ORM\PrePersist]
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $this->updatedAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+    }
+
+
+    #[ORM\PreUpdate]
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+    }
 
     public function getId(): ?int
     {
@@ -162,6 +181,18 @@ class Studio
     public function deny(): static
     {
         $this->status = "APPROVED";
+
+        return $this;
+    }
+
+    public function getPartnerShip(): ?PartnerShip
+    {
+        return $this->partnerShip;
+    }
+
+    public function setPartnerShip(?PartnerShip $partnerShip): static
+    {
+        $this->partnerShip = $partnerShip;
 
         return $this;
     }

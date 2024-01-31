@@ -289,6 +289,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
 
+    #[ORM\ManyToOne(inversedBy: 'userId')]
+    private ?PartnerShip $partnerShip = null;
+
     #[ORM\PrePersist]
     public function prePersist()
     {
@@ -516,6 +519,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setKbisFileUrl(?string $kbisFileUrl): static
     {
         $this->kbisFileUrl = $kbisFileUrl;
+
+        return $this;
+    }
+
+    public function getPartnerShip(): ?PartnerShip
+    {
+        return $this->partnerShip;
+    }
+
+    public function setPartnerShip(?PartnerShip $partnerShip): static
+    {
+        $this->partnerShip = $partnerShip;
 
         return $this;
     }
