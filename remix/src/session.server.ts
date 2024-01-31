@@ -21,7 +21,6 @@ const { getSession, commitSession, destroySession } =
     			// expires: new Date(Date.now() + 60_000),
     			httpOnly: true,
     			maxAge: process.env.NODE_ENV === 'production' ? 60 * 60 * 24 * 31 : 60 * 60,
-    			path: '/',
     			sameSite: 'lax',
     			secrets: ['s3cret1'],
     			secure: process.env.NODE_ENV === 'production',
