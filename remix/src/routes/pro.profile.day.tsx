@@ -1,4 +1,4 @@
-import { Form, MetaFunction, useLoaderData } from '@remix-run/react'
+import { Form, MetaFunction, useLoaderData, useRevalidator } from '@remix-run/react'
 import { Title } from 'src/components/Title'
 
 import { t } from 'i18next'
@@ -6,14 +6,13 @@ import { t } from 'i18next'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 import * as Dialog from '@radix-ui/react-dialog'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { WeekViewer } from 'src/components/WeekViewer'
 import { z } from 'zod'
 import { zx } from 'zodix'
-import { createDayOff, getDaysOff } from 'src/utils/requests/off-day'
+import { createDayOff, deleteDayOff, getDaysOff } from 'src/utils/requests/off-day'
 import { getSession } from 'src/session.server'
-
 
 export const meta: MetaFunction = () => {
 	return [
@@ -24,8 +23,16 @@ export const meta: MetaFunction = () => {
 }
 
 const schema = z.object({
+	action: z.string().min(1)
+})
+
+const schemaCreate = z.object({
 	startDate: z.string().min(1),
 	endDate: z.string().min(1)
+})
+
+const schemaDelete = z.object({
+	id: z.string().min(1)
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -37,13 +44,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		return redirect('/login')
 	}
 
-	const req = await zx.parseForm(request, schema)
+	const { action } = await zx.parseForm(request, schema)
 
-	const dayOff = await createDayOff({...req, token })
+	if (action === 'create') {
+		const req = await zx.parseForm(request, schemaCreate)
 
-	return json({
-		dayOff
-	})
+		const dayOff = await createDayOff({...req, token })
+
+		return json({
+			dayOff
+		})
+	} else {
+		const req = await zx.parseForm(request, schemaDelete)
+
+		const success = await deleteDayOff({...req, token })
+
+		return json({
+			success
+		})
+	}
+
+	
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -64,14 +85,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	})
 }
 export default function () {
+	const {revalidate} = useRevalidator()
 	const { daysOff } = useLoaderData<typeof loader>()
 	const [startDate, setStartDate] = useState<Date>()
 	const [endDate, setEndDate] = useState<Date>()
+
+	const onClick = useCallback(async (id: number) => {
+
+		await fetch('/pro/profile/day', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;',
+			},
+			body: `action=delete&id=${id}`
+		})
+
+		revalidate()
+		
+	}, [])
 
 	const filteredDaysOff = daysOff.map(({ id, startDate, endDate }) => ({
 		id,
 		startDate:  new Date(startDate),
 		endDate: new Date(endDate),
+		action: {
+			cta: 'Cancel Day Off',
+			onClick: onClick.bind(this, id)
+		}
 	}))
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
@@ -109,7 +149,7 @@ export default function () {
 						</div>
 						<hr />
 						<div className='flex items-center gap-2'>
-
+							<input type='hidden' name='action' value={'create'} />
 							<TimePicker onChange={setStartDate} kind={TimePickerKind.DAY} maxDate={endDate ?? new Date()} name='startDate' />
 							<span>To</span>
 							<TimePicker onChange={setEndDate} kind={TimePickerKind.DAY} minDate={startDate ?? new Date()} name='endDate' />

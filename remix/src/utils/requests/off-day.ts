@@ -11,6 +11,18 @@ const schemaGetDays = z.object({
 })
 
 
+export const deleteDayOff = async (props: DeleteDayOff): Promise<boolean> => {
+	const res = await fetch(`${process.env.API_URL}/day_offs/${props.id}`, {
+		method: 'DELETE',
+		headers: {
+			'Authorization': `Bearer ${props.token}`,
+			'Content-Type': 'application/ld+json'
+		},
+	})
+
+	return res.status === 204
+}
+
 export const createDayOff = async (props: CreateDayOff): Promise<DayOff> => {
 	const res = await fetch(`${process.env.API_URL}/day_offs`, {
 		method: 'POST',
@@ -59,6 +71,11 @@ export const getDaysOff = async ({ token }: { token: string }): Promise<DayOff[]
 export interface CreateDayOff {
     startDate: string,
     endDate: string,
+	token: string
+}
+
+export interface DeleteDayOff {
+    id: string,
 	token: string
 }
 

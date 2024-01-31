@@ -5,9 +5,11 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DayOffRepository;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use App\Controller\User\DayOffController;
 use App\Controller\User\DayOffMeController;
+use App\Controller\User\DayOffDeleteController;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 use Doctrine\DBAL\Types\Types;
@@ -26,6 +28,13 @@ use Doctrine\ORM\Mapping as ORM;
             denormalizationContext: ['groups' => 'day-off:create'],
             normalizationContext: ['groups' => 'day-off:read'],
             controller: DayOffController::class
+        ),
+        new Delete(
+            uriTemplate: '/day_offs/{id}',
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'day-off:create'],
+            normalizationContext: ['groups' => 'day-off:read'],
+            controller: DayOffDeleteController::class
         ),
     ]
 )]
