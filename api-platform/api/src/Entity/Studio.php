@@ -5,7 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Studio\PostStudioController;
+use App\Controller\Studio\InviteStudioController;
 use App\Repository\StudioRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,6 +27,13 @@ use DateTimeZone;
             denormalizationContext: ['groups' => 'studio:creation'],
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
             controller: PostStudioController::class
+        ),
+        new Post(
+            uriTemplate: '/invite/{id}',
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'studio:invite:create'],
+            normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
+            controller: InviteStudioController::class
         ),
 
     ]
@@ -65,8 +75,13 @@ class Studio
     #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'studioId')]
-    private ?PartnerShip $partnerShip = null;
+    #[ORM\OneToMany(mappedBy: 'studioId', targetEntity: PartnerShip::class, orphanRemoval: true)]
+    private Collection $partnerShips;
+
+    public function __construct()
+    {
+        $this->partnerShips = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -185,14 +200,32 @@ class Studio
         return $this;
     }
 
-    public function getPartnerShip(): ?PartnerShip
+    /**
+     * @return Collection<int, PartnerShip>
+     */
+    public function getPartnerShips(): Collection
     {
-        return $this->partnerShip;
+        return $this->partnerShips;
     }
 
-    public function setPartnerShip(?PartnerShip $partnerShip): static
+    public function addPartnerShip(PartnerShip $partnerShip): static
     {
-        $this->partnerShip = $partnerShip;
+        if (!$this->partnerShips->contains($partnerShip)) {
+            $this->partnerShips->add($partnerShip);
+            $partnerShip->setStudioId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartnerShip(PartnerShip $partnerShip): static
+    {
+        if ($this->partnerShips->removeElement($partnerShip)) {
+            // set the owning side to null (unless already changed)
+            if ($partnerShip->getStudioId() === $this) {
+                $partnerShip->setStudioId(null);
+            }
+        }
 
         return $this;
     }

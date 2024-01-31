@@ -280,6 +280,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->studios = new ArrayCollection();
+        $this->partnerShips = new ArrayCollection();
     }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -289,8 +290,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
 
-    #[ORM\ManyToOne(inversedBy: 'userId')]
-    private ?PartnerShip $partnerShip = null;
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: PartnerShip::class, orphanRemoval: true)]
+    private Collection $partnerShips;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -523,14 +524,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPartnerShip(): ?PartnerShip
+    /**
+     * @return Collection<int, PartnerShip>
+     */
+    public function getPartnerShips(): Collection
     {
-        return $this->partnerShip;
+        return $this->partnerShips;
     }
 
-    public function setPartnerShip(?PartnerShip $partnerShip): static
+    public function addPartnerShip(PartnerShip $partnerShip): static
     {
-        $this->partnerShip = $partnerShip;
+        if (!$this->partnerShips->contains($partnerShip)) {
+            $this->partnerShips->add($partnerShip);
+            $partnerShip->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartnerShip(PartnerShip $partnerShip): static
+    {
+        if ($this->partnerShips->removeElement($partnerShip)) {
+            // set the owning side to null (unless already changed)
+            if ($partnerShip->getUserId() === $this) {
+                $partnerShip->setUserId(null);
+            }
+        }
 
         return $this;
     }
