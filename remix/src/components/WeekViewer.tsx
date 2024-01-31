@@ -2,9 +2,14 @@ import { add, addDays, differenceInDays, isAfter, isBefore, startOfWeek, sub } f
 import { t } from 'i18next'
 import { useState } from 'react'
 import { Validation } from 'src/utils/types/validation'
+import * as HoverCard from '@radix-ui/react-hover-card'
 
 export interface WeekViewerProps {
     events: {
+		action?: {
+			cta: string,
+			onClick: () => unknown
+		},
         startDate: Date
         endDate: Date
         kind?: Validation
@@ -25,6 +30,38 @@ const months = [
 	t('november'),
 	t('december')
 ]
+
+export interface DayProps {
+	startDate: Date
+	endDate: Date
+	action?: {
+		cta: string,
+		onClick: () => unknown
+	},
+}
+
+const Day: React.FC<DayProps> = ({ startDate, endDate, action }) => {
+	
+	return <HoverCard.Root>
+		<HoverCard.Trigger asChild>
+			<div  className='w-full'>
+				Off Dayss
+			</div>
+		</HoverCard.Trigger>
+		<HoverCard.Portal>
+			<HoverCard.Content align='center' className="rounded-xl bg-opacity-30 bg-gray-500 text-white shadow-lg w-56 z-50">
+				<section className="flex  flex-col items-start justify-start w-full py-2 px-8 gap-4">
+					<div className="flex flex-col ">
+						<span className="text-sm">You are off from <b>{ startDate.getDate() }-{ startDate.getMonth() + 1 }-{ startDate.getFullYear() }</b> to <b>{ endDate.getDate() }-{ endDate.getMonth() + 1 }-{ endDate.getFullYear() }</b> </span>
+					</div>
+					{ action && <button onClick={action.onClick} className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{action.cta}</button> }
+				</section>
+
+				<HoverCard.Arrow className="fill-white" />
+			</HoverCard.Content>
+		</HoverCard.Portal>
+	</HoverCard.Root>
+}
 
 export const WeekViewer: React.FC<WeekViewerProps> = ({ events }) => {
 	const [ viewingDate, setViewingDate ] = useState(startOfWeek(new Date(), {
@@ -128,9 +165,7 @@ export const WeekViewer: React.FC<WeekViewerProps> = ({ events }) => {
 
 
 					return <div key={index} className={`col-span-${flooredDuration} col-start-${startIndex} cursor-pointer rounded-lg bg-opacity-30 ${event.kind === Validation.REFUSED && 'bg-red-500 border-red-500 '}  ${event.kind === Validation.ACCEPTED || !event.kind && 'bg-green-500 border-green-500 '} ${event.kind === Validation.PENDING && 'bg-orange-500 border-orange-500 '} border-1 h-8 flex items-center justify-start px-2 font-bold`}>
-						<span>
-                            Off Day
-						</span>
+						<Day startDate={event.startDate} endDate={event.endDate} action={event.action} />
 					</div>
 				})}
 				
