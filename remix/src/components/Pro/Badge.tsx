@@ -5,7 +5,7 @@ export interface BadgeProps {
     state: Validation | Kind
 }
 
-type StateValue = `${Validation}` | `${Kind}`;
+type StateValue = Validation | Kind;
 
 export const Badge: React.FC<BadgeProps> = ({ state }) => {
     let classNames = "text-xs px-2 py-1 rounded-md bg-opacity-30 border-1 ";
