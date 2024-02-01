@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Studio\GetStudioInviteController;
 use App\Controller\Studio\PostStudioController;
 use App\Controller\Studio\InviteStudioController;
 use App\Repository\StudioRepository;
@@ -14,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use DateTimeZone;
 
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new Post(
@@ -29,13 +32,18 @@ use DateTimeZone;
             controller: PostStudioController::class
         ),
         new Post(
-            uriTemplate: '/invite/{id}',
+            uriTemplate: '/studio/{id}/invites',
             security: 'is_granted("ROLE_USER")',
             denormalizationContext: ['groups' => 'studio:invite:create'],
             normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
             controller: InviteStudioController::class
         ),
-
+        new GetCollection(
+            uriTemplate: '/studio/{id}/invites',
+            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
+            controller: GetStudioInviteController::class
+        ),
     ]
 )]
 #[ORM\Entity(repositoryClass: StudioRepository::class)]
