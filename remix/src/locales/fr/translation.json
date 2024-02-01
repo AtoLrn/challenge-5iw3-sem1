@@ -1,4 +1,5 @@
 {
+  "return-button": "Retour",
   "find-your-tattoo-artist": "Trouvez votre tatoueur",
   "search": "Rechercher",
   "loading": "Chargement...",
@@ -77,5 +78,6 @@
   "september": "Septembre",
   "october": "Octobre",
   "november": "Novembre",
-  "december": "Decembre"
+  "december": "Decembre",
+  "pro-chat-page-title": "Chattez avec vos clients"
 }

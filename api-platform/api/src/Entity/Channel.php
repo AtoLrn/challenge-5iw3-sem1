@@ -7,7 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Channel\ChannelCreateController;
-use App\Controller\Channel\ChannelGetController;
+use App\Controller\Channel\ChannelGetMeController;
 use App\Repository\ChannelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -24,10 +24,26 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'channel:collection']
         ),
         new GetCollection(
+            //security: 'is_granted("ROLE_USER")',
             uriTemplate: '/me/channels',
             security: 'is_granted("ROLE_USER")',
-            controller: ChannelGetController::class,
-            normalizationContext: ['groups' => 'channel:collection']
+            controller: ChannelGetMeController::class,
+            normalizationContext: ['groups' => 'channel:collection'],
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'name' => 'as',
+                        'in' => 'query',
+                        'description' => 'what type of channels you want to retrieve',
+                        'required' => true,
+                        'type' => 'string'
+                    ]
+                ],
+                'requestBody' => [
+                    'required' => false,
+                    'content' => []
+                ]
+            ]
         ),
         new Post(
             //security: 'is_granted("ROLE_ADMIN")',
@@ -57,6 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ]
         ),
         new Get(
+            //security: 'is_granted("ROLE_USER")',
             normalizationContext: ['groups' => ['channel:read', 'message:channel:read']],
         ),
 
