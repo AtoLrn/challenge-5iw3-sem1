@@ -280,6 +280,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->studios = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
         $this->partnerShips = new ArrayCollection();
     }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
@@ -289,6 +290,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:read:me'])]
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
+
+    #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Prestation::class)]
+    private Collection $prestations;
 
     #[ORM\OneToMany(mappedBy: 'userId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
@@ -525,6 +529,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return Collection<int, Prestation>
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestation $prestation): static
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations->add($prestation);
+            $prestation->setProposedBy($this);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, PartnerShip>
      */
     public function getPartnerShips(): Collection
@@ -542,6 +564,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function removePrestation(Prestation $prestation): static
+    {
+        if ($this->prestations->removeElement($prestation)) {
+            // set the owning side to null (unless already changed)
+            if ($prestation->getProposedBy() === $this) {
+                $prestation->setProposedBy(null);
+            }
+        }
+
+        return $this;
+    }
+ 
     public function removePartnerShip(PartnerShip $partnerShip): static
     {
         if ($this->partnerShips->removeElement($partnerShip)) {
