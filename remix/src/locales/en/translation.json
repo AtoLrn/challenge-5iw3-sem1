@@ -94,5 +94,6 @@
   "october": "October",
   "november": "November",
   "december": "December",
-  "pro-chat-page-title": "Chat with your clients"
+  "pro-chat-page-title": "Chat with your clients",
+  "chat-empty-last-message": "No message"
 }

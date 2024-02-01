@@ -1,6 +1,6 @@
 import { Channel, GetChannelAs } from '../types/channel'
 import { Message } from '../types/message'
-import { z } from 'zod'
+import { formatDate } from '../date'
 
 export const getChannels = async (token: string, as: GetChannelAs ): Promise<Channel[]> => {
     const res = await fetch(`${process.env.API_URL}/me/channels?as=${as}`, {
@@ -17,7 +17,11 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
     const bodyLd = await res.json()
     const body = bodyLd["hydra:member"]
 
+    // Sorry for this ugly formatting, I wish I had other way and more time
     const formatBody = body.map((channel: Channel): Channel => {
+        // sorting the messages to retreive easily the latest message because API Platform somehow don't do it itself...
+        channel.messages.sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf())
+
         return {
             id: channel.id,
             requestingUser: {
@@ -29,7 +33,8 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
                 id: channel.tattooArtist.id,
                 username: channel.tattooArtist.username,
                 picture: channel.tattooArtist.picture,
-            }
+            },
+            messages: channel.messages
         }
     })
 

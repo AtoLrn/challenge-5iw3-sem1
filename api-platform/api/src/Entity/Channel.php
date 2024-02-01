@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/me/channels',
             security: 'is_granted("ROLE_USER")',
             controller: ChannelGetMeController::class,
-            normalizationContext: ['groups' => 'channel:collection'],
+            normalizationContext: ['groups' => ['channel:collection', 'message:channel:read']],
             openapiContext: [
                 'parameters' => [
                     [

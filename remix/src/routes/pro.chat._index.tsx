@@ -8,6 +8,7 @@ import { List } from 'src/components/Pro/List'
 import { getSession } from 'src/session.server'
 import { getChannels } from 'src/utils/requests/channel'
 import { Channel, GetChannelAs } from '../utils/types/channel'
+import { formatDate } from '../utils/date'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -42,15 +43,13 @@ export const ChannelItem: React.FC<ListItemProps<Channel>> = ({ item }) => {
 		<span>{ item.requestingUser.username }</span>
 		<img className={ 'rounded-full relative border-2 border-gray-900 object-cover w-8 h-8' } src={item.requestingUser.picture}/>
 		<span className='text-right col-span-2 flex gap-2 justify-center items-center'>
-			<b>
-				2023-10-20
-			</b>
-			<span>
-				to
-			</span>
-			<b>
-				2024-10-20
-			</b>
+            { item.messages.length > 0 ?
+                <i>
+                    <b>{ item.messages[0]?.content }</b> {formatDate(item.messages[0]?.createdAt as string)}
+                </i>
+                :
+                <i>{t('chat-empty-last-message')}</i>
+            }
 		</span>
 		<div className='flex items-center gap-2 justify-end'>
 			<Link to={`/pro/chat/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>Chat</Link>

@@ -3,6 +3,7 @@
 namespace App\Controller\Channel;
 
 use App\Repository\ChannelRepository;
+use App\Repository\MessageRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -13,6 +14,7 @@ class ChannelGetMeController
 {
     public function __construct(
         private ChannelRepository $channelRepository,
+        private MessageRepository $messageRepository,
         private Security $security,
     )
     {}
