@@ -3,6 +3,7 @@ import { Artist } from '../types/artist'
 
 const schema = z.object({
 	'hydra:member': z.array(z.object({
+		id: z.number(),
 		username: z.string().min(1),
 		picture: z.string().min(1)
 	}))

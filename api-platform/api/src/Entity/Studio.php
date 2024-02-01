@@ -19,6 +19,9 @@ use DateTimeZone;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+        ),
         new Post(
             uriTemplate: '/verify',
             security: 'is_granted("ROLE_ADMIN")',
@@ -52,6 +55,7 @@ class Studio
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['studio:read'])]
     private ?int $id = null;
 
     #[Groups(['studio:creation', 'studio:read'])]
