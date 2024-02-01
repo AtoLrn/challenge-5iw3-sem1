@@ -48,7 +48,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		});
 
 		if (!response.ok) {
-				throw new Error('Problème lors de l\'envoi des données au serveur');
+				throw new Error('Network response was not ok');
 		}
 
 		return redirect(`/pro/prestations/${result.data.name}`)
