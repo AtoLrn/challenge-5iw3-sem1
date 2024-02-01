@@ -8,19 +8,23 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\Prestation\PrestationController;
+use App\Controller\Prestation\PrestationCreateController;
+use App\Controller\Prestation\PrestationUserController;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrestationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
       new GetCollection(
-          normalizationContext: ['groups' => 'prestation:collection']
+          controller: PrestationUserController::class,
+          normalizationContext: ['groups' => 'prestation:collection'],
+          security: 'is_granted("ROLE_USER")'
       ),
       new Post(
-          controller: PrestationController::class,
+          controller: PrestationCreateController::class,
           openapiContext: [
             'requestBody' => [
               'content' => [
@@ -36,15 +40,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
                         'type' => 'string',
                         'default' => 'Tattoo',
                       ],
-                      'location' => [
-                        'type' => 'string',
-                        'default' => 'Paris',
-                      ],
-                      'proposedBy' => [
-                        'type' => 'string',
-                        'format' => 'iri-reference',
-                        'default' => '43',
-                      ],
                       'picture' => [
                         'type' => 'string',
                         'format' => 'binary',
@@ -53,27 +48,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     'required' => [
                       'name',
                       'kind',
-                      'location',
-                      'proposedBy',
+                      'picture',
                     ],
                   ],
                 ],
               ],
             ],
           ],
+          security: 'is_granted("ROLE_USER")',
           deserialize: false
       ),
       new Get(
           normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:read']
+          denormalizationContext: ['groups' => 'prestation:read'],
+          security: 'is_granted("ROLE_USER")'
       ),
       new Patch(
           normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:patch']
+          denormalizationContext: ['groups' => 'prestation:patch'],
+          security: 'is_granted("ROLE_USER")'
       ),
       new Delete(
           normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:delete']
+          denormalizationContext: ['groups' => 'prestation:delete'],
+          security: 'is_granted("ROLE_USER")'
       ),
     ]
 )]
@@ -94,13 +92,8 @@ class Prestation
     private ?\App\Enum\Kind $kind = null;
 
     #[Groups(['prestation:collection', 'prestation:read'])]
-    #[ORM\Column(length: 255)]
-    private ?string $location = null;
-
-    #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\ManyToOne(inversedBy: 'prestations')]
     private ?User $proposedBy = null;
-
 
     #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column(length: 1024, nullable: true)]
@@ -109,6 +102,18 @@ class Prestation
     #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    /**
+     * @throws \Exception
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->created_at = new \DateTimeImmutable(
+            'now',
+            new \DateTimeZone('Europe/Paris')
+        );
+    }
 
     public function getId(): ?int
     {
@@ -135,18 +140,6 @@ class Prestation
     public function setKind(\App\Enum\Kind $kind): self
     {
         $this->kind = $kind;
-
-        return $this;
-    }
-
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(string $location): static
-    {
-        $this->location = $location;
 
         return $this;
     }

@@ -19,10 +19,10 @@ entity:
 	$(exec-container) bin/console make:entity $(name)
 
 migration:
-	$(exec-container) bin/console make:miration
+	$(exec-container) bin/console make:migration
 
 migrate:
-	$(exec-container) bin/console doctrine:miration:migrate
+	$(exec-container) bin/console doctrine:migration:migrate
 
 fixtures:
 	$(exec-container) bin/console doctrine:fixtures:load

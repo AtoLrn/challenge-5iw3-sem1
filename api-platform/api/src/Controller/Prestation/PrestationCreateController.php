@@ -12,12 +12,11 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 #[AsController]
-class PrestationController
+class PrestationCreateController
 {
     public function __construct(
         protected Security $security,
         private readonly Files $files,
-        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -25,10 +24,7 @@ class PrestationController
     {
         $nameInput = $request->request->get('name');
         $kindInput = $request->request->get('kind');
-        $locationInput = $request->request->get('location');
-        $proposedByIri = $request->request->get('proposedBy');
-
-        $user = $this->userRepository->findOneBy(['id' => $proposedByIri]);
+        $user = $this->security->getUser();
 
         $prestation = new Prestation();
 
@@ -40,9 +36,7 @@ class PrestationController
 
         $prestation->setName($nameInput);
         $prestation->setKind($kind);
-        $prestation->setLocation($locationInput);
         $prestation->setProposedBy($user);
-        $prestation->setCreatedAt(new \DateTimeImmutable());
 
         if (!$request->files->get('picture')) {
             throw new UnprocessableEntityHttpException('File needed');
@@ -52,7 +46,7 @@ class PrestationController
 
         $pictureFileUrl = $this->files->upload($pictureFile);
 
-        $user->setPicture($pictureFileUrl);
+        $prestation->setPicture($pictureFileUrl);
 
         return $prestation;
     }
