@@ -34,9 +34,6 @@ class PostStudioController
         $studio->setLocation($data["location"]);
         $studio->setStatus("pending");
 
-        $studio->setCreatedAt(new \DateTime('now', new DateTimeZone('Europe/Paris')));
-        $studio->setUpdatedAt(new \DateTime('now', new DateTimeZone('Europe/Paris')));
-
         return $studio;
     }
 }

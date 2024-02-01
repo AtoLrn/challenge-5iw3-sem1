@@ -3,13 +3,34 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\PartnerShipRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Post;
+use App\Controller\Studio\AnswerStudioController;
+use App\Controller\Studio\GetInviteController;
 
 #[ORM\Entity(repositoryClass: PartnerShipRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/invites',
+            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'partnership:read', 'skip_null_values' => false],
+            controller: GetInviteController::class,
+        ),
+        new Post(
+            uriTemplate: '/invites/{id}/answer',
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'partnership:answer'],
+            normalizationContext: ['groups' => 'partnership:read', 'skip_null_values' => false],
+            controller: AnswerStudioController::class,
+            deserialize: false
+        ),
+    ]
+)]
 class PartnerShip
 {
     #[ORM\Id]
@@ -36,7 +57,7 @@ class PartnerShip
     private ?\DateTime $endDate = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read'])]
+    #[Groups(['studio:invite:read', 'partnership:read', 'partnership:answer'])]
     private ?string $status = null;
 
     #[ORM\Column]
