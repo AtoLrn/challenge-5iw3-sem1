@@ -24,7 +24,27 @@ export const getPrestations = async (token: string): Promise<Prestation[]> => {
   }
 
   const result = await response.json();
-  console.log(result);
   const data = prestationSchema.parse(result);
   return data;
+};
+
+export const createPrestation = async (formData: FormData, token: string): Promise<Response> => {
+  const response = await fetch(`${process.env.API_URL}/prestations`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: formData,
+  });
+
+  console.log('Response:', response);
+
+  if (!response.ok) {
+    const errorBody = await response.json();
+    console.error('Error response body:', errorBody);
+    throw new Error(`Error ${response.status}: ${response.statusText}`);
+  }
+
+
+  return response;
 };
