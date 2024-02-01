@@ -9,21 +9,23 @@ import { AddressSearchResult } from './api.address.$search'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import * as Switch from '@radix-ui/react-switch'
+import {getSession} from "../session.server.ts";
+import {createStudio} from "../utils/requests/studio.ts";
 
 const schema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
 	addressId: z.string().min(1),
-	seats: z.coerce.number(),
+	maxCapacity: z.coerce.number(),
 	openingTime: z.string().min(1),
 	closingTime: z.string().min(1),
-	monday: zx.CheckboxAsString,
+/*	monday: zx.CheckboxAsString,
 	tuesday: zx.CheckboxAsString,
 	wednesday: zx.CheckboxAsString,
 	thursday: zx.CheckboxAsString,
 	friday: zx.CheckboxAsString,
 	saturday: zx.CheckboxAsString,
-	sunday: zx.CheckboxAsString,
+	sunday: zx.CheckboxAsString,*/
 })
 
 export const meta: MetaFunction = () => {
@@ -35,6 +37,14 @@ export const meta: MetaFunction = () => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token')
+
+	if (!token) {
+		return redirect('/login')
+	}
+
 	try {
 		const result = await zx.parseFormSafe(request, schema)
 		if (!result.success) {
@@ -43,7 +53,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			})
 		}
 
-		return redirect(`/pro/studios/${result.data.name}`)
+		const req = await zx.parseForm(request, schema)
+		req.location = "adresse"
+		console.log("description", req.description)
+		const studio = await createStudio({...req, token })
+
+		return json({
+			studio
+		})
+
+		/*return redirect(`/pro/studios/${result.data.name}`)*/
 
 	} catch (err) {
 		console.log(err)
@@ -157,7 +176,7 @@ export default function () {
 					
 				</div>
 				<section id='map' className='h-48 w-full overflow-hidden'></section>
-				<input placeholder='Number of employees' type="number" name='seats' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+				<input placeholder='Number of employees' type="number" name='maxCapacity' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 				<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
 				
 				<div className='grid grid-cols-2 gap-2'>
