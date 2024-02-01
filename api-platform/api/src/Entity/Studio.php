@@ -86,6 +86,9 @@ class Studio
     #[ORM\OneToMany(mappedBy: 'studioId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->partnerShips = new ArrayCollection();
@@ -234,6 +237,18 @@ class Studio
                 $partnerShip->setStudioId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
