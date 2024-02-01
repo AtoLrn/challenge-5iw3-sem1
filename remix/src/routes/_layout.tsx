@@ -29,7 +29,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		return json<LoaderReturnType>({ user })
 
 	} catch (e) {
-		console.log(e)
 		return json<LoaderReturnType>({
 			user: undefined
 		})
@@ -39,8 +38,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function() {
 	const { user } = useLoaderData<typeof loader>()
 
-
-	console.log(user)
 
 	return <>
 		<Navigation user={user} />

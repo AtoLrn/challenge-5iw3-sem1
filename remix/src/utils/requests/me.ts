@@ -26,13 +26,14 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	console.log(body)
 
-	const { id, username, picture } = schema.parse(body)
+	const { id, username, picture, isProfessional } = schema.parse(body)
 
     
 	return {
 		id,
 		name: username,
-		avatar: picture
+		avatar: picture,
+		isProfessional 
 	}
 }
 

@@ -59,7 +59,6 @@ export default function ProfilePage() {
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		const data = new FormData(event.currentTarget)
-		console.log(data)
 		setIsEditing(false)
 	}
 

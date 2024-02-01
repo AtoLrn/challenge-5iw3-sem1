@@ -45,6 +45,10 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 				<ul className="flex gap-4 items-center">
 					{user ? (
 						<>
+							{ user.isProfessional && <li className="cursor-pointer">
+								<NavLink to="/pro">Go to Dashboard</NavLink>
+							</li> }
+							
 							<li className="cursor-pointer">
 								<NavLink to="/appointments">Appointments</NavLink>
 							</li>
