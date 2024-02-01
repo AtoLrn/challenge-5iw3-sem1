@@ -8,21 +8,20 @@ export enum TimePickerKind {
 	RANGE,
 	SLOT
 }
-export type TimePickerProps = {
+export type TimePickerProps = ({
 	kind: TimePickerKind.DAY
 	defaultSelectedDay?: Date
 	availables?: Date[]
-} | {
-	kind: TimePickerKind.RANGE,
-	defaultStartDate?: Date,
-	defaultEndDate?: Date,
 	maxDate?: Date,
 	minDate?: Date
 } | {
 	kind: TimePickerKind.SLOT,
 	defaultSelectedSlot?: Date
 	slots: Date[]
-} 
+}) & {
+	name?: string
+	onChange?: (date: Date) => unknown
+}
 
 const getDaysInMonth = (year: number, month: number): number => {
 	return new Date(year, month, 0).getDate()
@@ -50,20 +49,6 @@ const months = [
 	'Nov',
 	'Dec'
 ]
-
-//const availableSlots = [
-//new Date('2023-12-16T09:00:00'),
-//new Date('2023-12-16T09:30:00'),
-//new Date('2023-12-10T09:00:00'),
-//new Date('2023-12-10T09:30:00'),
-//new Date('2023-12-16T10:00:00'),
-//new Date('2023-12-16T019:00:00'),
-//new Date('2023-12-16T020:00:00'),	
-//new Date('2023-12-16T11:00:00'),
-//new Date('2023-12-16T18:00:00'),
-//new Date('2023-12-16T19:00:00'),
-//new Date('2023-12-16T20:00:00')
-//]
 
 export interface CalendarProps {
 	defaultValue?: Date
@@ -108,6 +93,14 @@ const Calendar: React.FC<CalendarProps> = ({ onChange, defaultValue, maxSelectab
 
 		onChange?.(selectedDate)
 	}, [selectedDate])
+
+	useEffect(() => {
+		setSelectedMonth(viewingDate.getMonth())
+		setSelectedYear(viewingDate.getFullYear())
+
+	}, [viewingDate])
+
+	
 
 	useEffect(() => {
 		if (defaultValue) {
@@ -191,95 +184,99 @@ export const TimePicker: React.FC<TimePickerProps> = (props) => {
 	}, [selectedYear, selectedMonth])
 
 
-	return  <Popover.Root>
-		<Popover.Trigger asChild>
-			<span className='flex items-center gap-4 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
-				{ props.kind === TimePickerKind.RANGE && <><span>25-10-2030</span>  <span>⇄</span>  <span>26-10-2030</span></>}
-				{ props.kind === TimePickerKind.DAY && <span>{ selectedDate.getDate() }-{selectedDate.getMonth()}-{selectedDate.getFullYear()}</span>}
-				{ props.kind === TimePickerKind.SLOT && (selectedSlot 
-					? <><span>{ selectedSlot.getDate() }-{selectedSlot.getMonth()}-{selectedSlot.getFullYear()}</span><span>{ selectedSlot.getHours().toString().padStart(2, '0') }h{selectedSlot.getMinutes().toString().padStart(2, '0') }</span></>
-					: <span>Please select a slot</span>) }
-			</span>
-		</Popover.Trigger>
-		<Popover.Portal>
-			<Popover.Content 
-				align='start'
-				className="text-white top-0 left-0 outline-none z-10 flex flex-col justify-center p-4 px-4 gap-4 backdrop-blur-lg rounded-md border border-gray-700 bg-black bg-opacity-70" sideOffset={5}>
-				<span className='flex w-full items-center justify-between'>
-					<span className='cursor-pointer' onClick={() => setSelectedMonth(month => {
-						if (month == 0) {
-							setSelectedYear(year => year - 1)
-							return 11
-						} 
-						return month - 1
-					})}><IoIosArrowBack /></span>
-					<span>{ months[selectedMonth] } {selectedYear}</span>
-					<span className='cursor-pointer' onClick={() => setSelectedMonth(month => {
-						if (month == 11) {
-							setSelectedYear(year => year + 1)
-							return 0
-						} 
-						return month + 1
-					})}><IoIosArrowForward /></span>
-				</span>
-				<div className='flex items-center gap-2'>
-					<span className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300 flex-1'>
-						{ months[selectedDate.getMonth()] } { selectedDate.getDate() }, { selectedDate.getFullYear() }
-					</span>
-					<span 
-						onClick={() => setSelectedDay(new Date())}
-						className='cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
-						Today
-					</span>
-				</div>
+	return  <>
+		<input type="hidden" name={props.name} value={`${ selectedDate.getDate().toString().padStart(2, '0') }-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getFullYear()}`} />
+		<Popover.Root>
 
-				<div className='flex items-start gap-2'>
-					{ props.kind === TimePickerKind.DAY && <Calendar onChange={setSelectedDay} defaultValue={props.defaultSelectedDay ?? selectedDate} viewingDate={viewingDate} availableDays={props.availables} /> }
-					{ props.kind === TimePickerKind.RANGE && <Calendar 
-						onChange={setSelectedDay}
-						defaultValue={selectedDate}
-						viewingDate={viewingDate}
-						maxSelectableDay={props.maxDate}
-						minSelectableDay={props.minDate}
-					/> }
-					{ props.kind === TimePickerKind.SLOT && <Calendar onChange={setSelectedDay} defaultValue={selectedDate} viewingDate={viewingDate} availableDays={getDaysForSlots(props.slots)} /> }
+			<Popover.Trigger asChild>
+				<span className='flex items-center gap-4 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
+					{ props.kind === TimePickerKind.DAY && <span>{ selectedDate.getDate().toString().padStart(2, '0') }-{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-{selectedDate.getFullYear()}</span>}
+					{ props.kind === TimePickerKind.SLOT && (selectedSlot 
+						? <><span>{ selectedSlot.getDate() }-{selectedSlot.getMonth()}-{selectedSlot.getFullYear()}</span><span>{ selectedSlot.getHours().toString().padStart(2, '0') }h{selectedSlot.getMinutes().toString().padStart(2, '0') }</span></>
+						: <span>Please select a slot</span>) }
+				</span>
+			</Popover.Trigger>
+			<Popover.Portal>
+				<Popover.Content 
+					align='start'
+					className="text-white top-0 left-0 outline-none z-30 flex flex-col justify-center p-4 px-4 gap-4 backdrop-blur-lg rounded-md border border-gray-700 bg-black bg-opacity-70" sideOffset={5}>
+				
+					<span className='flex w-full items-center justify-between'>
+						<span className='cursor-pointer' onClick={() => setSelectedMonth(month => {
+							if (month == 0) {
+								setSelectedYear(year => year - 1)
+								return 11
+							} 
+							return month - 1
+						})}><IoIosArrowBack /></span>
+						<span>{ months[selectedMonth] } {selectedYear}</span>
+						<span className='cursor-pointer' onClick={() => setSelectedMonth(month => {
+							if (month == 11) {
+								setSelectedYear(year => year + 1)
+								return 0
+							} 
+							return month + 1
+						})}><IoIosArrowForward /></span>
+					</span>
+					<div className='flex items-center gap-2'>
+						<span className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300 flex-1'>
+							{ months[selectedDate.getMonth()] } { selectedDate.getDate() }, { selectedDate.getFullYear() }
+						</span>
+						<span 
+							onClick={() => setSelectedDay(new Date())}
+							className='cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
+						Today
+						</span>
+					</div>
+
+					<div className='flex items-start gap-2'>
+						{ props.kind === TimePickerKind.DAY && <Calendar 
+						
+							maxSelectableDay={props.maxDate}
+							minSelectableDay={props.minDate}
+							onChange={setSelectedDay} defaultValue={props.defaultSelectedDay ?? selectedDate} viewingDate={viewingDate} availableDays={props.availables} /> }
+						{ props.kind === TimePickerKind.SLOT && <Calendar onChange={setSelectedDay} defaultValue={selectedDate} viewingDate={viewingDate} availableDays={getDaysForSlots(props.slots)} /> }
 					
-					{/* defaultStartDate?: Date,
+						{/* defaultStartDate?: Date,
 	defaultEndDate?: Date,
 	maxDate?: Date,
 	minDate?: Date */}
-					{ props.kind === TimePickerKind.SLOT && <div className='flex flex-col items-stretch gap-2 h-52 overflow-auto'>
-						{ getSlotsForDays(selectedDate, props.slots).map((slot) => {
-							return <div 
-								onClick={() => setSelectedSlot(slot)}
-								key={slot.getTime()} className='cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-600 hover:border-red-400 duration-300'>
-								{ slot.getHours().toString().padStart(2, '0')}
+						{ props.kind === TimePickerKind.SLOT && <div className='flex flex-col items-stretch gap-2 h-52 overflow-auto'>
+							{ getSlotsForDays(selectedDate, props.slots).map((slot) => {
+								return <div 
+									onClick={() => setSelectedSlot(slot)}
+									key={slot.getTime()} className='cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-600 hover:border-red-400 duration-300'>
+									{ slot.getHours().toString().padStart(2, '0')}
 								h
-								{ slot.getMinutes().toString().padStart(2, '0') }
-							</div>
-						}) }
-					</div> }
+									{ slot.getMinutes().toString().padStart(2, '0') }
+								</div>
+							}) }
+						</div> }
 					
-				</div>
+					</div>
 				
-				<hr className='w-full opacity-30' />
-				<div className='w-full flex items-center gap-1'>
-					<Popover.Close  
-						className='flex-1 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
+					<hr className='w-full opacity-30' />
+					<div className='w-full flex items-center gap-1'>
+						<Popover.Close  
+							className='flex-1 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
 						Cancel
-					</Popover.Close >
-					<Popover.Close
-						className='flex-1 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-600 hover:border-red-400 duration-300'>
+						</Popover.Close >
+						<Popover.Close
+							onClick={() => {
+								props.onChange?.(selectedDate)
+							}}
+							className='flex-1 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-600 hover:border-red-400 duration-300'>
 						Confirm
-					</Popover.Close >
-				</div>
+						</Popover.Close >
+					</div>
 				
-				{/* <Popover.Close className="PopoverClose" aria-label="Close">
+					{/* <Popover.Close className="PopoverClose" aria-label="Close">
 					</Popover.Close> */}
-				{/* <Popover.Arrow className="PopoverArrow" /> */}
-			</Popover.Content>
-		</Popover.Portal>
-	</Popover.Root>
+					{/* <Popover.Arrow className="PopoverArrow" /> */}
+				</Popover.Content>
+			</Popover.Portal>
+		</Popover.Root>
+	</>
 }
 
 

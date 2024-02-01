@@ -241,12 +241,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
@@ -257,6 +257,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
+
+    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
+    #[ORM\Column(options: ["default" => false])]
+    private ?bool $isProfessional = null;
 
     #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
@@ -277,6 +281,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->studios = new ArrayCollection();
         $this->prestations = new ArrayCollection();
+        $this->partnerShips = new ArrayCollection();
     }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -288,6 +293,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Prestation::class)]
     private Collection $prestations;
+
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: PartnerShip::class, orphanRemoval: true)]
+    private Collection $partnerShips;
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -420,6 +428,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getIsProfessional(): ?bool
+    {
+        return $this->isProfessional;
+    }
+
+    public function setIsProfessional(?bool $isProfessional): static
+    {
+        $this->isProfessional = $isProfessional;
+
+        return $this;
+    }
+
     public function isVerified(): ?bool
     {
         return $this->isVerified;
@@ -526,12 +546,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, PartnerShip>
+     */
+    public function getPartnerShips(): Collection
+    {
+        return $this->partnerShips;
+    }
+
+    public function addPartnerShip(PartnerShip $partnerShip): static
+    {
+        if (!$this->partnerShips->contains($partnerShip)) {
+            $this->partnerShips->add($partnerShip);
+            $partnerShip->setUserId($this);
+        }
+
+        return $this;
+    }
+
     public function removePrestation(Prestation $prestation): static
     {
         if ($this->prestations->removeElement($prestation)) {
             // set the owning side to null (unless already changed)
             if ($prestation->getProposedBy() === $this) {
                 $prestation->setProposedBy(null);
+            }
+        }
+
+        return $this;
+    }
+ 
+    public function removePartnerShip(PartnerShip $partnerShip): static
+    {
+        if ($this->partnerShips->removeElement($partnerShip)) {
+            // set the owning side to null (unless already changed)
+            if ($partnerShip->getUserId() === $this) {
+                $partnerShip->setUserId(null);
             }
         }
 

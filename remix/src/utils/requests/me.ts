@@ -6,8 +6,7 @@ const schema = z.object({
 	email: z.string().min(1),
 	username: z.string().min(1),
 	picture: z.string().min(1),
-	isProfessional: z.boolean(),
-	isBanned: z.boolean(),
+	isProfessional: z.boolean().default(false),
 })
 
 
@@ -24,6 +23,8 @@ export const me = async ({ token }: Me): Promise<User> => {
 	}
 
 	const body = await res.json()
+
+	console.log(body)
 
 	const { id, username, picture } = schema.parse(body)
 

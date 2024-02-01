@@ -68,8 +68,6 @@ export default function MainPage() {
 
 	const isSearchLoading =  isLoading || posts.state === 'loading'
 
-	console.log('ANTOINE2: ', posts.data)
-
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>
 			<Title kind="h1" className='z-20 pb-20'>{t('find-your-tattoo-artist')}</Title>

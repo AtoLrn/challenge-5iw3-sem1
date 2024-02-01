@@ -64,5 +64,18 @@
   "reset-password-success": "Mot de passe réinitialiser avec succès !",
   "send-link-success": "Un lien pour réinitialiser votre mot de pass a été envoyé.",
   "reset-password-title": "Réinitialiser votre mot de passe",
-  "reset-password-button": "Réinitialiser"
+  "reset-password-button": "Réinitialiser",
+  "add-day-off": "Ajouter un jour de congés",
+  "january": "Janvier",
+  "february": "Fevrier",
+  "march": "Mars",
+  "april": "Avril",
+  "may": "Mai",
+  "june": "Juin",
+  "july": "Juillet",
+  "august": "Aout",
+  "september": "Septembre",
+  "october": "Octobre",
+  "november": "Novembre",
+  "december": "Decembre"
 }

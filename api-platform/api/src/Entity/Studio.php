@@ -3,13 +3,20 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
+use App\Controller\Studio\GetStudioInviteController;
+use App\Controller\Studio\PostStudioController;
+use App\Controller\Studio\InviteStudioController;
 use App\Repository\StudioRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use DateTimeZone;
 
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new Post(
@@ -20,10 +27,23 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Post(
             security: 'is_granted("ROLE_USER")',
-            denormalizationContext: ['groups' => 'studio:creation', 'skip_null_values' => false],
+            denormalizationContext: ['groups' => 'studio:creation'],
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+            controller: PostStudioController::class
         ),
-
+        new Post(
+            uriTemplate: '/studio/{id}/invites',
+            security: 'is_granted("ROLE_USER")',
+            denormalizationContext: ['groups' => 'studio:invite:create'],
+            normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
+            controller: InviteStudioController::class
+        ),
+        new GetCollection(
+            uriTemplate: '/studio/{id}/invites',
+            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
+            controller: GetStudioInviteController::class
+        ),
     ]
 )]
 #[ORM\Entity(repositoryClass: StudioRepository::class)]
@@ -43,18 +63,18 @@ class Studio
     private ?string $location = null;
 
     #[Groups(['studio:creation', 'studio:read'])]
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column]
     private ?int $maxCapacity = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[Groups(['studio:read'])]
+    #[ORM\Column]
+    private ?\DateTime $createdAt = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    #[Groups(['studio:read'])]
+    #[ORM\Column]
+    private ?\DateTime $updatedAt = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:read'])]
     #[ORM\ManyToOne(inversedBy: 'studios')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
@@ -62,6 +82,28 @@ class Studio
     #[Groups(['studio:admin:control', 'studio:read'])]
     #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
     private ?string $status = null;
+
+    #[ORM\OneToMany(mappedBy: 'studioId', targetEntity: PartnerShip::class, orphanRemoval: true)]
+    private Collection $partnerShips;
+
+    public function __construct()
+    {
+        $this->partnerShips = new ArrayCollection();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+        $this->updatedAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+    }
+
+
+    #[ORM\PreUpdate]
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTime('now', new DateTimeZone('Europe/Paris'));
+    }
 
     public function getId(): ?int
     {
@@ -162,6 +204,36 @@ class Studio
     public function deny(): static
     {
         $this->status = "APPROVED";
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PartnerShip>
+     */
+    public function getPartnerShips(): Collection
+    {
+        return $this->partnerShips;
+    }
+
+    public function addPartnerShip(PartnerShip $partnerShip): static
+    {
+        if (!$this->partnerShips->contains($partnerShip)) {
+            $this->partnerShips->add($partnerShip);
+            $partnerShip->setStudioId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartnerShip(PartnerShip $partnerShip): static
+    {
+        if ($this->partnerShips->removeElement($partnerShip)) {
+            // set the owning side to null (unless already changed)
+            if ($partnerShip->getStudioId() === $this) {
+                $partnerShip->setStudioId(null);
+            }
+        }
 
         return $this;
     }
