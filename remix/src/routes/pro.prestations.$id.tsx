@@ -6,9 +6,9 @@ import { useEffect } from 'react'
 import { json } from '@remix-run/node'
 import { Map, Marker } from 'mapbox-gl'
 import { ListItemProps } from 'src/components/Pro/ListItem'
-import { Prestation } from './pro.prestations._index'
 import { List } from 'src/components/Pro/List'
 import { Kind } from 'src/utils/types/kind'
+import { Prestation } from 'src/utils/types/prestation'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -86,14 +86,6 @@ export default function () {
 			{ guests.map((guest, index) => {
 				return  <img key={index} className={ 'rounded-full relative object-cover w-28 h-28 cursor-pointer' } src={guest}/>
 			}) }
-
-id: string,
-	name: string,
-	kind: Kind,
-	location: string,
-	proposedBy: string,
-	picture: string,
-	createdAt: string
 		</section>
 		<hr className='mt-8 w-full opacity-30'/>
 		<div className='w-1/2 flex flex-col gap-4'>
