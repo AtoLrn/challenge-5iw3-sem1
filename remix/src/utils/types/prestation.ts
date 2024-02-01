@@ -6,5 +6,5 @@ export interface Prestation {
 	kind: Kind,
 	proposedBy: string,
 	picture: string | null,
-	createdAt: string
+	created_at: string
 }

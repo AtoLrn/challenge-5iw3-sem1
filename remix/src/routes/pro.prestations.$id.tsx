@@ -2,13 +2,9 @@ import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { t } from 'i18next'
-import { useEffect } from 'react'
-import { json } from '@remix-run/node'
-import { Map, Marker } from 'mapbox-gl'
-import { ListItemProps } from 'src/components/Pro/ListItem'
-import { List } from 'src/components/Pro/List'
-import { Kind } from 'src/utils/types/kind'
-import { Prestation } from 'src/utils/types/prestation'
+import { LoaderFunction, json } from '@remix-run/node'
+import { getPrestation } from 'src/utils/requests/prestations'
+import { getSession } from 'src/session.server'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -18,42 +14,23 @@ export const meta: MetaFunction = () => {
 	]
 }
 
-export const loader = () => {
-	return json({ accessToken: process.env.MAP_BOX_TOKEN })
-}
+export const loader: LoaderFunction = async ({ params, request }) => {
+	const id = parseInt(params.id as string);
+  if (!id) {
+    throw new Response('Not Found', { status: 404 });
+  }
 
-export default function () {
-	const prestation: Prestation[] = [{
-		id: '1',
-		name: 'Incroyable tatouage',
-		kind: Kind.TATTOO,
-		location: 'Paris',
-		proposedBy: 'Lucas Campistron',
-		picture: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
-		createdAt: '2021-01-01'
-	}]
+  const session = await getSession(request.headers.get('Cookie'));
+  const token = session.get('token') as string;
 
-	const { accessToken } = useLoaderData<typeof loader>()
+  const prestation = await getPrestation(id, token);
 
-	const guests = [
-		'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
-	]
+  return json(prestation);
+};
 
-	useEffect(() => {
-		if (accessToken) {
-			const map = new Map({
-				accessToken,
-				container: 'map',
-				center: [2.333333, 48.866667], // [lng, lat]
-				zoom: 11, 
-				style: 'mapbox://styles/atolrn/clopw3ubf00j401nzaayg87wt',		
-			})
-	
-			const marker = new Marker()
-	
-			marker.setLngLat([2.333333, 48.866667]).addTo(map)
-		}
-	}, [])
+export default function Prestation() {
+
+	const data = useLoaderData()
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-4">
 		<BreadCrumb routes={[
@@ -64,12 +41,12 @@ export default function () {
 				name: 'Prestations',
 				url: '/pro/prestations'
 			},{
-				name: 'Super tattoo',
-				url: '/pro/prestations/super-tattoo'
+				name: (data as { name: string }).name,
+				url: `/pro/prestations/${(data as { id: number }).id}`
 			}
 		]}/>
 		<section className='flex items-center justify-between w-full'>
-			<Title kind='h1'>Super tattoo</Title>
+			<Title kind='h1'>{ (data as { name: string }).name }</Title>
 
 			<div className='flex items-center gap-2'>
 				<Link to={'/pro/prestations/super-tattoo/edit'}>
@@ -80,18 +57,21 @@ export default function () {
 		</section>
 		<hr className='w-full opacity-30'/>
 		<Title kind='h3' className='mt-4'>
-			{ t('proposed-by') }
+			{ t('kind') }
 		</Title>
 		<section className='flex items-center justify-start gap-6'>
-			{ guests.map((guest, index) => {
-				return  <img key={index} className={ 'rounded-full relative object-cover w-28 h-28 cursor-pointer' } src={guest}/>
-			}) }
+			<p className='text-2xl'>{ (data as { kind: string }).kind }</p>
 		</section>
-		<hr className='mt-8 w-full opacity-30'/>
-		<div className='w-1/2 flex flex-col gap-4'>
-			<Title kind='h3' className='mt-4'>
-				Description
-			</Title>
-		</div>
+		{ (data as { picture: string }).picture && (
+			<>
+				<hr className='mt-8 w-full opacity-30'/>
+				<div className='flex flex-col gap-4'>
+					<Title kind='h3' className='mt-4'>
+						{ t('picture') }
+					</Title>
+					<img src={ (data as { picture: string }).picture } alt='prestation picture' className='w-full rounded-xl'/>
+				</div>
+			</>
+		)}
 	</div>
 }
