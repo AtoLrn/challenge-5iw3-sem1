@@ -24,8 +24,6 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
-	console.log(body)
-
 	const { id, email, username, picture, isProfessional } = schema.parse(body)
 
     

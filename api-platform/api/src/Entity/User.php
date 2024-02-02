@@ -218,7 +218,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection'])]
+    #[Groups(['user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

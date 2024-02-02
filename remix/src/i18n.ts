@@ -22,7 +22,7 @@ i18n
 		interpolation: {
 			escapeValue: false
 		},
-		debug: true
+		debug: false
 	})
 
 export default i18n

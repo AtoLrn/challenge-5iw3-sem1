@@ -34,9 +34,6 @@ export async function loader({ request } : LoaderFunctionArgs) {
 export async function action ({ request }: ActionFunctionArgs) {
 	try {
 		const { title } = await zx.parseForm(request, formSchema)
-		if (!title || typeof title !== 'string') {
-			return redirect('/')
-		}
 	
 		return redirect(`/search/${encodeURIComponent(title.replaceAll(' ', '-'))}`)
 	} catch {
@@ -78,8 +75,6 @@ export default function MainPage() {
 	}, 300), [])
 
 	const isSearchLoading =  isLoading || posts.state === 'loading'
-
-	console.log(posts.data)
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>

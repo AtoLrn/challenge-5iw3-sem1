@@ -14,15 +14,15 @@ export const getArtists = async (options?: { name: string}): Promise<Artist[]> =
 
 	const body = await res.json()
 
+
 	try {
 		const parsedBody = schema.parse(body)
 
 		if (options && options.name) {
-			const x = parsedBody['hydra:member'].filter(({ username }) => {
+			return parsedBody['hydra:member'].filter(({ username }) => {
 				return username.includes(options.name)
 			})
 
-			return x
 		}
 
 		return parsedBody['hydra:member']
