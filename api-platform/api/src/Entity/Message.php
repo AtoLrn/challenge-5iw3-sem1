@@ -54,6 +54,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Message
 {
+    #[Groups(['message:send', 'message:channel:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

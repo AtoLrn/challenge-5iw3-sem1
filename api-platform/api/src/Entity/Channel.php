@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Channel\ChannelCreateController;
+use App\Controller\Channel\ChannelGetController;
 use App\Controller\Channel\ChannelGetMeController;
 use App\Repository\ChannelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -74,6 +75,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Get(
             //security: 'is_granted("ROLE_USER")',
+            controller: ChannelGetController::class,
             normalizationContext: ['groups' => ['channel:read', 'message:channel:read']],
         ),
 

@@ -1,6 +1,5 @@
 import { Channel, GetChannelAs } from '../types/channel'
 import { Message } from '../types/message'
-import { formatDate } from '../date'
 
 export const getChannels = async (token: string, as: GetChannelAs ): Promise<Channel[]> => {
     const res = await fetch(`${process.env.API_URL}/me/channels?as=${as}`, {
@@ -41,7 +40,7 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
     return formatBody
 }
 
-export const getChannel = async (token: string, id: string): Promise<any> => {
+export const getChannel = async (token: string, id: string): Promise<Channel> => {
     const res = await fetch(`${process.env.API_URL}/channels/${id}`, {
 		headers: {
 			'Accept': 'application/ld+json',
@@ -69,6 +68,7 @@ export const getChannel = async (token: string, id: string): Promise<any> => {
         },
         messages: body.messages.map((message: Message): Message => {
             return {
+                id: message.id,
                 content: message.content,
                 createdAt: message.createdAt,
                 picture: message.picture,
@@ -82,4 +82,22 @@ export const getChannel = async (token: string, id: string): Promise<any> => {
     }
 
     return formatBody
+}
+
+export const sendMessage = async (formData: FormData, token: string): Promise<true> => {
+    const res = await fetch(`${process.env.API_URL}/messages/send`, {
+        method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+        body: formData
+    })
+
+    if(res.status === 201) {
+        return true
+    }
+
+	const body = await res.json()
+
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
