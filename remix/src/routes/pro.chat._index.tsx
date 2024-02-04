@@ -45,7 +45,7 @@ export const ChannelItem: React.FC<ListItemProps<Channel>> = ({ item }) => {
 		<span className='text-right col-span-2 flex gap-2 justify-center items-center'>
             { item.messages.length > 0 ?
                 <i>
-                    <b>{ item.messages[0]?.content }</b> {formatDate(item.messages[0]?.createdAt as string)}
+                    <b>{ item.messages[item.messages.length - 1]?.content }</b> {formatDate(item.messages[item.messages.length - 1]?.createdAt as string)}
                 </i>
                 :
                 <i>{t('chat-empty-last-message')}</i>

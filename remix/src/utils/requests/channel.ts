@@ -19,7 +19,7 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
     // Sorry for this ugly formatting, I wish I had other way and more time
     const formatBody = body.map((channel: Channel): Channel => {
         // sorting the messages to retreive easily the latest message because API Platform somehow don't do it itself...
-        channel.messages.sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf())
+        channel.messages.sort((a, b) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
 
         return {
             id: channel.id,

@@ -31,6 +31,15 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
 
+    //const eventSourceUrl = new URL("https://localhost/.well-known/mercure")
+    //eventSourceUrl.searchParams.append('topic', `/messages/channel/${params.id}`)
+    //const eventSource = new EventSource(eventSourceUrl.href)
+
+    //eventSource.onmessage = (e) => {
+        //const data = JSON.parse(e.data)
+        //console.log(data.message)
+    //}
+
     try {
         const channel = await getChannel(token, params.id as string)
         
@@ -74,6 +83,12 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 export default function () {
 	const { channel, errors } = useLoaderData<typeof loader>()
     const formRef = useRef<HTMLFormElement>(null)
+    const chatEndRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView()
+        formRef.current?.reset()
+    })
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
@@ -112,6 +127,7 @@ export default function () {
                                     date={formatDate(message.createdAt)}
                         />
                     })}
+                    <div ref={chatEndRef} />
                     </div>
 
 
