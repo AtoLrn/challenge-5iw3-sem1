@@ -17,8 +17,12 @@ class ArtistController
 
     public function __invoke(): array
     {
-        $artists = $this->userRepository->findBy(['isProfessional' => true, 'isVerified' => true]);
+        $artists = $this->userRepository->findBy(['isVerified' => true]);
 
-        return $artists;
+
+
+        return array_filter($artists, function ($artist) {
+            return in_array('ROLE_PRO', $artist->getRoles(),);
+        });
     }
 }
