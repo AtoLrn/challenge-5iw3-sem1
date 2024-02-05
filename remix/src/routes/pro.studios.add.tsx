@@ -150,92 +150,106 @@ export default function () {
 			})}
 		</div>
 		
-		<Form method='POST' className='w-full flex flex-col gap-4'>
-			<div className='grid grid-cols-2 w-full gap-4'>
+		<Form method='POST' className='w-full gap-4'>
 
-				{/* NAME */}
-				<input placeholder='Name' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-				{/* /NAME */}
+			<p className="font-title text-xl mb-4">New studio details :</p>
+			<div className='flex w-full gap-8'>
 
-				{/* DESCRIPTION */}
-				<input placeholder='Description' type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-				{/* /DESCRIPTION */}
+				<div className='flex flex-col w-1/2 gap-4'>
+					{/* NAME */}
+					<input placeholder='Name' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					{/* /NAME */}
 
-				{/* LOCATION */}
-				<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
-					<input value={address?.id} placeholder='Address' type="text" name='location' className='hidden' />
-					<input
-						autoComplete='off'
-						onChange={(e) => {
-							setLoading(true)
-							onSeach(e)
-						}} placeholder='Address' type="text" name='search'className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-					<div className='flex flex-col gap-2 w-full relative top-0 left-0'>
-						<div className='absolute flex flex-col gap-2 w-full'>
-							{ isLoading ? <span>Loading...</span> : searchResults?.map((result) => {
-								return <div className='w-full cursor-pointer flex py-1 px-2 items-center gap-4 bg-black bg-opacity-30 text-white rounded-md justify-center border-1 border-transparent hover:border-gray-700 duration-300' onClick={() => {setAddress(result)}} key={result.id}>{result.name}</div>
-							}) }
+					{/* DESCRIPTION */}
+					<input placeholder='Description' type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					{/* /DESCRIPTION */}
+
+					{/* MAX CAPACITY */}
+					<input placeholder='Maximum number of employees' type="number" name='maxCapacity' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					{/* /MAX CAPACITY */}
+
+					{/* DOCUMENT */}
+					<div className="flex flex-col gap-1">
+						<label htmlFor='document' className='text-sm'>KBIS File</label>
+						<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
+					</div>
+					{/* /DOCUMENT */}
+
+					{/* OPENING TIMES */}
+					<div className='grid grid-cols-2 gap-2'>
+						<div className='w-full flex flex-col gap-1'>
+							<span className='text-sm'>Opening Time</span>
+							<input placeholder='Starting Date' type="time" name='openingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 						</div>
-						
+						<div className='w-full flex flex-col gap-1'>
+							<span className='text-sm'>Closing Time</span>
+							<input placeholder='Starting Date' type="time" name='closingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+						</div>
 					</div>
-					
+					{/* /OPENING TIMES */}
 				</div>
-				{/* /LOCATION */}
 
-				{/* MAP */}
-				<section id='map' className='h-48 w-full overflow-hidden'></section>
-				{/* /MAP */}
+				<div className="flex flex-col w-1/2">
+					{/* LOCATION */}
+					<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
+						<input value={address?.id} placeholder='Address' type="text" name='location' className='hidden' />
+						<input
+							autoComplete='off'
+							onChange={(e) => {
+								setLoading(true)
+								onSeach(e)
+							}} placeholder='Address' type="text" name='search'className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+						<div className='flex flex-col gap-2 w-full relative top-0 left-0'>
+							<div className='absolute flex flex-col gap-2 w-full'>
+								{ isLoading ? <span>Loading...</span> : searchResults?.map((result) => {
+									return <div className='w-full cursor-pointer flex py-1 px-2 items-center gap-4 bg-black bg-opacity-30 text-white rounded-md justify-center border-1 border-transparent hover:border-gray-700 duration-300' onClick={() => {setAddress(result)}} key={result.id}>{result.name}</div>
+								}) }
+							</div>
 
-				{/* MAX CAPACITY */}
-				<input placeholder='Number of employees' type="number" name='maxCapacity' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-				{/* /MAX CAPACITY */}
+						</div>
 
-				{/* DOCUMENT */}
-				<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
-				{/* /DOCUMENT */}
-
-				{/* OPENING TIMES */}
-				<div className='grid grid-cols-2 gap-2'>
-					<div className='w-full flex flex-col gap-1'>
-						<span className='text-sm'>Opening Time</span>
-						<input placeholder='Starting Date' type="time" name='openingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 					</div>
-					<div className='w-full flex flex-col gap-1'>
-						<span className='text-sm'>Closing Time</span>
-						<input placeholder='Starting Date' type="time" name='closingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-					</div>
-				</div>
-				{/* /OPENING TIMES */}
+					{/* /LOCATION */}
 
-				{/* OPENING DAYS */}
-				<div className='flex items-center gap-2 flex-wrap'>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='monday' asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Monday</span>
-					</Switch.Root>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='tuesday' asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Tuesday</span>
-					</Switch.Root>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='wednesday' asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Wednesday</span>
-					</Switch.Root>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='thursday'  asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Thursday</span>
-					</Switch.Root>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='friday' asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Friday</span>
-					</Switch.Root>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='saturday' asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Saturday</span>
-					</Switch.Root>
-					<Switch.Root className="Toggle" aria-label="Toggle italic" name='sunday' asChild>
-						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Sunday</span>
-					</Switch.Root>
+					{/* MAP */}
+					<section id='map' className='h-48 w-full overflow-hidden'></section>
+					{/* /MAP */}
 				</div>
-				{/* /OPENING DAYS */}
+
 
 			</div>
-			
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Create</button>
+
+
+			{/* OPENING DAYS */}
+			<p className="font-title text-xl mt-8 mb-4">Opening days :</p>
+			<div className='flex items-center gap-2 flex-wrap'>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='monday' asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Monday</span>
+				</Switch.Root>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='tuesday' asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Tuesday</span>
+				</Switch.Root>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='wednesday' asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Wednesday</span>
+				</Switch.Root>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='thursday'  asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Thursday</span>
+				</Switch.Root>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='friday' asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Friday</span>
+				</Switch.Root>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='saturday' asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Saturday</span>
+				</Switch.Root>
+				<Switch.Root className="Toggle" aria-label="Toggle italic" name='sunday' asChild>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Sunday</span>
+				</Switch.Root>
+			</div>
+			{/* /OPENING DAYS */}
+
+			<div className="flex mt-4">
+				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white ml-auto'>Create</button>
+			</div>
 		</Form>
 	</div>
 }

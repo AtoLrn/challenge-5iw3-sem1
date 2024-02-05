@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 const schema = z.object({
-    id: z.number(),
     name: z.string().min(1),
     description: z.string().min(1),
     location: z.string().min(1),
@@ -18,7 +17,6 @@ const schema = z.object({
 })
 
 export const createStudio = async (props: CreateStudio): Promise<Studio> => {
-    console.log('--------------------------------------------------')
     const res = await fetch(`${process.env.API_URL}/studios`, {
         method: 'POST',
         headers: {
@@ -28,11 +26,7 @@ export const createStudio = async (props: CreateStudio): Promise<Studio> => {
         body: JSON.stringify(props)
     })
     const body = await res.json()
-    console.log("body", body)
-    console.log("here")
     const studio = schema.parse(body)
-    console.log("here2")
-    console.log("studio", studio)
     return studio
 }
 
