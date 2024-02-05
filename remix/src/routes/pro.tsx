@@ -25,9 +25,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			token
 		})
 
-		if (!user.isProfessional) {
-			return redirect('/login')
-		}
+        if (!user.isProfessional) {
+            return redirect('/login')
+        }
 
 		return json<LoaderReturnType>({ user })
 

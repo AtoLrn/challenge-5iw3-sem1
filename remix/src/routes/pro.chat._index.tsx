@@ -62,6 +62,7 @@ export const ChannelItem: React.FC<ListItemProps<Channel>> = ({ item }) => {
 
 export default function () {
 	const { channels, errors } = useLoaderData<typeof loader>()
+	const { t } = useTranslation()
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[

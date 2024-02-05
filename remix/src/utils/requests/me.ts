@@ -6,7 +6,7 @@ const schema = z.object({
 	email: z.string().min(1),
 	username: z.string().min(1),
 	picture: z.string().min(1),
-	isProfessional: z.boolean().default(false),
+	roles: z.string().array(),
 })
 
 
@@ -24,15 +24,14 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
-	const { id, email, username, picture, isProfessional } = schema.parse(body)
-
+	const { id, email, username, picture, roles } = schema.parse(body)
     
 	return {
 		id,
 		email: email,
 		name: username,
 		avatar: picture,
-		isProfessional 
+		isProfessional: roles.includes('ROLE_PRO')
 	}
 }
 

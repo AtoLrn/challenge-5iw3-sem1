@@ -8,18 +8,10 @@ const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, error
 	const [ password, setPassword ] = useState('')
 	const [ passwordConfirmation, setPasswordConfirmation ] = useState('')
 
-	const formClasses = !profile.isProfessional ? 'lg:w-1/4 md:w-1/3 user-sidebar md:absolute md:top-0 md:left-[22.5rem]' : ''
 	const slideInFromLeft = {
 		hidden: { x: '-100%' },
 		visible: { 
 			x: 0,
-			transition: { duration: .5, ease: 'easeOut' }
-		}
-	}
-	const slideInFromTop = {
-		hidden: { y: '-100%' },
-		visible: { 
-			y: 0,
 			transition: { duration: .5, ease: 'easeOut' }
 		}
 	}
@@ -29,16 +21,10 @@ const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, error
 			transition: { duration: .5, ease: 'easeOut' }
 		}
 	}
-	const slideOutToTop = {
-		hidden: { 
-			y: -100,
-			transition: { duration: .5, ease: 'easeOut' }
-		}
-	}
-	const animationClasses = isEditing ? (profile.isProfessional ? slideInFromTop : slideInFromLeft) : (profile.isProfessional ? slideOutToLeft : slideOutToTop)
+	const animationClasses = isEditing ? slideInFromLeft : slideOutToLeft
 	return (
 		<m.div
-			className={`bg-neutral-800 p-5 text-white shadow-lg w-full z-10 ${formClasses}`}
+			className={'bg-neutral-800 p-5 text-white shadow-lg w-full z-10 lg:w-1/4 md:w-1/3 user-sidebar md:absolute md:top-0 md:left-[22.5rem]'}
 			initial="hidden"
 			animate="visible"
 			custom={profile.isProfessional ? 0 : 1}

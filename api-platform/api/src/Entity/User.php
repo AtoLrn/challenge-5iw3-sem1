@@ -230,7 +230,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[Groups(['user:patch', 'user:read', 'user:collection'])]
+    #[Groups(['user:patch', 'user:read', 'user:collection', 'user:read:me'])]
     #[ORM\Column]
     # Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
     private array $roles = [];
@@ -257,10 +257,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
-
-    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
-    #[ORM\Column(options: ["default" => false])]
-    private ?bool $isProfessional = null;
 
     #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
@@ -429,18 +425,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setInstagramToken(?string $instagramToken): static
     {
         $this->instagramToken = $instagramToken;
-
-        return $this;
-    }
-
-    public function getIsProfessional(): ?bool
-    {
-        return $this->isProfessional;
-    }
-
-    public function setIsProfessional(?bool $isProfessional): static
-    {
-        $this->isProfessional = $isProfessional;
 
         return $this;
     }

@@ -49,7 +49,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		})
 
 		return json<LoaderReturnType>({ 
-			user ,
+			user,
 			errors: [error],
 			success: success
 		})
