@@ -15,18 +15,18 @@ export const meta: MetaFunction = () => {
 }
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-	const id = parseInt(params.id as string);
-  if (!id) {
-    throw new Response('Not Found', { status: 404 });
-  }
+	const id = parseInt(params.id as string)
+	if (!id) {
+		throw new Response('Not Found', { status: 404 })
+	}
 
-  const session = await getSession(request.headers.get('Cookie'));
-  const token = session.get('token') as string;
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token') as string
 
-  const prestation = await getPrestation(id, token);
+	const prestation = await getPrestation(id, token)
 
-  return json(prestation);
-};
+	return json(prestation)
+}
 
 export default function Prestation() {
 

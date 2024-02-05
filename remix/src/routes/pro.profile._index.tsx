@@ -79,7 +79,7 @@ export default function () {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		const data = new FormData(event.currentTarget)
+		//const data = new FormData(event.currentTarget)
 		setIsEditing(false)
 	}
 	

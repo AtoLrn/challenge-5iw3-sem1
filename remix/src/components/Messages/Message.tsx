@@ -2,35 +2,36 @@ import React from 'react'
 
 export interface MessageProps {
     kind: 'sent' | 'received';
+    picture: string | null;
     message: string;
     date: string;
-    time: string;
 }
 
-export const Message: React.FC<MessageProps> = ({ kind, message, date, time }) => {
+export const Message: React.FC<MessageProps> = ({ kind, picture, message, date }) => {
 
 	const messageBoxClasses = `
-        py-3 px-4 mb-2 rounded-2xl max-w-[70%]
-        ${kind === 'sent' ? 'bg-zinc-800 text-white rounded-bl-sm' : 'bg-white text-black rounded-br-sm'}
+        py-3 px-4 mb-2 rounded-2xl max-w-[70%] flex flex-col
+        ${kind === 'received' ? 'bg-zinc-800 text-white rounded-bl-sm items-start' : 'bg-white text-black rounded-br-sm items-end justify-end'}
     `
 
 	const containerClasses = `
         flex flex-col
-        ${kind === 'sent' ? 'items-start' : 'items-end justify-end'}
+        ${kind === 'received' ? 'items-start' : 'items-end justify-end'}
     `
 
-	const textClasses = `
+	const dateClasses = `
         text-gray-400 text-xs
-        ${kind === 'sent' ? 'text-left' : 'text-right'}
+        ${kind === 'received' ? 'text-left' : 'text-right'}
     `
 
 	return (
 		<div className={containerClasses}>
 			<div className={messageBoxClasses}>
-				{message}
+				{ picture ? <a href={picture} target='_blank'><img src={picture} alt={picture} /></a> : null}
+				<p>{message}</p>
 			</div>
-			<div className={textClasses}>
-				{date} - {time}
+			<div className={dateClasses}>
+				{date}
 			</div>
 		</div>
 	)

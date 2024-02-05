@@ -1,4 +1,4 @@
-import { Kind } from "./kind";
+import { Kind } from './kind'
 
 export interface Prestation {
 	id: number,

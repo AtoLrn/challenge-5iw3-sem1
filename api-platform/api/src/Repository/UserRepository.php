@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Channel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -38,6 +39,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function getChannels(User $user)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('c')
+            ->from(Channel::class, 'c')
+            ->where($qb->expr()->orX(
+                $qb->expr()->eq('c.tattooArtist', ':userId'),
+                $qb->expr()->eq('c.requestingUser', ':userId')
+            ))
+            ->setParameter('userId', $user->getId());
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        return $result;
     }
 
 //    /**

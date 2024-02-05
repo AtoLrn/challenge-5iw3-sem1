@@ -218,7 +218,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
+    #[Groups(['user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -241,12 +241,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
+    #[Groups(['channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
+    #[Groups(['channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
@@ -277,12 +277,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
-    public function __construct()
-    {
-        $this->studios = new ArrayCollection();
-        $this->prestations = new ArrayCollection();
-        $this->partnerShips = new ArrayCollection();
-    }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -296,6 +290,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'userId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
+    #
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
+    private Collection $messages;
+
+    public function __construct()
+    {
+        $this->studios = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
+        $this->partnerShips = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -546,6 +551,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function removePrestation(Prestation $prestation): static
+    {
+        if ($this->prestations->removeElement($prestation)) {
+            // set the owning side to null (unless already changed)
+            if ($prestation->getProposedBy() === $this) {
+                $prestation->setProposedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, PartnerShip>
      */
@@ -564,18 +611,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removePrestation(Prestation $prestation): static
-    {
-        if ($this->prestations->removeElement($prestation)) {
-            // set the owning side to null (unless already changed)
-            if ($prestation->getProposedBy() === $this) {
-                $prestation->setProposedBy(null);
-            }
-        }
-
-        return $this;
-    }
- 
     public function removePartnerShip(PartnerShip $partnerShip): static
     {
         if ($this->partnerShips->removeElement($partnerShip)) {
