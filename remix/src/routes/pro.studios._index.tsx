@@ -7,14 +7,21 @@ import { ListItemProps } from 'src/components/Pro/ListItem'
 import { Title } from 'src/components/Title'
 import { Validation } from 'src/utils/types/validation'
 
-
 export interface Studio {
 	id: string,
-	title: string,
-	description: string
-	seats: number
-	available: number
-	state: Validation
+	name: string,
+	description: string,
+	location: string,
+	maxCapacity: number,
+	openingTime: string,
+	closingTime: string,
+	monday: string,
+	tuesday: string,
+	wednesday: string,
+	thursday: string,
+	friday: string,
+	saturday: string,
+	sunday: string,
 }
 
 export const meta: MetaFunction = () => {
@@ -29,11 +36,11 @@ export const meta: MetaFunction = () => {
 export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
 		<span>
-			<Badge state={item.state} />
+			<Badge state={item.status} />
 		</span>
-		<span>{ item.title }</span>
+		<span>{ item.name }</span>
 		<span>{ item.description }</span>
-		<span className='text-right'>{ item.available } / { item.seats }</span>
+		<span className='text-right'>{ item.maxCapacity } / { item.maxCapacity }</span>
 		<div className='flex items-center justify-end'>
 			<Link to={`/pro/studios/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>View</Link>
 		</div>	</div>
@@ -43,27 +50,27 @@ export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 export default function () {
 	const studio: Studio[] = [{
 		id: '123',
-		title: 'Super Studio',
+		name: 'Super Studio',
 		description: 'Ouga bouga le bon studio',
-		seats: 10,
+		maxCapacity: 10,
 		available: 3,
-		state: Validation.ACCEPTED
+		status: Validation.ACCEPTED
 	},
 	{
 		id: '1232',
-		title: 'Super Studio 2',
+		name: 'Super Studio 2',
 		description: 'Ouga bouga le bon studio 2',
-		seats: 10,
+		maxCapacity: 10,
 		available: 3,
-		state: Validation.PENDING
+		status: Validation.PENDING
 	},
 	{
 		id: '12324',
-		title: 'Super Studio 4',
+		name: 'Super Studio 4',
 		description: 'Ouga bouga le bon studio 2',
-		seats: 10,
+		maxCapacity: 10,
 		available: 3,
-		state: Validation.REFUSED
+		status: Validation.REFUSED
 	}]
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">

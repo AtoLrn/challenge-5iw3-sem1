@@ -15,17 +15,17 @@ import {createStudio} from "../utils/requests/studio.ts";
 const schema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
-	addressId: z.string().min(1),
+	location: z.string().min(1),
 	maxCapacity: z.coerce.number(),
 	openingTime: z.string().min(1),
 	closingTime: z.string().min(1),
-/*	monday: zx.CheckboxAsString,
-	tuesday: zx.CheckboxAsString,
-	wednesday: zx.CheckboxAsString,
-	thursday: zx.CheckboxAsString,
-	friday: zx.CheckboxAsString,
-	saturday: zx.CheckboxAsString,
-	sunday: zx.CheckboxAsString,*/
+	monday: z.string().min(1),
+	tuesday: z.string().min(1),
+	wednesday: z.string().min(1),
+	thursday: z.string().min(1),
+	friday: z.string().min(1),
+	saturday: z.string().min(1),
+	sunday: z.string().min(1),
 })
 
 export const meta: MetaFunction = () => {
@@ -54,15 +54,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		}
 
 		const req = await zx.parseForm(request, schema)
-		req.location = "adresse"
-		console.log("description", req.description)
 		const studio = await createStudio({...req, token })
 
 		return json({
 			studio
 		})
 
-		/*return redirect(`/pro/studios/${result.data.name}`)*/
+		return redirect(`/pro/studios/${result.data.name}`)
 
 	} catch (err) {
 		console.log(err)
@@ -158,7 +156,7 @@ export default function () {
 				<input placeholder='Description' type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 
 				<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
-					<input value={address?.id} placeholder='Address' type="text" name='addressId' className='hidden' />
+					<input value={address?.id} placeholder='Address' type="text" name='location' className='hidden' />
 					<input
 						autoComplete='off'
 						onChange={(e) => {
@@ -189,6 +187,7 @@ export default function () {
 						<input placeholder='Starting Date' type="time" name='closingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 					</div>
 				</div>
+
 				<div className='flex items-center gap-2 flex-wrap'>
 					<Switch.Root className="Toggle" aria-label="Toggle italic" name='monday' asChild>
 						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Monday</span>
@@ -211,9 +210,8 @@ export default function () {
 					<Switch.Root className="Toggle" aria-label="Toggle italic" name='sunday' asChild>
 						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Sunday</span>
 					</Switch.Root>
-
 				</div>
-				
+
 			</div>
 			
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Create</button>
