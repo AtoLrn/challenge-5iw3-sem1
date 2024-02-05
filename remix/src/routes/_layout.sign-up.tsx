@@ -25,7 +25,6 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 	})
 }
 
-
 export const action = async ({ request }: ActionFunctionArgs) => {
 	try {
 		const { isProfessional } = await zx.parseForm(request, schema)

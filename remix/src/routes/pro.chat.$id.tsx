@@ -138,7 +138,7 @@ export default function () {
 				{/* ========== Input ========== */}
 				<Form ref={formRef} encType='multipart/form-data' method='POST' className="flex flex-row justify-between">
 					<div className="w-2/3">
-						<input name="content" type="text" className="rounded-lg p-3 bg-black text-white border border-white w-full" placeholder="Message..."/>
+						<input name="content" required type="text" className="rounded-lg p-3 bg-black text-white border border-white w-full" placeholder="Message..."/>
 					</div>
 					<div className="flex flex-col items-center">
 						<div className="p-3 ml-auto hover:cursor-pointer bg-black text-white border border-white rounded-lg">

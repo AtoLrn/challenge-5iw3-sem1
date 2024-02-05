@@ -42,7 +42,7 @@ class UserFixtures extends Fixture
             )
         );
         $user->setIsVerified(true);
-        $user->setRoles(["ROLE_ADMIN"]);
+        $user->setRoles(["ROLE_ADMIN", "ROLE_PRO"]);
 
         $manager->persist($user);
 
