@@ -1,5 +1,5 @@
 import { Link, MetaFunction } from '@remix-run/react'
-import { t } from 'i18next'
+import {useTranslation} from 'react-i18next'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Badge } from 'src/components/Pro/Badge'
 import { List } from 'src/components/Pro/List'
@@ -41,6 +41,8 @@ export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 
 
 export default function () {
+	const { t } = useTranslation()
+
 	const studio: Studio[] = [{
 		id: '123',
 		title: 'Super Studio',

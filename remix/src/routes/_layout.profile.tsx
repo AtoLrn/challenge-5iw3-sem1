@@ -3,13 +3,13 @@ import { FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
 import { Title } from 'src/components/Title'
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import stylesheet from '../style/profile.css'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ProfileForm from 'src/components/ProfileForm'
-import { t } from 'i18next'
 import {getSession} from 'src/session.server'
 import {me, patchMe, patchMePassword, updateMePicture} from 'src/utils/requests/me'
 import {useLoaderData} from '@remix-run/react'
 import {User} from 'src/utils/types/user'
+import {useTranslation} from 'react-i18next'
 
 export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: stylesheet }]
@@ -43,50 +43,63 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		return redirect('/login')
 	}
 
-    try {
-        const user = await me({
-            token
-        })
+	try {
+		const user = await me({
+			token
+		})
 
-        return json<LoaderReturnType>({ 
-            user ,
-            errors: [error],
-            success: success
-        })
+		return json<LoaderReturnType>({ 
+			user ,
+			errors: [error],
+			success: success
+		})
 
-    } catch (e) {
-        return redirect('/login')
-    }
+	} catch (e) {
+		return redirect('/login')
+	}
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	try {
 		const session = await getSession(request.headers.get('Cookie'))
-        const token = session.get('token')
+		const token = session.get('token')
 
-        const formData = await request.formData()
-        const requestType = formData.get('request-type')
+		const formData = await request.formData()
+		const requestType = formData.get('request-type')
 
-        switch (requestType) {
-            case 'update-info':
-                await patchMe(token as string, {
-                    username: formData.get('username') as string,
-                    email: formData.get('email') as string
-                })
-                break;
-            case 'update-password':
-                await patchMePassword(token as string, {
-                    currentPassword: formData.get('current-password') as string,
-                    newPassword: formData.get('new-password') as string
-                })
-                break;
-            case 'update-picture':
-                formData.delete('requestType')
-                await updateMePicture(token as string, formData)
-                break;
-            default:
-                break;
-        }
+		if (!token) {
+			return redirect('/login')
+		}
+
+		switch (requestType) {
+		case 'update-info':
+			const oldUserInfo = await me({
+				token
+			})
+
+			await patchMe(token, {
+				username: formData.get('username') as string,
+				email: formData.get('email') as string
+			})
+
+			if (oldUserInfo.email !== formData.get('email')){
+				return redirect(`/login?error=${'You have updated your email, you need to login again'}`)
+			}
+
+			break
+		case 'update-password':
+			await patchMePassword(token, {
+				currentPassword: formData.get('current-password') as string,
+				newPassword: formData.get('new-password') as string
+			})
+			break
+		case 'update-picture':
+			formData.delete('requestType')
+			await updateMePicture(token as string, formData)
+			break
+		default:
+			break
+		}
 
 		return redirect('/profile?success=true')
 
@@ -99,6 +112,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 export default function ProfilePage() {
+	const { t } = useTranslation()
 	const { user, errors, success } = useLoaderData<typeof loader>()
 
 	const [isEditing, setIsEditing] = useState(false)
@@ -115,11 +129,6 @@ export default function ProfilePage() {
 
 	const toggleEdit = () => {
 		setIsEditing(!isEditing)
-	}
-
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		setIsEditing(false)
 	}
 
 	return (

@@ -31,7 +31,7 @@ export const me = async ({ token }: Me): Promise<User> => {
     
 	return {
 		id,
-        email: email,
+		email: email,
 		name: username,
 		avatar: picture,
 		isProfessional 
@@ -40,17 +40,17 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 export const patchMe = async (token: string, data: PatchMe): Promise<true> => {
 	const res = await fetch(`${process.env.API_URL}/users/me`, {
-        method: 'PATCH',
+		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/merge-patch+json',
 			'Authorization': `Bearer ${token}`
 		},
-        body: JSON.stringify(data)
+		body: JSON.stringify(data)
 	})
 
-    if (res.status === 200) {
-        return true
-    }
+	if (res.status === 200) {
+		return true
+	}
 
 	const body = await res.json()
     
@@ -59,17 +59,17 @@ export const patchMe = async (token: string, data: PatchMe): Promise<true> => {
 
 export const patchMePassword = async (token: string, data: PatchMePassword): Promise<true> => {
 	const res = await fetch(`${process.env.API_URL}/users/me/update-password`, {
-        method: 'PATCH',
+		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/merge-patch+json',
 			'Authorization': `Bearer ${token}`
 		},
-        body: JSON.stringify(data)
+		body: JSON.stringify(data)
 	})
 
-    if (res.status === 200) {
-        return true
-    }
+	if (res.status === 200) {
+		return true
+	}
 
 	const body = await res.json()
     

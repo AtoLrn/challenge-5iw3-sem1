@@ -1,10 +1,10 @@
 import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
-import { t } from 'i18next'
 import { LoaderFunction, json } from '@remix-run/node'
 import { getPrestation } from 'src/utils/requests/prestations'
 import { getSession } from 'src/session.server'
+import {useTranslation} from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -29,6 +29,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 }
 
 export default function Prestation() {
+	const { t } = useTranslation()
 
 	const data = useLoaderData()
 

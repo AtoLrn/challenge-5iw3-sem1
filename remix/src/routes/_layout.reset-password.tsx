@@ -1,10 +1,10 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, useLoaderData, useNavigation } from '@remix-run/react'
-import { t } from 'i18next'
 import { Title } from 'src/components/Title'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import { resetPassword } from 'src/utils/requests/resetPassword'
+import {useTranslation} from 'react-i18next'
 
 const schema = z.object({
 	password: z.string().min(1),
@@ -41,6 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 export default function ResetPassword() {
+	const { t } = useTranslation()
 	const { errors, success } = useLoaderData<typeof loader>()
 	const navigation = useNavigation()
 

@@ -2,13 +2,13 @@ import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
-import { t } from 'i18next'
 import { ListItemProps } from 'src/components/Pro/ListItem'
 import { List } from 'src/components/Pro/List'
 import { getSession } from 'src/session.server'
 import { getChannels } from 'src/utils/requests/channel'
 import { Channel, GetChannelAs } from '../utils/types/channel'
 import { formatDate } from '../utils/date'
+import {useTranslation} from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -39,6 +39,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export const ChannelItem: React.FC<ListItemProps<Channel>> = ({ item }) => {
+	const { t } = useTranslation()
+
 	return <div className='grid grid-cols-6 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
 		<span>{ item.requestingUser.username }</span>
 		<img className={ 'rounded-full relative border-2 border-gray-900 object-cover w-8 h-8' } src={item.requestingUser.picture}/>

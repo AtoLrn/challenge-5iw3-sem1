@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from '@remix-run/node'
 import { Form, Link, MetaFunction } from '@remix-run/react'
-import { t } from 'i18next'
 import { useState } from 'react'
+import {useTranslation} from 'react-i18next'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { z } from 'zod'
@@ -34,6 +34,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 
 export default function () {
+	const { t } = useTranslation()
 	const [ guest, setGuest ] = useState<string>()
 
 

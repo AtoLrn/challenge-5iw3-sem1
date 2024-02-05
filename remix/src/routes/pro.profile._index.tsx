@@ -4,9 +4,9 @@ import { Title } from 'src/components/Title'
 import { motion as m } from 'framer-motion'
 import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
 import ProfileForm from 'src/components/ProfileForm'
-import { t } from 'i18next'
 import { Validation } from 'src/utils/types/validation'
 import { Badge } from 'src/components/Pro/Badge'
+import {useTranslation} from 'react-i18next'
 
 
 type ProfileData = {
@@ -27,6 +27,7 @@ export const meta: MetaFunction = () => {
 }
 
 export default function () {
+	const { t } = useTranslation()
 	const [isEditing, setIsEditing] = useState(false)
 
 	/**

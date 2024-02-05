@@ -1,8 +1,6 @@
 import { Form, MetaFunction, useLoaderData, useRevalidator } from '@remix-run/react'
 import { Title } from 'src/components/Title'
 
-import { t } from 'i18next'
-
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -13,6 +11,7 @@ import { z } from 'zod'
 import { zx } from 'zodix'
 import { createDayOff, deleteDayOff, getDaysOff } from 'src/utils/requests/off-day'
 import { getSession } from 'src/session.server'
+import {useTranslation} from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -85,6 +84,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	})
 }
 export default function () {
+	const { t } = useTranslation()
 	const {revalidate} = useRevalidator()
 	const { daysOff } = useLoaderData<typeof loader>()
 	const [startDate, setStartDate] = useState<Date>()

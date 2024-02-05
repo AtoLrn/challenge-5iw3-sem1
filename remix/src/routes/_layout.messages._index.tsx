@@ -1,11 +1,11 @@
 import { Title } from 'src/components/Title'
 import {useLoaderData} from '@remix-run/react'
-import { t } from 'i18next'
 import { MessageSide } from 'src/components/Messages/MessageSide'
 import {getSession} from 'src/session.server'
 import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
 import {getChannels} from 'src/utils/requests/channel'
 import {GetChannelAs} from 'src/utils/types/channel'
+import {useTranslation} from 'react-i18next'
 
 
 export function meta() {
@@ -45,6 +45,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function () {
 	const { channels, errors } = useLoaderData<typeof loader>()
+	const { t } = useTranslation()
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>

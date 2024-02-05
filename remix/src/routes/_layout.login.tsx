@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, useLoaderData, useNavigation } from '@remix-run/react'
-import { t } from 'i18next'
+import {useTranslation} from 'react-i18next'
 import { Title } from 'src/components/Title'
 import { commitSession, getSession } from 'src/session.server'
 import { login } from 'src/utils/requests/login'
@@ -46,6 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 export default function MainPage() {
+	const { t } = useTranslation()
 	const { errors } = useLoaderData<typeof loader>()
 	const navigation = useNavigation()
 
