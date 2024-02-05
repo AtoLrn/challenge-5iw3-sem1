@@ -60,7 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			studio
 		})
 
-		return redirect(`/pro/studios/${result.data.name}`)
+		/*return redirect(`/pro/studios/${studio.name}`)*/
 
 	} catch (err) {
 		console.log(err)
@@ -152,9 +152,16 @@ export default function () {
 		
 		<Form method='POST' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>
-				<input placeholder='Name' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-				<input placeholder='Description' type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 
+				{/* NAME */}
+				<input placeholder='Name' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+				{/* /NAME */}
+
+				{/* DESCRIPTION */}
+				<input placeholder='Description' type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+				{/* /DESCRIPTION */}
+
+				{/* LOCATION */}
 				<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
 					<input value={address?.id} placeholder='Address' type="text" name='location' className='hidden' />
 					<input
@@ -173,10 +180,21 @@ export default function () {
 					</div>
 					
 				</div>
+				{/* /LOCATION */}
+
+				{/* MAP */}
 				<section id='map' className='h-48 w-full overflow-hidden'></section>
+				{/* /MAP */}
+
+				{/* MAX CAPACITY */}
 				<input placeholder='Number of employees' type="number" name='maxCapacity' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+				{/* /MAX CAPACITY */}
+
+				{/* DOCUMENT */}
 				<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
-				
+				{/* /DOCUMENT */}
+
+				{/* OPENING TIMES */}
 				<div className='grid grid-cols-2 gap-2'>
 					<div className='w-full flex flex-col gap-1'>
 						<span className='text-sm'>Opening Time</span>
@@ -187,7 +205,9 @@ export default function () {
 						<input placeholder='Starting Date' type="time" name='closingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 					</div>
 				</div>
+				{/* /OPENING TIMES */}
 
+				{/* OPENING DAYS */}
 				<div className='flex items-center gap-2 flex-wrap'>
 					<Switch.Root className="Toggle" aria-label="Toggle italic" name='monday' asChild>
 						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Monday</span>
@@ -211,6 +231,7 @@ export default function () {
 						<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Sunday</span>
 					</Switch.Root>
 				</div>
+				{/* /OPENING DAYS */}
 
 			</div>
 			
