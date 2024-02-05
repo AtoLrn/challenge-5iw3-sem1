@@ -75,14 +75,13 @@ export async function action ({ request }: ActionFunctionArgs) {
 				artists: await getArtists()
 			})
 		} else {
-			const isValid = await createPartnership({
+			await createPartnership({
 				token,
+				studioId: 10,
 				artistId: parseInt(body.artistId),
 				startDate: new Date(),
 				endDate: new Date()
 			})
-
-			console.log('ANTOINE: ', isValid)
 
 			return json<ActionReturnType>({
 				status: 204,
