@@ -1,14 +1,11 @@
 import { Title } from 'src/components/Title'
-import {Form, Link, useLoaderData} from '@remix-run/react'
+import {useLoaderData} from '@remix-run/react'
 import { t } from 'i18next'
-import { IoSend } from 'react-icons/io5'
-import { RiAttachment2 } from 'react-icons/ri'
 import { MessageSide } from 'src/components/Messages/MessageSide'
-import { Message } from 'src/components/Messages/Message'
 import {getSession} from 'src/session.server'
 import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
-import {getChannel, getChannels} from 'src/utils/requests/channel'
-import {Channel, GetChannelAs} from 'src/utils/types/channel'
+import {getChannels} from 'src/utils/requests/channel'
+import {GetChannelAs} from 'src/utils/types/channel'
 
 
 export function meta() {
@@ -19,7 +16,7 @@ export function meta() {
 	]
 }
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const session = await getSession(request.headers.get('Cookie'))
 
 	const token = session.get('token')
@@ -31,19 +28,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
 
-    try {
-        const channels = await getChannels(token, GetChannelAs.requestingUser)
+	try {
+		const channels = await getChannels(token, GetChannelAs.requestingUser)
         
 	    return json({
-            channels,
-            errors: [error]
-        })
-    } catch (e) {
-        if (e instanceof Error)
+			channels,
+			errors: [error]
+		})
+	} catch (e) {
+		if (e instanceof Error)
 		    return redirect(`/messages?error${e.message}`)
 
 		return redirect(`/messages?error${'Unexpected Error'}`)
-    }
+	}
 }
 
 export default function () {
@@ -54,16 +51,16 @@ export default function () {
 
 			<div className="flex divide-x divide-white h-[88vh] mt-auto">
 
-                <MessageSide channels={channels} />
+				<MessageSide channels={channels} />
 				<div className="w-2/3 h-full">
 
 					<div className="flex flex-col items-center justify-center h-full">
-                        <Title kind={'h2'}>{t('choose-artist-to-chat')}</Title>
-                        { errors.map((error) => {
-                            return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
-                                {error}
-                            </div>
-                        })}
+						<Title kind={'h2'}>{t('choose-artist-to-chat')}</Title>
+						{ errors.map((error) => {
+							return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+								{error}
+							</div>
+						})}
 					</div>
 
 				</div>

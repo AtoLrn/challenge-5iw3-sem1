@@ -1,14 +1,12 @@
 import { Title } from 'src/components/Title'
-import {Form, Link, useLoaderData} from '@remix-run/react'
-import { t } from 'i18next'
+import {Form, useLoaderData} from '@remix-run/react'
 import { IoSend } from 'react-icons/io5'
-import { RiAttachment2 } from 'react-icons/ri'
 import { MessageSide } from 'src/components/Messages/MessageSide'
 import { Message } from 'src/components/Messages/Message'
 import {getSession} from 'src/session.server'
 import {ActionFunctionArgs, LoaderFunctionArgs, json, redirect} from '@remix-run/node'
-import {getChannel, getChannels, sendMessage} from 'src/utils/requests/channel'
-import {Channel, GetChannelAs} from 'src/utils/types/channel'
+import { getChannels, sendMessage } from 'src/utils/requests/channel'
+import {GetChannelAs} from 'src/utils/types/channel'
 import { Message as MessageI } from '../utils/types/message'
 import {useEffect, useRef} from 'react'
 import { formatDate } from '../utils/date'
@@ -34,39 +32,39 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
 
-    try {
-        const channels = await getChannels(token, GetChannelAs.requestingUser)
-        const currentChannel = channels.find((channel) => channel.id === parseInt(params.id as string))
+	try {
+		const channels = await getChannels(token, GetChannelAs.requestingUser)
+		const currentChannel = channels.find((channel) => channel.id === parseInt(params.id as string))
         
 	    return json({
-            channels,
-            currentChannel,
-            errors: [error]
-        })
-    } catch (e) {
+			channels,
+			currentChannel,
+			errors: [error]
+		})
+	} catch (e) {
 		return redirect('/')
-    }
+	}
 }
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
 	try {
-        const session = await getSession(request.headers.get('Cookie'))
+		const session = await getSession(request.headers.get('Cookie'))
 
-        const token = session.get('token')
+		const token = session.get('token')
 
-        if (!token) {
-            return redirect(`/login?error=${'You need to login'}`)
-        }
+		if (!token) {
+			return redirect(`/login?error=${'You need to login'}`)
+		}
 
 		const formData = await request.formData()
-        formData.set('channelId', params.id as string)
+		formData.set('channelId', params.id as string)
 
-        await sendMessage(formData, token)
+		await sendMessage(formData, token)
 
 		return redirect(`/messages/${params.id}`)
 	} catch (e) {
-        if (e instanceof Error)
-            return redirect(`/messages?error=${e.message}`)
+		if (e instanceof Error)
+			return redirect(`/messages?error=${e.message}`)
 
 		return redirect(`/messages?error=${'Unexpected Error'}`)
 	}
@@ -75,52 +73,52 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
 export default function () {
 	const { channels, currentChannel, errors } = useLoaderData<typeof loader>()
-    const chatEndRef = useRef<HTMLDivElement>(null)
-    let formRef = useRef<HTMLFormElement>(null)
+	const chatEndRef = useRef<HTMLDivElement>(null)
+	const formRef = useRef<HTMLFormElement>(null)
 
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView()
-        formRef.current?.reset()
-    })
+	useEffect(() => {
+		chatEndRef.current?.scrollIntoView()
+		formRef.current?.reset()
+	})
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
 
-            { errors.map((error) => {
-                return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
-                    {error}
-                </div>
-            })}
+			{ errors.map((error) => {
+				return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+					{error}
+				</div>
+			})}
 			<div className="flex divide-x divide-white h-[88vh] mt-auto">
 
-                <MessageSide channels={channels} />
+				<MessageSide channels={channels} />
 				{/* ========== RIGHT SIDE ========== */}
 				<div className="w-2/3 h-full">
 
 					<div className="flex flex-col h-full">
 						<div className="sticky top-0 px-4 py-6 border-b">
 							<Title kind={'h3'}>
-                                {currentChannel?.tattooArtist.username}
+								{currentChannel?.tattooArtist.username}
 							</Title>
 						</div>
 
 						{/* ========== Messages ========== */}
 						<div className="h-full overflow-y-scroll p-4 flex flex-col space-y-2">
 
-                            {currentChannel?.messages.map((message: MessageI) => {
-                                let kind: 'received' | 'sent'
-                                if (message.sender.id === currentChannel.tattooArtist.id) {
-                                    kind = 'received'
-                                } else {
-                                    kind = 'sent'
-                                }
-                                return <Message key={message.id} kind={kind}
-                                            picture={message.picture}
-                                            message={message.content}
-                                            date={formatDate(message.createdAt)}
-                                />
-                            })}
-                            <div ref={chatEndRef} />
+							{currentChannel?.messages.map((message: MessageI) => {
+								let kind: 'received' | 'sent'
+								if (message.sender.id === currentChannel.tattooArtist.id) {
+									kind = 'received'
+								} else {
+									kind = 'sent'
+								}
+								return <Message key={message.id} kind={kind}
+									picture={message.picture}
+									message={message.content}
+									date={formatDate(message.createdAt)}
+								/>
+							})}
+							<div ref={chatEndRef} />
 						</div>
 						{/* ========== /Messages ========== */}
 
@@ -136,9 +134,9 @@ export default function () {
 							</div>
 							<div className="w-1/12 flex flex-col items-center">
 								<div className="p-2 ml-auto hover:cursor-pointer bg-black text-white border border-white rounded-lg">
-                                    <button type="submit">
-                                        <IoSend size={24}/>
-                                    </button>
+									<button type="submit">
+										<IoSend size={24}/>
+									</button>
 								</div>
 							</div>
 						</Form>

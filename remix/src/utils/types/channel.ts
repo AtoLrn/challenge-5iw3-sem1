@@ -1,4 +1,4 @@
-import { Message } from "./message"
+import { Message } from './message'
 
 export interface UserChannel {
     id: number
@@ -14,6 +14,6 @@ export interface Channel {
 }
 
 export enum GetChannelAs {
-    tattooArtist = "tattooArtist",
-    requestingUser = "requestingUser"
+    tattooArtist = 'tattooArtist',
+    requestingUser = 'requestingUser'
 }

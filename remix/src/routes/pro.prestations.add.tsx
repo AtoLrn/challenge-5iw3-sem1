@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, MetaFunction, useLoaderData } from '@remix-run/react'
-import { createPrestation } from 'src/utils/requests/prestations';
+import { createPrestation } from 'src/utils/requests/prestations'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
@@ -25,24 +25,24 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  try {
-    const formData = await request.formData();
-    const newFormData = new FormData();
+	try {
+		const formData = await request.formData()
+		const newFormData = new FormData()
 
 		formData.forEach((value, key) => {
 			if (key === 'picture' && value instanceof File) {
-				newFormData.append(key, value, value.name);
+				newFormData.append(key, value, value.name)
 			} else {
-				newFormData.append(key, value.toString());
+				newFormData.append(key, value.toString())
 			}
-		});
+		})
 
-    const session = await getSession(request.headers.get('Cookie'));
-    const token = session.get('token') as string;
+		const session = await getSession(request.headers.get('Cookie'))
+		const token = session.get('token') as string
 
-    const response = await createPrestation(newFormData, token);
+		await createPrestation(newFormData, token)
 
-		return redirect('/pro/prestations');
+		return redirect('/pro/prestations')
 
 	} catch (e) {
 		if (e instanceof Error)

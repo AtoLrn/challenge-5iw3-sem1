@@ -30,11 +30,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		return redirect(`/login?error=${'You need to login'}`)
 	}
 
-    const channels = await getChannels(token, GetChannelAs.tattooArtist)
+	const channels = await getChannels(token, GetChannelAs.tattooArtist)
 
 	return json({
 		channels: channels,
-        errors: [error]
+		errors: [error]
 	})
 }
 
@@ -43,13 +43,13 @@ export const ChannelItem: React.FC<ListItemProps<Channel>> = ({ item }) => {
 		<span>{ item.requestingUser.username }</span>
 		<img className={ 'rounded-full relative border-2 border-gray-900 object-cover w-8 h-8' } src={item.requestingUser.picture}/>
 		<span className='text-right col-span-2 flex gap-2 justify-center items-center'>
-            { item.messages.length > 0 ?
-                <i>
-                    <b>{ item.messages[item.messages.length - 1]?.content }</b> {formatDate(item.messages[item.messages.length - 1]?.createdAt as string)}
-                </i>
-                :
-                <i>{t('chat-empty-last-message')}</i>
-            }
+			{ item.messages.length > 0 ?
+				<i>
+					<b>{ item.messages[item.messages.length - 1]?.content }</b> {formatDate(item.messages[item.messages.length - 1]?.createdAt as string)}
+				</i>
+				:
+				<i>{t('chat-empty-last-message')}</i>
+			}
 		</span>
 		<div className='flex items-center gap-2 justify-end'>
 			<Link to={`/pro/chat/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>Chat</Link>
@@ -71,11 +71,11 @@ export default function () {
 				url: '/pro/chat'
 			}
 		]}/>
-        { errors.map((error) => {
-            return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
-                {error}
-            </div>
-        })}
+		{ errors.map((error) => {
+			return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+				{error}
+			</div>
+		})}
 		<Title kind="h2">{t('pro-chat-page-title')}</Title>
 		<List items={channels} ListItem={ChannelItem} />
 	</div>

@@ -1,6 +1,6 @@
 import * as Avatar from '@radix-ui/react-avatar'
 import { Message as MessageI } from '../../utils/types/message'
-import { formatDate } from 'src/utils/date';
+import { formatDate } from 'src/utils/date'
 import { t } from 'i18next'
 
 export interface MessagePreviewProps {
@@ -25,21 +25,21 @@ export const MessagePreview: React.FC<MessagePreviewProps> = ({picture, name, me
 				<div className="font-title pb-2">
 					{name}
 				</div>
-                <div className="text-sm truncate text-gray-400">
-                    { messages?.length > 0 ?
-                        <p>{messages[messages.length - 1]?.content}</p>
-                        :
-                        <p>{t('chat-empty-last-message')}</p>
-                    }
+				<div className="text-sm truncate text-gray-400">
+					{ messages?.length > 0 ?
+						<p>{messages[messages.length - 1]?.content}</p>
+						:
+						<p>{t('chat-empty-last-message')}</p>
+					}
 				</div>
 			</div>
 			<div className="w-1/5 text-xs text-right flex flex-col">
 				<div className="pb-2 text-gray-400">
-                    { messages?.length > 0 ?
-                        <p>{formatDate(messages[messages.length - 1]?.createdAt as string)}</p>
-                        :
-                        null
-                    }
+					{ messages?.length > 0 ?
+						<p>{formatDate(messages[messages.length - 1]?.createdAt as string)}</p>
+						:
+						null
+					}
 				</div>
 			</div>
 		</div>
