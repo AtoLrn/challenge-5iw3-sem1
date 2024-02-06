@@ -7,7 +7,6 @@ import { getSession } from 'src/session.server'
 import {useTranslation} from 'react-i18next'
 import {Prestation} from 'src/utils/types/prestation'
 import {Kind} from 'src/utils/types/kind'
-import {Validation} from 'src/utils/types/validation'
 
 export interface LoaderReturnType {
 	prestation: Prestation
@@ -33,8 +32,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const prestation = await getPrestation(id, token)
 
 	return json<LoaderReturnType>({
-        prestation
-    })
+		prestation
+	})
 }
 
 export default function () {
@@ -42,16 +41,16 @@ export default function () {
 
 	const { prestation } = useLoaderData<typeof loader>()
 
-    const getTranslatedKind = (kind: Kind) => {
-        switch (kind) {
-        case Kind.TATTOO:
-            return t('tattoo')
-        case Kind.JEWELERY:
-            return t('jewelry')
-        case Kind.BARBER:
-            return t('barber')
-        }
-    }
+	const getTranslatedKind = (kind: Kind) => {
+		switch (kind) {
+		case Kind.TATTOO:
+			return t('tattoo')
+		case Kind.JEWELERY:
+			return t('jewelry')
+		case Kind.BARBER:
+			return t('barber')
+		}
+	}
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-4">
 		<BreadCrumb routes={[

@@ -7,7 +7,7 @@ const schema = z.object({
 	username: z.string().min(1),
 	picture: z.string().min(1),
 	roles: z.string().array(),
-    kbisVerified: z.boolean()
+	kbisVerified: z.boolean()
 })
 
 
@@ -33,7 +33,7 @@ export const me = async ({ token }: Me): Promise<User> => {
 		name: username,
 		avatar: picture,
 		isProfessional: roles.includes('ROLE_PRO'),
-        isKbisVerified: kbisVerified
+		isKbisVerified: kbisVerified
 	}
 }
 

@@ -1,9 +1,7 @@
 import { Link, MetaFunction, NavLink, useLoaderData } from '@remix-run/react'
-import { useState } from 'react'
 import { Title } from 'src/components/Title'
 import { motion as m } from 'framer-motion'
-import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
-import ProfileForm from 'src/components/ProfileForm'
+import { FaArrowRight, FaPen} from 'react-icons/fa6'
 import { Validation } from 'src/utils/types/validation'
 import { Badge } from 'src/components/Pro/Badge'
 import {useTranslation} from 'react-i18next'
@@ -59,17 +57,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function () {
 	const { t } = useTranslation()
 	const { user } = useLoaderData<typeof loader>()
-
-	/**
-   * @TODO: Fetch user data from the database
-   */
-	const profile: ProfileData = {
-		username: 'Jerry Gollet',
-		avatar: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
-		isProfessional: true,
-		isAdmin: false,
-		email: 'test@test.com',
-	}
 
 	const appointments = [
 
@@ -138,7 +125,7 @@ export default function () {
 							</div>
 						</div>
                     	<NavLink
-                            to={"/profile"}
+							to={'/profile'}
 							className="edit-btn bg-red-950 text-white px-3 py-3 rounded-md shadow-md flex items-center gap-2 hover:bg-red-900 justify-center"
 						>
 							<FaPen />

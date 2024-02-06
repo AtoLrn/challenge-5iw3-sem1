@@ -7,18 +7,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	const token = session.get('token')
 
-    try {
-        if (!params.id) {
-            redirect('/pro/posts')
-        }
+	try {
+		if (!params.id) {
+			redirect('/pro/posts')
+		}
 
-        await deletePost(token as string, params.id as string)
+		await deletePost(token as string, params.id as string)
 
-        return redirect('/pro/posts')
-    } catch(e) {
-        if (e instanceof Error)
-            return redirect(`/pro/posts?error=${e.message}`)
+		return redirect('/pro/posts')
+	} catch(e) {
+		if (e instanceof Error)
+			return redirect(`/pro/posts?error=${e.message}`)
 
-        return redirect(`/pro/posts?error${'Unexpected Error'}`)
-    }
+		return redirect(`/pro/posts?error${'Unexpected Error'}`)
+	}
 }

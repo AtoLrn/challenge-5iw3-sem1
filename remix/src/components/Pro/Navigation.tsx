@@ -1,7 +1,7 @@
 import { NavLink } from '@remix-run/react'
 import * as HoverCard from '@radix-ui/react-hover-card'
 import {useTranslation} from 'react-i18next'
-import {User} from 'src/utils/types/user';
+import {User} from 'src/utils/types/user'
 
 export interface NavigationProps {
   user: User;
@@ -10,45 +10,45 @@ export interface NavigationProps {
 export const ProNavigation: React.FC<NavigationProps> = ({ user }) => {
 	const { i18n, t } = useTranslation()
 
-    const links = [
-        {
-            name: t('dashboard'),
-            url: '/pro/dashboard'
-        },
-        {
-            name: t('guests'),
-            url: '/pro/guests'
-        },
-        {
-            name: 'Studios',
-            url: '/pro/studios'
-        },
-        {
-            name: 'Prestations',
-            url: '/pro/prestations'
-        },
-        {
-            name: t('posts'),
-            url: '/pro/posts'
-        },
-        {
-            name: 'Chat',
-            url: '/pro/chat'
-        },
-        {
-            name: 'Invitations',
-            url: '/pro/invitations'
-        }
-    ]
+	const links = [
+		{
+			name: t('dashboard'),
+			url: '/pro/dashboard'
+		},
+		{
+			name: t('guests'),
+			url: '/pro/guests'
+		},
+		{
+			name: 'Studios',
+			url: '/pro/studios'
+		},
+		{
+			name: 'Prestations',
+			url: '/pro/prestations'
+		},
+		{
+			name: t('posts'),
+			url: '/pro/posts'
+		},
+		{
+			name: 'Chat',
+			url: '/pro/chat'
+		},
+		{
+			name: 'Invitations',
+			url: '/pro/invitations'
+		}
+	]
 
 	const changeLanguage = () => {
 		const currentLanguage = i18n.language
 
 		if (currentLanguage === 'en') {
-            window.localStorage.setItem('i18nextLng', 'fr')
+			window.localStorage.setItem('i18nextLng', 'fr')
 			i18n.changeLanguage('fr')
 		} else if(currentLanguage === 'fr') {
-            window.localStorage.setItem('i18nextLng', 'en')
+			window.localStorage.setItem('i18nextLng', 'en')
 			i18n.changeLanguage('en')
 		}
 	}
@@ -71,33 +71,33 @@ export const ProNavigation: React.FC<NavigationProps> = ({ user }) => {
 				
 			</ul>
 		</section>
-        <div className='flex flex-row'>
-            <HoverCard.Root>
-                <HoverCard.Trigger asChild>
-                    <a className="flex items-center justify-start w-full h-16 py-2 px-8 gap-4 cursor-pointer" href='/pro/profile'>
-                        <img className="rounded-full" height={32} width={32} src={user.avatar}/>
-                        <div className="flex flex-col ">
-                            <span className="text-sm">{ user.name }</span>
-                            <span className="opacity-70 text-sm">Tattoo artist</span>
-                        </div>
-                    </a>
-                </HoverCard.Trigger>
-                <HoverCard.Portal>
-                    <HoverCard.Content className="rounded-xl bg-white text-black shadow-lg w-56 z-10" sideOffset={5}>
-                        <section className="flex  flex-col items-center justify-start w-full py-2 px-8 gap-4 cursor-pointer">
-                            <div className="flex flex-col ">
-                                <span className="text-sm">You've done 14 tattoos</span>
-                                <span className="opacity-70 text-sm">You traveled throught 4 studios</span>
-                            </div>
-                        </section>
+		<div className='flex flex-row'>
+			<HoverCard.Root>
+				<HoverCard.Trigger asChild>
+					<a className="flex items-center justify-start w-full h-16 py-2 px-8 gap-4 cursor-pointer" href='/pro/profile'>
+						<img className="rounded-full" height={32} width={32} src={user.avatar}/>
+						<div className="flex flex-col ">
+							<span className="text-sm">{ user.name }</span>
+							<span className="opacity-70 text-sm">Tattoo artist</span>
+						</div>
+					</a>
+				</HoverCard.Trigger>
+				<HoverCard.Portal>
+					<HoverCard.Content className="rounded-xl bg-white text-black shadow-lg w-56 z-10" sideOffset={5}>
+						<section className="flex  flex-col items-center justify-start w-full py-2 px-8 gap-4 cursor-pointer">
+							<div className="flex flex-col ">
+								<span className="text-sm">You've done 14 tattoos</span>
+								<span className="opacity-70 text-sm">You traveled throught 4 studios</span>
+							</div>
+						</section>
 
-                        <HoverCard.Arrow className="fill-white" />
-                    </HoverCard.Content>
-                </HoverCard.Portal>
-            </HoverCard.Root>
-            <div className='flex items-center'>
+						<HoverCard.Arrow className="fill-white" />
+					</HoverCard.Content>
+				</HoverCard.Portal>
+			</HoverCard.Root>
+			<div className='flex items-center'>
 		        <img className='cursor-pointer' width={16} src={`/images/${i18n.language}-flag.png`} alt="flag" onClick={changeLanguage}/>
-            </div>
-        </div>
+			</div>
+		</div>
 	</nav>
 }

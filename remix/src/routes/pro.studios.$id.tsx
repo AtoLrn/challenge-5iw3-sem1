@@ -1,4 +1,4 @@
-import { Form, Link, MetaFunction, useFetcher } from '@remix-run/react'
+import { Link, MetaFunction, useFetcher } from '@remix-run/react'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
@@ -110,7 +110,7 @@ export default function () {
 	const [ isSearching, setSearching ] = useState(false)
 	const [ artistId, setArtistId ] = useState<number>()
 	const [ artist, setArtist ] = useState<string>()
-    const { t } = useTranslation()
+	const { t } = useTranslation()
 
 	const fetch  = useFetcher<ActionReturnType>()
 

@@ -39,10 +39,10 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 		const currentLanguage = i18n.language
 
 		if (currentLanguage === 'en') {
-            window.localStorage.setItem('i18nextLng', 'fr')
+			window.localStorage.setItem('i18nextLng', 'fr')
 			i18n.changeLanguage('fr')
 		} else if(currentLanguage === 'fr') {
-            window.localStorage.setItem('i18nextLng', 'en')
+			window.localStorage.setItem('i18nextLng', 'en')
 			i18n.changeLanguage('en')
 		}
 	}
@@ -68,9 +68,9 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
           INKIT
 				</a>
 				<ul className="flex gap-4 items-center">
-                    <li className="cursor-pointer">
-                        <img width={16} src={`/images/${i18n.language}-flag.png`} alt="flag" onClick={changeLanguage}/>
-                    </li>
+					<li className="cursor-pointer">
+						<img width={16} src={`/images/${i18n.language}-flag.png`} alt="flag" onClick={changeLanguage}/>
+					</li>
 					{user ? (
 						<>
 

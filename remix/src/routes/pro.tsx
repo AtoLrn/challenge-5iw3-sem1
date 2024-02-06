@@ -25,11 +25,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			token
 		})
 
-        if (!user.isProfessional) {
-            return redirect('/login')
-        } else if(!user.isKbisVerified) {
-            return redirect(`/login?error=${'You have to wait until an administrator verify your kbis file'}`)
-        }
+		if (!user.isProfessional) {
+			return redirect('/login')
+		} else if(!user.isKbisVerified) {
+			return redirect(`/login?error=${'You have to wait until an administrator verify your kbis file'}`)
+		}
 
 		return json<LoaderReturnType>({ user })
 

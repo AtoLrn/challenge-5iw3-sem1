@@ -16,14 +16,14 @@ const resources = {
 
 i18n
 	.use(initReactI18next)
-    .use(LanguageDetector)
+	.use(LanguageDetector)
 	.init({
 		resources,
 		fallbackLng: 'en',
 		keySeparator: false,
-        detection: {
-            order: ['localStorage']
-        },
+		detection: {
+			order: ['localStorage']
+		},
 		interpolation: {
 			escapeValue: false
 		},

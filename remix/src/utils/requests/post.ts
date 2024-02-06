@@ -18,7 +18,7 @@ export const getPosts = async (token: string ): Promise<Post[]> => {
 	const formatBody = body.map((post: Post): Post => {
 		return {
 			id: post.id,
-            picture: post.picture
+			picture: post.picture
 		}
 	})
 
@@ -45,14 +45,14 @@ export const createPost = async (token: string, formData: FormData): Promise<tru
 
 export const deletePost = async (token: string, id: string): Promise<true> => {
 	const res = await fetch(`${process.env.API_URL}/posts/${id}`, {
-        method: 'DELETE',
+		method: 'DELETE',
 		headers: {
 			'Authorization': `Bearer ${token}`
 		},
 	})
 
 	if (res.status === 204) {
-        return true
+		return true
 	}
 
 	const body = await res.json()

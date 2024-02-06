@@ -44,7 +44,7 @@ export const GuestsItem: React.FC<ListItemProps<Guest>> = ({ item }) => {
 }
 
 export default function () {
-    const { t } = useTranslation()
+	const { t } = useTranslation()
 
 	const studio: Guest[] = [{
 		id: '123',
