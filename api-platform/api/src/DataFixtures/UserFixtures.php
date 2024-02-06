@@ -28,8 +28,7 @@ class UserFixtures extends Fixture
                 )
             );
             $user->setIsVerified(true);
-            $user->setIsProfessional(false);
-        $user->setRoles(["ROLE_USER"]);
+            $user->setRoles(["ROLE_USER"]);
 
             $manager->persist($user);
         }
