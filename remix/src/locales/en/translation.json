@@ -92,5 +92,22 @@
   "september": "September",
   "october": "October",
   "november": "November",
-  "december": "December"
+  "december": "December",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "new-studio-details": "New studio details :",
+  "studio-name": "Studio name",
+  "studio-description": "Describe your studio in a few words",
+  "max-nb-employees": "Maximum number of employees",
+  "kbis-file": "Kbis file",
+  "opening-time": "Opening time",
+  "closing-time": "Closing time",
+  "address": "Address",
+  "opening-days": "Opening days",
+  "return": "Return"
 }

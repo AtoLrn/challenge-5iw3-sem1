@@ -9,8 +9,9 @@ import { AddressSearchResult } from './api.address.$search'
 import { z } from 'zod'
 import { zx } from 'zodix'
 import * as Switch from '@radix-ui/react-switch'
-import {getSession} from "../session.server.ts";
-import {createStudio} from "../utils/requests/studio.ts";
+import {getSession} from '../session.server.ts'
+import {createStudio} from '../utils/requests/studio.ts'
+import {useTranslation} from 'react-i18next'
 
 const schema = z.object({
 	name: z.string().min(1),
@@ -77,6 +78,8 @@ export const loader = () => {
 }
 
 export default function () {
+	const { t } = useTranslation()
+
 	const mapRef = useRef<Map>()
 	const markerRef = useRef<Marker>()
 
@@ -140,9 +143,9 @@ export default function () {
 				url: '/pro/studios'
 			}
 		]}/>
-		<Title kind="h2">Studios</Title>
+		<Title kind="h2">{t('studios')}</Title>
 		<Link to={'/pro/studios'}>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Return</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('return')}</button>
 		</Link>
 		<div className='w-full flex flex-col gap-2'>
 			{ actionData?.errors && Object.entries(actionData.errors).map(([key, value]) => {
@@ -152,25 +155,25 @@ export default function () {
 		
 		<Form method='POST' className='w-full gap-4'>
 
-			<p className="font-title text-xl mb-4">New studio details :</p>
+			<p className="font-title text-xl mb-4">{t('new-studio-details')}</p>
 			<div className='flex w-full gap-8'>
 
 				<div className='flex flex-col w-1/2 gap-4'>
 					{/* NAME */}
-					<input placeholder='Name' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					<input placeholder={t('studio-name')} type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 					{/* /NAME */}
 
 					{/* DESCRIPTION */}
-					<input placeholder='Description' type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					<input placeholder={t('studio-description')} type="textarea" name='description' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 					{/* /DESCRIPTION */}
 
 					{/* MAX CAPACITY */}
-					<input placeholder='Maximum number of employees' type="number" name='maxCapacity' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+					<input placeholder={t('max-nb-employees')} type="number" name='maxCapacity' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 					{/* /MAX CAPACITY */}
 
 					{/* DOCUMENT */}
 					<div className="flex flex-col gap-1">
-						<label htmlFor='document' className='text-sm'>KBIS File</label>
+						<label htmlFor='document' className='text-sm'>{t('kbis-file')}</label>
 						<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
 					</div>
 					{/* /DOCUMENT */}
@@ -178,11 +181,11 @@ export default function () {
 					{/* OPENING TIMES */}
 					<div className='grid grid-cols-2 gap-2'>
 						<div className='w-full flex flex-col gap-1'>
-							<span className='text-sm'>Opening Time</span>
+							<span className='text-sm'>{t('opening-time')}</span>
 							<input placeholder='Starting Date' type="time" name='openingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 						</div>
 						<div className='w-full flex flex-col gap-1'>
-							<span className='text-sm'>Closing Time</span>
+							<span className='text-sm'>{t('closing-time')}</span>
 							<input placeholder='Starting Date' type="time" name='closingTime' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 						</div>
 					</div>
@@ -192,7 +195,7 @@ export default function () {
 				<div className="flex flex-col w-1/2">
 					{/* LOCATION */}
 					<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
-						<input value={address?.id} placeholder='Address' type="text" name='location' className='hidden' />
+						<input value={address?.id} placeholder={t('address')} type="text" name='location' className='hidden' />
 						<input
 							autoComplete='off'
 							onChange={(e) => {
@@ -221,34 +224,34 @@ export default function () {
 
 
 			{/* OPENING DAYS */}
-			<p className="font-title text-xl mt-8 mb-4">Opening days :</p>
+			<p className="font-title text-xl mt-8 mb-4">{t('opening-days')}</p>
 			<div className='flex items-center gap-2 flex-wrap'>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='monday' asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Monday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('monday')}</span>
 				</Switch.Root>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='tuesday' asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Tuesday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('tuesday')}</span>
 				</Switch.Root>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='wednesday' asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Wednesday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('wednesday')}</span>
 				</Switch.Root>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='thursday'  asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Thursday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('thursday')}</span>
 				</Switch.Root>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='friday' asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Friday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('friday')}</span>
 				</Switch.Root>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='saturday' asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Saturday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('saturday')}</span>
 				</Switch.Root>
 				<Switch.Root className="Toggle" aria-label="Toggle italic" name='sunday' asChild>
-					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>Sunday</span>
+					<span className='duration-300 aria-checked:bg-white aria-checked:text-black aria-checked:border-black border-white cursor-pointer px-4 py-2 bg-black border-1 text-white'>{t('sunday')}</span>
 				</Switch.Root>
 			</div>
 			{/* /OPENING DAYS */}
 
 			<div className="flex mt-4">
-				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white ml-auto'>Create</button>
+				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white ml-auto'>{t('create')}</button>
 			</div>
 		</Form>
 	</div>
