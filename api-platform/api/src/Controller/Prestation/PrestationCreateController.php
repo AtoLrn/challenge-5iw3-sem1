@@ -16,7 +16,7 @@ class PrestationCreateController
 {
     public function __construct(
         protected Security $security,
-        private readonly Files $files,
+        private Files $files,
     ) {
     }
 

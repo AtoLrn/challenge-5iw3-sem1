@@ -95,6 +95,9 @@
   "reset-password-title": "Réinitialiser votre mot de passe",
   "reset-password-button": "Réinitialiser",
   "add-day-off": "Ajouter un jour de congés",
+  "choose-two-date": "Sélectionnez 2 dates",
+  "day-off-loving-message": "Prenez un jour de congé vous l'avez mérité :)",
+  "select-range-of-day": "Choisissez la période du jour que vous voulez prendre",
   "day-off": "Jour de Congés",
   "january": "Janvier",
   "february": "Fevrier",
@@ -127,5 +130,10 @@
   "return": "Retour",
   "pro-chat-page-title": "Chattez avec vos clients",
   "chat-empty-last-message": "Aucun message",
-  "choose-artist-to-chat": "Choisissez avec quel tatoueur chatter !"
+  "choose-artist-to-chat": "Choisissez avec quel tatoueur chatter !",
+  "to": "à",
+  "about-to-day-off": "Vous allez prendre un jour de congé de",
+  "add-post": "Ajouter une publication",
+  "post-created": "Publication ajoutée avec succès !",
+  "delete": "Supprimer"
 }

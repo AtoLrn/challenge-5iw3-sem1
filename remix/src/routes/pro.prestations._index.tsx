@@ -21,11 +21,9 @@ export const meta: MetaFunction = () => {
 export const PrestationItem: React.FC<ListItemProps<Prestation>> = ({ item }) => {
 	const { t } = useTranslation()
 
-	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
-		<span><Badge state={item.kind} /></span>
+	return <div className='flex flex-row justify-between gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
+		<span><Badge state={item.kind}/></span>
 		<span>{item.name}</span>
-		<span>Test</span>
-		<span className='text-right'>{item.proposedBy}</span>
 		<div className='flex items-center justify-end'>
 			<Link to={`/pro/prestations/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>{t('view')}</Link>
 		</div>

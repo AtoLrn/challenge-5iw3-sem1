@@ -24,7 +24,7 @@
   "view": "View",
   "studios": "Studios",
   "add": "Add",
-  "profile": "Profil",
+  "profile": "Profile",
   "see-more-appointments": "See more appointments",
   "see-more-appointments-count": "See {{count}} more appointments",
   "date": "Date",
@@ -108,6 +108,9 @@
   "reset-password-title": "Reset you password",
   "reset-password-button": "Reset",
   "add-day-off": "Add a day off",
+  "choose-two-date": "Please select two dates",
+  "day-off-loving-message": "Take a day to rest, you earned it :)",
+  "select-range-of-day": "Select the range of day you want to take off",
   "day-off": "Day Off",
   "january": "January",
   "february": "February",
@@ -140,5 +143,9 @@
   "return": "Return",
   "pro-chat-page-title": "Chat with your clients",
   "chat-empty-last-message": "No message",
-  "choose-artist-to-chat": "Choose your tattoo artist to chat !"
+  "choose-artist-to-chat": "Choose your tattoo artist to chat !",
+  "to": "to",
+  "add-post": "Add a post",
+  "post-created": "Post successfully created",
+  "delete": "Delete"
 }

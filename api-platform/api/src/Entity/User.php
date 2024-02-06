@@ -218,13 +218,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read'])]
+    #[Groups(['post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['post:collection', 'user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     #[ORM\Column(length: 180, unique: true)]
@@ -241,12 +241,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read'])]
+    #[Groups(['post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read'])]
+    #[Groups(['post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
@@ -294,12 +294,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ["default" => false])]
     private ?bool $kbisVerified = false;
 
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PostPicture::class, orphanRemoval: true)]
+    private Collection $postPictures;
+
     public function __construct()
     {
         $this->studios = new ArrayCollection();
         $this->prestations = new ArrayCollection();
         $this->partnerShips = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->postPictures = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -619,6 +623,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setKbisVerified(bool $kbisVerified): static
     {
         $this->kbisVerified = $kbisVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostPicture>
+     */
+    public function getPostPictures(): Collection
+    {
+        return $this->postPictures;
+    }
+
+    public function addPostPicture(PostPicture $postPicture): static
+    {
+        if (!$this->postPictures->contains($postPicture)) {
+            $this->postPictures->add($postPicture);
+            $postPicture->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostPicture(PostPicture $postPicture): static
+    {
+        if ($this->postPictures->removeElement($postPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($postPicture->getCreator() === $this) {
+                $postPicture->setCreator(null);
+            }
+        }
 
         return $this;
     }

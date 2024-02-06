@@ -117,16 +117,16 @@ export default function () {
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			}, {
-				name: 'Profile',
+				name: t('profile'),
 				url: '/pro/profile'
 			}
 		]} />
 		<div className='flex flex-col gap-2'>
 			<Title kind="h2">Take a day Off</Title>
-			<span className='text-gray-400'>Take a day to rest, you earned it :)</span>
+			<span className='text-gray-400'>{t('day-off-loving-message')}</span>
 		</div>
 		<Dialog.Root>
 			<Dialog.Trigger asChild>
@@ -141,24 +141,24 @@ export default function () {
 
 						<div className='flex flex-col gap-2'>
 							<Title kind={'h2'}>
-								Add a day Off
+								{t('add-day-off')}
 							</Title>
 							<span className='text-gray-400'>
-								Please select the range of day you want to take off
+								{t('add-day-off')}
 							</span>
 						</div>
 						<hr />
 						<div className='flex items-center gap-2'>
 							<input type='hidden' name='action' value={'create'} />
 							<TimePicker onChange={setStartDate} kind={TimePickerKind.DAY} maxDate={endDate ?? new Date()} name='startDate' />
-							<span>To</span>
+							<span>{t('to')}</span>
 							<TimePicker onChange={setEndDate} kind={TimePickerKind.DAY} minDate={startDate ?? new Date()} name='endDate' />
 						</div>
 
 						{startDate && endDate ?
-							<span>You are about to take the day off from <b>{`${startDate.getDate().toString().padStart(2, '0')}-${(startDate.getMonth() + 1).toString().padStart(2, '0')}-${startDate.getFullYear()}`}</b> to <b>{`${endDate.getDate().toString().padStart(2, '0')}-${(endDate.getMonth() + 1).toString().padStart(2, '0')}-${endDate.getFullYear()}`}</b>
+							<span>{t('about-to-day-off')} <b>{`${startDate.getDate().toString().padStart(2, '0')}-${(startDate.getMonth() + 1).toString().padStart(2, '0')}-${startDate.getFullYear()}`}</b> {t('to')} <b>{`${endDate.getDate().toString().padStart(2, '0')}-${(endDate.getMonth() + 1).toString().padStart(2, '0')}-${endDate.getFullYear()}`}</b>
 							</span> : <span>
-								Please select two dates
+								{t('choose-two-date')}
 							</span>}
 
 						<div className='flex gap-2 items-center justify-end w-full'>
