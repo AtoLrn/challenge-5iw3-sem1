@@ -290,6 +290,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[ORM\Column(options: ["default" => false])]
+    private ?bool $kbisVerified = false;
+
     public function __construct()
     {
         $this->studios = new ArrayCollection();
@@ -603,6 +607,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $partnerShip->setUserId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isKbisVerified(): ?bool
+    {
+        return $this->kbisVerified;
+    }
+
+    public function setKbisVerified(bool $kbisVerified): static
+    {
+        $this->kbisVerified = $kbisVerified;
 
         return $this;
     }

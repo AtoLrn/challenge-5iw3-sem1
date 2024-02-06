@@ -97,6 +97,23 @@ class RegistrationController
 
         $this->mailer->send($email);
 
+        if(in_array('ROLE_PRO', $user->getRoles())) {
+            $users = $this->userRepository->findAll();
+            $admins = array_filter($users, function ($user) {
+                return in_array('ROLE_ADMIN', $user->getRoles());
+            });
+
+            foreach($admins as $admin) {
+                $email = (new Email())
+                    ->from('inkit@no-reply.fr')
+                    ->to($admin->getEmail())
+                    ->subject('Inkit: Un nouveau tatoueur arrive !')
+                    ->text('Un nouvel utilisateur s\'est inscrit en tant que tatoueur ! Son kbis a besoin d\'être vérifier.');
+
+                $this->mailer->send($email);
+            }
+        }
+
         return $user;
     }
 }

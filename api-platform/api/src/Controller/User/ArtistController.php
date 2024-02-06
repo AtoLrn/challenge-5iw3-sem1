@@ -19,8 +19,6 @@ class ArtistController
     {
         $artists = $this->userRepository->findBy(['isVerified' => true]);
 
-
-
         return array_filter($artists, function ($artist) {
             return in_array('ROLE_PRO', $artist->getRoles(),);
         });
