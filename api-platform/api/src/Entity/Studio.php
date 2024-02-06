@@ -47,6 +47,12 @@ use DateTimeZone;
             normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
             controller: GetStudioInviteController::class
         ),
+        new GetCollection(
+            uriTemplate: '/studios',
+            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+            denormalizationContext: ['groups' => 'studio:read'],
+        ),
     ]
 )]
 #[ORM\Entity(repositoryClass: StudioRepository::class)]
@@ -70,15 +76,15 @@ class Studio
     #[ORM\Column]
     private ?int $maxCapacity = null;
 
-    #[Groups(['studio:read'])]
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
-    #[Groups(['studio:read'])]
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
 
-    #[Groups(['studio:read'])]
+    #[Groups(['studio:creation', 'studio:read'])]
     #[ORM\ManyToOne(inversedBy: 'studios')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
@@ -89,6 +95,49 @@ class Studio
 
     #[ORM\OneToMany(mappedBy: 'studioId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    private ?string $openingTime = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    private ?string $closingTime = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $monday = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tuesday = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $wednesday = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $thursday = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $friday = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $saturday = null;
+
+    #[Groups(['studio:creation', 'studio:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $sunday = null;
+
+    #[ORM\Column]
+    #[Groups(['studio:creation', 'studio:read'])]
+    private ?int $takenSeats = 0;
+
 
     public function __construct()
     {
@@ -241,4 +290,138 @@ class Studio
 
         return $this;
     }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getOpeningTime(): ?string
+    {
+        return $this->openingTime;
+    }
+
+    public function setOpeningTime(string $openingTime): static
+    {
+        $this->openingTime = $openingTime;
+
+        return $this;
+    }
+
+    public function getClosingTime(): ?string
+    {
+        return $this->closingTime;
+    }
+
+    public function setClosingTime(string $closingTime): static
+    {
+        $this->closingTime = $closingTime;
+
+        return $this;
+    }
+
+    public function getMonday(): ?string
+    {
+        return $this->monday;
+    }
+
+    public function setMonday(?string $monday): static
+    {
+        $this->monday = $monday;
+
+        return $this;
+    }
+
+    public function getTuesday(): ?string
+    {
+        return $this->tuesday;
+    }
+
+    public function setTuesday(?string $tuesday): static
+    {
+        $this->tuesday = $tuesday;
+
+        return $this;
+    }
+
+    public function getWednesday(): ?string
+    {
+        return $this->wednesday;
+    }
+
+    public function setWednesday(?string $wednesday): static
+    {
+        $this->wednesday = $wednesday;
+
+        return $this;
+    }
+
+    public function getThursday(): ?string
+    {
+        return $this->thursday;
+    }
+
+    public function setThursday(?string $thursday): static
+    {
+        $this->thursday = $thursday;
+
+        return $this;
+    }
+
+    public function getFriday(): ?string
+    {
+        return $this->friday;
+    }
+
+    public function setFriday(?string $friday): static
+    {
+        $this->friday = $friday;
+
+        return $this;
+    }
+
+    public function getSaturday(): ?string
+    {
+        return $this->saturday;
+    }
+
+    public function setSaturday(?string $saturday): static
+    {
+        $this->saturday = $saturday;
+
+        return $this;
+    }
+
+    public function getSunday(): ?string
+    {
+        return $this->sunday;
+    }
+
+    public function setSunday(?string $sunday): static
+    {
+        $this->sunday = $sunday;
+
+        return $this;
+    }
+
+    public function getTakenSeats(): ?int
+    {
+        return $this->takenSeats;
+    }
+
+    public function setTakenSeats(int $takenSeats): static
+    {
+        $this->takenSeats = $takenSeats;
+
+        return $this;
+    }
+
+
 }
