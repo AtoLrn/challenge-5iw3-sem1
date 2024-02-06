@@ -17,6 +17,7 @@
         "runtime/frankenphp-symfony": "^0.1.1",
         "symfony/asset": "6.3.*",
         "symfony/console": "6.3.*",
+        "symfony/doctrine-messenger": "6.3.*",
         "symfony/dotenv": "6.3.*",
         "symfony/expression-language": "6.3.*",
         "symfony/flex": "^2.2",
@@ -33,7 +34,8 @@
         "symfony/serializer": "6.3.*",
         "symfony/twig-bundle": "6.3.*",
         "symfony/validator": "6.3.*",
-        "symfony/yaml": "6.3.*"
+        "symfony/yaml": "6.3.*",
+        "twilio/sdk": "^7.14"
     },
     "require-dev": {
         "api-platform/schema-generator": "^5.0",

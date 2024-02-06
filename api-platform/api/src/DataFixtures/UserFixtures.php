@@ -43,8 +43,8 @@ class UserFixtures extends Fixture
             )
         );
         $user->setIsVerified(true);
-        $user->setRoles(["ROLE_ADMIN"]);
-        $user->setIsProfessional(true);
+        $user->setRoles(["ROLE_ADMIN", "ROLE_PRO"]);
+
         $manager->persist($user);
 
         $manager->flush();

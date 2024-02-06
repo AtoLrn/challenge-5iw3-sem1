@@ -1,4 +1,4 @@
-import { Link, MetaFunction } from '@remix-run/react'
+import { Form, Link, MetaFunction, useFetcher } from '@remix-run/react'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
@@ -6,6 +6,35 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { List } from 'src/components/Pro/List'
 import { ListItemProps } from 'src/components/Pro/ListItem'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
+import { useCallback, useState } from 'react'
+import { withDebounce } from 'src/utils/debounce'
+import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { zx } from 'zodix'
+import { z } from 'zod'
+import { Artist } from 'src/utils/types/artist'
+import { createPartnership } from 'src/utils/requests/partnership'
+import { getSession } from 'src/session.server'
+import { getArtists } from 'src/utils/requests/artists'
+
+
+
+const formSchema = z.union([
+	z.object({
+		kind: z.literal('SEARCH'),
+		artistName: z.string()
+	}),
+	z.object({
+		kind: z.literal('POST'),
+		artistId: z.string()
+	})
+])
+
+
+export type ActionReturnType = {
+	artists: Artist[]
+	error?: string
+	status?: 204
+}
 
 export interface Appointement {
 	id: string,
@@ -29,6 +58,45 @@ export const AppointementItem: React.FC<ListItemProps<Appointement>> = ({ item }
 	</div>
 }
 
+export async function action ({ request }: ActionFunctionArgs) {
+	const session = await getSession(request.headers.get('Cookie'))
+
+
+	const token = session.get('token')
+	if (!token) {
+		return redirect('/login')
+	}
+
+	try {
+		const body = await zx.parseForm(request, formSchema)
+		
+		if (body.kind === 'SEARCH') {
+			return json<ActionReturnType>({
+				artists: await getArtists()
+			})
+		} else {
+			await createPartnership({
+				token,
+				studioId: 10,
+				artistId: parseInt(body.artistId),
+				startDate: new Date(),
+				endDate: new Date()
+			})
+
+			return json<ActionReturnType>({
+				status: 204,
+				artists: []
+			})
+		}
+
+			
+	} catch {
+		return json({
+			error: 'Something wrong happened in form validation'
+		})
+	}
+}
+
 export const meta: MetaFunction = () => {
 	return [
 		{
@@ -38,6 +106,21 @@ export const meta: MetaFunction = () => {
 }
 
 export default function () {
+	const [ isSearching, setSearching ] = useState(false)
+	const [ artistId, setArtistId ] = useState<number>()
+	const [ artist, setArtist ] = useState<string>()
+
+	const fetch  = useFetcher<ActionReturnType>()
+
+	const debounce = useCallback(withDebounce((event: React.ChangeEvent<HTMLInputElement>) => {
+		fetch.submit({
+			kind: 'SEARCH',
+			artistName: event.target.value
+		}, {
+			method: 'POST'
+		})
+	}, 300), [])
+
 	const appointements: Appointement[] = [{
 		id: '1',
 		name: 'Lucas Campistron',
@@ -111,7 +194,6 @@ export default function () {
 			defaultSelectedDay={new Date('2023-12-17T00:00:00')}
 		/>
 
-		<TimePicker kind={TimePickerKind.RANGE} minDate={new Date()} />
 		<section className='flex items-center justify-start gap-6'>
 			{ guests.map((guest, index) => {
 				return  <img key={index} className={ 'rounded-full relative object-cover w-28 h-28 cursor-pointer' } src={guest}/>
@@ -126,19 +208,44 @@ export default function () {
 				</Dialog.Trigger>
 				<Dialog.Portal>
 					<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
-					<Dialog.Content className="flex flex-col items-stretch justify-start gap-8 p-4 z-20 bg-zinc-600 bg-opacity-30 w-96 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+					<Dialog.Content className="flex flex-col items-stretch justify-start gap-8 p-4 z-20 bg-gray-600 bg-opacity-50 w-96 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
 						<h1 className='font-title text-xl font-bold'>Invite a tattoo artist</h1>
-				
-						<div className='w-full flex items-center justify-end gap-4'>
-							<Dialog.Close asChild>
-								<button className="outline-non px-4 py-2 bg-red-700 rounded-md text-whitee" aria-label="Close">
+						<fetch.Form method='POST' className='w-full flex flex-col gap-2'>
+							<input onChange={(e) => {
+								setSearching(true)
+								setArtist(e.target.value)
+								debounce(e)
+							}} 
+							value={artist}
+							placeholder="Artist's name" type="text" name='artist' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+						
+							<input  type="hidden" name='artistId' value={artistId} />
+							<input  type="hidden" name='kind' value='POST' />
+						
+							<div className='flex flex-col gap-1'>
+								{ isSearching && fetch.data?.artists.map((artist) => {
+									return <div onClick={() => {
+										setArtistId(artist.id)
+										setArtist(artist.username)
+										setSearching(false)
+									}} className='cursor-pointer flex items-center gap-4 justify-start px-4 py-2 rounded-lg bg-zinc-900' key={artist.id}>
+										{ artist.username }
+									</div>
+								}) }
+							</div>
+						
+							<div className='w-full flex items-center justify-end gap-4'>
+								<Dialog.Close asChild>
+									<button className="outline-non px-4 py-2 bg-red-700 rounded-md text-whitee" aria-label="Close">
 									Cancel
-								</button>
-							</Dialog.Close>
-							<Dialog.Close asChild>
+									</button>
+								</Dialog.Close>
 								<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">Invite</button>
-							</Dialog.Close>
-						</div>
+							</div>
+						</fetch.Form>
+						
+				
+						
 						
 					</Dialog.Content>
 				</Dialog.Portal>

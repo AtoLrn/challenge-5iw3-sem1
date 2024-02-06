@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs, json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { t } from 'i18next'
+import {useTranslation} from 'react-i18next'
 import { Title } from 'src/components/Title'
 import { verify } from 'src/utils/requests/verify'
 
@@ -32,6 +32,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Verify() {
 	const { errors, success } = useLoaderData<typeof loader>()
+	const { t } = useTranslation()
 
 	return (
 		<main className='min-h-screen min-w-full bg-black text-white flex flex-col justify-center items-center gap-4 relative'>

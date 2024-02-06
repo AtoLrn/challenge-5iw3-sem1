@@ -36,6 +36,7 @@ class PartnerShip
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['studio:invite:read', 'partnership:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'partnerShips')]

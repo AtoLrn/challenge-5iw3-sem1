@@ -11,6 +11,8 @@ import { withDebounce } from 'src/utils/debounce'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
+import { Studio, getStudios } from 'src/utils/requests/studios'
+import { Artist } from 'src/utils/types/artist'
 
 const formSchema = z.object({
 	title: z.string()
@@ -22,19 +24,16 @@ export async function loader({ request } : LoaderFunctionArgs) {
 	const title = search.get('title')
 
 	if (!title || typeof title !== 'string') {
-		return json({ artists: [] }) 
+		return json({ artists: [], studios: [] }) 
 	}
 
-	return json({ artists: await getArtists({ name: title }) })
+	return json({ artists: await getArtists({ name: title }), studios: await getStudios({ name: title }) })
 } 
 
 
 export async function action ({ request }: ActionFunctionArgs) {
 	try {
 		const { title } = await zx.parseForm(request, formSchema)
-		if (!title || typeof title !== 'string') {
-			return redirect('/')
-		}
 	
 		return redirect(`/search/${encodeURIComponent(title.replaceAll(' ', '-'))}`)
 	} catch {
@@ -52,6 +51,15 @@ export function meta() {
 		},
 	]
 }
+
+
+const isStudio = (tbd: any): tbd is Studio => {
+	return tbd?.id !== undefined
+}
+
+const isArtist = (tbd: any): tbd is Artist => {
+	return tbd?.username !== undefined
+} 
 
 export default function MainPage() { 
 	const { t } = useTranslation()
@@ -86,30 +94,53 @@ export default function MainPage() {
 
 				<section className='z-20 w-full flex flex-col items-stretch justify-center absolute left-0 top-full  backdrop-blur gap-1'> 
 					<AnimatePresence mode='popLayout'>
-
-						{ posts.data?.artists.slice(0, 5).map((artist, index, arr) => {
+						{ posts.data &&  [...posts.data.artists, ...posts.data.studios].slice(0, 5).map((artist, index, arr) => {
 							const interval = 0.05
 							const baseIndex = 50
-							return <m.div 
 
-								style={{ zIndex: baseIndex + index }}
-								initial={{ opacity: 0 }}
-								animate= {{ opacity: 1, transition: {
-									delay: index * interval
-								} }}
-								exit={{ opacity: 0, translateY: index !== 0 ? '-100%' : '', transition: {
-									delay: interval * (arr.length - index) 
-								} }}
+							if (isArtist(artist)) {
+								return <m.div 
+
+									style={{ zIndex: baseIndex + index }}
+									initial={{ opacity: 0 }}
+									animate= {{ opacity: 1, transition: {
+										delay: index * interval
+									} }}
+									exit={{ opacity: 0, translateY: index !== 0 ? '-100%' : '', transition: {
+										delay: interval * (arr.length - index) 
+									} }}
 							
-								className='w-full cursor-pointer ' key={artist.username}>
-								<Link to={`/search/${encodeURIComponent(artist.username.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
-									<img src={artist.picture} alt="" className='rounded-full w-10 h-10' />
-									{artist.username}
-								</Link>
-							</m.div>
-						})}
+									className='w-full cursor-pointer ' key={artist.id}>
+									<Link to={`/search/${encodeURIComponent(artist.username.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
+										<img src={artist.picture} alt="" className='rounded-full w-10 h-10' />
+										{artist.username}
+									</Link>
+								</m.div>
+							} else {
+								return <m.div 
+
+									style={{ zIndex: baseIndex + index }}
+									initial={{ opacity: 0 }}
+									animate= {{ opacity: 1, transition: {
+										delay: index * interval
+									} }}
+									exit={{ opacity: 0, translateY: index !== 0 ? '-100%' : '', transition: {
+										delay: interval * (arr.length - index) 
+									} }}
+							
+									className='w-full cursor-pointer ' key={artist.id}>
+									<Link to={`/search/${encodeURIComponent(artist.name.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
+										<img src={artist.name} alt="" className='rounded-full w-10 h-10' />
+										{artist.name}
+									</Link>
+								</m.div>
+							}
+
+							
+						}) }
+						
 						{
-							posts.data?.artists.length === 0 && !isSearchLoading ? 
+							(posts.data?.artists.length === 0 && posts.data?.studios.length === 0) && !isSearchLoading ? 
 								<m.div
 									initial={{ opacity: 0 }}
 									animate= {{ opacity: 1 }}

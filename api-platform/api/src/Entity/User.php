@@ -218,7 +218,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
+    #[Groups(['user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -230,7 +230,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[Groups(['user:patch', 'user:read', 'user:collection'])]
+    #[Groups(['user:patch', 'user:read', 'user:collection', 'user:read:me'])]
     #[ORM\Column]
     # Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
     private array $roles = [];
@@ -241,12 +241,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
+    #[Groups(['channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read'])]
+    #[Groups(['channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
@@ -257,10 +257,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
-
-    #[Groups(['user:read', 'user:collection', 'user:read:me'])]
-    #[ORM\Column(options: ["default" => false])]
-    private ?bool $isProfessional = null;
 
     #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
@@ -277,11 +273,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
-    public function __construct()
-    {
-        $this->studios = new ArrayCollection();
-        $this->partnerShips = new ArrayCollection();
-    }
     #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -290,8 +281,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
 
+    #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Prestation::class)]
+    private Collection $prestations;
+
     #[ORM\OneToMany(mappedBy: 'userId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
+    #
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
+    private Collection $messages;
+
+    public function __construct()
+    {
+        $this->studios = new ArrayCollection();
+        $this->prestations = new ArrayCollection();
+        $this->partnerShips = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+    }
 
     #[ORM\PrePersist]
     public function prePersist()
@@ -424,18 +429,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIsProfessional(): ?bool
-    {
-        return $this->isProfessional;
-    }
-
-    public function setIsProfessional(?bool $isProfessional): static
-    {
-        $this->isProfessional = $isProfessional;
-
-        return $this;
-    }
-
     public function isVerified(): ?bool
     {
         return $this->isVerified;
@@ -520,6 +513,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setKbisFileUrl(?string $kbisFileUrl): static
     {
         $this->kbisFileUrl = $kbisFileUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Prestation>
+     */
+    public function getPrestations(): Collection
+    {
+        return $this->prestations;
+    }
+
+    public function addPrestation(Prestation $prestation): static
+    {
+        if (!$this->prestations->contains($prestation)) {
+            $this->prestations->add($prestation);
+            $prestation->setProposedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(Prestation $prestation): static
+    {
+        if ($this->prestations->removeElement($prestation)) {
+            // set the owning side to null (unless already changed)
+            if ($prestation->getProposedBy() === $this) {
+                $prestation->setProposedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
 
         return $this;
     }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { NavLink } from '@remix-run/react'
 import { User } from 'src/utils/types/user'
+import * as Popover from '@radix-ui/react-popover'
+import { useTranslation } from 'react-i18next'
 
 export interface NavigationProps {
   user?: User;
@@ -9,6 +11,17 @@ export interface NavigationProps {
 export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 	const [isVisible, setIsVisible] = useState(true)
 	const [lastScrollY, setLastScrollY] = useState(0)
+	const [popOverOpen, setPopOverOpen] = useState(false)
+
+	const { i18n } = useTranslation()
+
+	const handleMouseEnter = () => {
+		setPopOverOpen(true)
+	}
+
+	const handleMouseLeave = () => {
+		setPopOverOpen(false)
+	}
 
 	const controlNavbar = () => {
 		if ('undefined' !== typeof window) {
@@ -19,6 +32,16 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 				setIsVisible(true)
 			}
 			setLastScrollY(window.scrollY)
+		}
+	}
+
+	const changeLanguage = () => {
+		const currentLanguage = i18n.language
+
+		if (currentLanguage === 'en') {
+			i18n.changeLanguage('fr')
+		} else if(currentLanguage === 'fr') {
+			i18n.changeLanguage('en')
 		}
 	}
 
@@ -46,20 +69,45 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 					{user ? (
 						<>
 							<li className="cursor-pointer">
+								<p onClick={changeLanguage}>{i18n.language}</p>
+							</li>
+
+							{ user.isProfessional && <li className="cursor-pointer">
+								<NavLink to="/pro">Go to Dashboard</NavLink>
+							</li> }
+							
+							<li className="cursor-pointer">
 								<NavLink to="/appointments">Appointments</NavLink>
 							</li>
 							<li className="cursor-pointer">
 								<NavLink to="/messages">Messages</NavLink>
 							</li>
 							<li className="cursor-pointer">
-								<NavLink to="/profile">
-									<img
-										className="rounded-full"
-										height={32}
-										width={32}
-										src={user.avatar}
-									/>
-								</NavLink>
+								<Popover.Root open={popOverOpen} onOpenChange={setPopOverOpen}>
+									<Popover.Trigger 
+										onMouseEnter={handleMouseEnter}
+										asChild
+									>
+										<NavLink to="/profile">
+											<img
+												className="rounded-full"
+												height={32}
+												width={32}
+												src={user.avatar}
+											/>
+										</NavLink>
+									</Popover.Trigger>
+									<Popover.Portal>
+										<Popover.Content 
+											className='z-50'
+											onMouseLeave={handleMouseLeave}
+										>
+											<div className='border mt-4 px-4 py-2 rounded-md shadow bg-black'>
+								            <NavLink className="text-white" to="/logout">Logout</NavLink>
+											</div>
+										</Popover.Content>
+									</Popover.Portal>
+								</Popover.Root>
 							</li>
 						</>
 					) : (

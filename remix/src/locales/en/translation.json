@@ -1,4 +1,5 @@
 {
+  "return-button": "Return",
   "find-your-tattoo-artist": "Find your tattoo artist",
   "search": "Search",
   "loading": "Loading...",
@@ -30,10 +31,15 @@
   "username": "Username",
   "email": "Email",
   "password": "Password",
+  "current-password": "Current Password",
+  "new-password": "New Password",
   "no-match": "Passwords do not matches",
   "confirm-password": "Confirm password",
   "avatar": "Avatar",
   "save-changes": "Save changes",
+  "update-password": "Update Password",
+  "update-profil-picture": "Update Picture",
+  "update-profil-success": "Your account has been updated !",
   "account": "Account",
   "create-your-account": "Create your account",
   "already-have-an-account": "Already have an account ?",
@@ -109,5 +115,8 @@
   "closing-time": "Closing time",
   "address": "Address",
   "opening-days": "Opening days",
-  "return": "Return"
+  "return": "Return",
+  "pro-chat-page-title": "Chat with your clients",
+  "chat-empty-last-message": "No message",
+  "choose-artist-to-chat": "Choose your tattoo artist to chat !"
 }

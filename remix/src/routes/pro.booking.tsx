@@ -12,6 +12,7 @@ import { BreadCrumb } from 'src/components/Breadcrumb'
 import * as Dialog from '@radix-ui/react-dialog'
 import { createGoogleCalendarLink, createOutlookCalendarLink, exportToICS } from 'src/utils/calendar'
 import { useEffect, useState } from 'react'
+import {useTranslation} from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -23,6 +24,7 @@ export const meta: MetaFunction = () => {
 }
 
 export const AppointementsItem: React.FC<ListItemProps<Booking>> = ({ item }) => {
+	const { t } = useTranslation()
 	const [isClientSide, setIsClientSide] = useState(false)
 
 	/**

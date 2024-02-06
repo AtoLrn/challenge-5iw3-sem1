@@ -6,7 +6,7 @@ const schema = z.object({
 	email: z.string().min(1),
 	username: z.string().min(1),
 	picture: z.string().min(1),
-	isProfessional: z.boolean().default(false),
+	roles: z.string().array(),
 })
 
 
@@ -24,16 +24,81 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
-	console.log(body)
-
-	const { id, username, picture } = schema.parse(body)
-
+	const { id, email, username, picture, roles } = schema.parse(body)
     
 	return {
 		id,
+		email: email,
 		name: username,
-		avatar: picture
+		avatar: picture,
+		isProfessional: roles.includes('ROLE_PRO')
 	}
+}
+
+export const patchMe = async (token: string, data: PatchMe): Promise<true> => {
+	const res = await fetch(`${process.env.API_URL}/users/me`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/merge-patch+json',
+			'Authorization': `Bearer ${token}`
+		},
+		body: JSON.stringify(data)
+	})
+
+	if (res.status === 200) {
+		return true
+	}
+
+	const body = await res.json()
+    
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
+
+export const patchMePassword = async (token: string, data: PatchMePassword): Promise<true> => {
+	const res = await fetch(`${process.env.API_URL}/users/me/update-password`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/merge-patch+json',
+			'Authorization': `Bearer ${token}`
+		},
+		body: JSON.stringify(data)
+	})
+
+	if (res.status === 200) {
+		return true
+	}
+
+	const body = await res.json()
+    
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
+
+export const updateMePicture = async (token: string, formData: FormData): Promise<true> => {
+	const res = await fetch(`${process.env.API_URL}/users/me/update-profil-picture`, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+		body: formData
+	})
+
+	if(res.status === 201) {
+		return true
+	}
+
+	const body = await res.json()
+
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
+
+export interface PatchMePassword {
+    currentPassword?: string,
+    newPassword?: string,
+}
+
+export interface PatchMe {
+    email?: string,
+    username?: string,
 }
 
 export interface Me {

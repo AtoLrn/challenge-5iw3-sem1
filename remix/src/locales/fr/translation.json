@@ -1,4 +1,5 @@
 {
+  "return-button": "Retour",
   "find-your-tattoo-artist": "Trouvez votre tatoueur",
   "search": "Rechercher",
   "loading": "Chargement...",
@@ -29,10 +30,15 @@
   "username": "Nom d'utilisateur",
   "email": "Email",
   "password": "Mot de passe",
+  "current-password": "Mot de passe actuel",
+  "new-password": "Nouveau mot de passe",
   "no-match": "Les mot de passes ne correspondent pas",
   "confirm-password": "Confirmer le mot de passe",
   "avatar": "Avatar",
   "save-changes": "Enregistrer les modifications",
+  "update-password": "Modifier le mot de passe",
+  "update-profil-picture": "Modifier sa photo",
+  "update-profil-success": "Votre compte a bien été modifié !",
   "account": "Compte",
   "create-your-account": "Créez votre compte",
   "already-have-an-account": "Vous avez déjà un compte ?",
@@ -94,5 +100,8 @@
   "closing-time": "Heure de fermeture",
   "address": "Adresse",
   "opening-days": "Jours d'ouverture",
-  "return": "Retour"
+  "return": "Retour",
+  "pro-chat-page-title": "Chattez avec vos clients",
+  "chat-empty-last-message": "Aucun message",
+  "choose-artist-to-chat": "Choisissez avec quel tatoueur chatter !"
 }

@@ -1,8 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { t } from 'i18next'
 import {Title} from '../components/Title.tsx'
 import { useState } from 'react'
 import {AppointmentRow} from '../components/AppointmentRow.tsx'
+import {useTranslation} from 'react-i18next'
 
 export function meta() {
 	return [
@@ -14,6 +14,7 @@ export function meta() {
 
 export default function MainPage() {
 	const [activeTab, setActiveTab] = useState('tabCurrentAppointments')
+	const { t } = useTranslation()
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
