@@ -44,6 +44,8 @@ export const GuestsItem: React.FC<ListItemProps<Guest>> = ({ item }) => {
 }
 
 export default function () {
+	const { t } = useTranslation()
+
 	const studio: Guest[] = [{
 		id: '123',
 		name: 'Laink et Terracid',
@@ -70,14 +72,14 @@ export default function () {
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			},{
-				name: 'Guests',
+				name: t('guests'),
 				url: '/pro/guests'
 			}
 		]}/>
-		<Title kind="h2">Guests</Title>
+		<Title kind="h2">{t('guests')}</Title>
 		<Link to={'/pro/guests/invite'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Invite</button>
 		</Link>

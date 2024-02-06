@@ -34,6 +34,8 @@ export const meta: MetaFunction = () => {
 
 
 export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
+	const { t } = useTranslation()
+
 	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
 		<span>
 			<Badge state={item.status} />
@@ -42,7 +44,7 @@ export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 		<span>{ item.description }</span>
 		<span className='text-right'>{ item.maxCapacity } / { item.maxCapacity }</span>
 		<div className='flex items-center justify-end'>
-			<Link to={`/pro/studios/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>View</Link>
+			<Link to={`/pro/studios/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>{t('view')}</Link>
 		</div>	</div>
 }
 
@@ -78,7 +80,7 @@ export default function () {
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			},{
 				name: 'Studios',

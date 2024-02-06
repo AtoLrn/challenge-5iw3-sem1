@@ -1,12 +1,14 @@
-import { Link, MetaFunction } from '@remix-run/react'
-import { useState } from 'react'
+import { Link, MetaFunction, NavLink, useLoaderData } from '@remix-run/react'
 import { Title } from 'src/components/Title'
 import { motion as m } from 'framer-motion'
-import { FaArrowRight, FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
-import ProfileForm from 'src/components/ProfileForm'
+import { FaArrowRight, FaPen} from 'react-icons/fa6'
 import { Validation } from 'src/utils/types/validation'
 import { Badge } from 'src/components/Pro/Badge'
 import {useTranslation} from 'react-i18next'
+import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
+import {getSession} from 'src/session.server'
+import {me} from 'src/utils/requests/me'
+import {User} from 'src/utils/types/user'
 
 
 type ProfileData = {
@@ -15,7 +17,6 @@ type ProfileData = {
   email: string;
   isProfessional: boolean;
   isAdmin: boolean;
-	instagramToken?: string;
 };
 
 export const meta: MetaFunction = () => {
@@ -26,21 +27,36 @@ export const meta: MetaFunction = () => {
 	]
 }
 
+export interface LoaderReturnType {
+	user: User
+}
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const token = session.get('token')
+
+	if (!token) {
+		return redirect('/login')
+	}
+
+	try {
+		const user = await me({
+			token
+		})
+
+		return json<LoaderReturnType>({ 
+			user
+		})
+
+	} catch (e) {
+		return redirect('/login')
+	}
+}
+
 export default function () {
 	const { t } = useTranslation()
-	const [isEditing, setIsEditing] = useState(false)
-
-	/**
-   * @TODO: Fetch user data from the database
-   */
-	const profile: ProfileData = {
-		username: 'Jerry Gollet',
-		avatar: 'https://a.pinatafarm.com/407x407/6087855680/laughing-kid.jpg',
-		isProfessional: true,
-		isAdmin: false,
-		email: 'test@test.com',
-		instagramToken: '1234567890'
-	}
+	const { user } = useLoaderData<typeof loader>()
 
 	const appointments = [
 
@@ -74,24 +90,13 @@ export default function () {
 		}),
 	}
 
-	const toggleEdit = () => {
-		setIsEditing(!isEditing)
-	}
-
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		//const data = new FormData(event.currentTarget)
-		setIsEditing(false)
-	}
-	
-
 	const moreCount = appointments.length - 3
 
 	return (
 		<div className="flex-1 p-8 flex flex-col gap-8 text-white">
 			<Title kind="h2">{t('profile')}</Title>
 			<Link to={'/pro/profile/day'}>
-				Day Off
+				{t('day-off')}
 			</Link>
 
 			<div className="container mx-auto flex flex-col gap-10 relative">
@@ -106,49 +111,26 @@ export default function () {
 					<div className="flex items-end justify-between bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg w-full z-20 relative">
 						<div className="flex items-center space-x-4 w-full">
 							<img
-								src={profile.avatar}
+								src={user.avatar}
 								alt="Profile avatar"
 								className="w-20 h-20 rounded-full object-cover max-w-xs"
 							/>
 							<div>
 								<Title kind="h1" className="text-xl font-bold text-white">
-									{profile.username}
+									{user.name}
 								</Title>
 								<p>
-									{profile.isAdmin
-										? 'Unlimited Power'
-										: profile.isProfessional && 'Professional Artist'}
+									{user.email}
 								</p>
-								<p>
-									{profile.email}
-								</p>
-								{profile.isProfessional && (
-									<a
-										href={'https://instagram.com/'}
-										target="_blank"
-										rel="noopener noreferrer"
-										title="Go to Instagram"
-										className="instagram-btn bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-md shadow-md flex items-center mt-4 gap-2 max-w-[9rem]"
-									>
-										<FaInstagram className="text-2xl" />
-										<span className="items-center gap-2">Instagram</span>
-									</a>
-								)}
 							</div>
 						</div>
-						<a
-							href={'#'}
-							title="Edit Profile"
+                    	<NavLink
+							to={'/profile'}
 							className="edit-btn bg-red-950 text-white px-3 py-3 rounded-md shadow-md flex items-center gap-2 hover:bg-red-900 justify-center"
-							onClick={toggleEdit}
 						>
-							{isEditing ? <FaXmark /> : <FaPen />}
-							<span className="hidden">{isEditing ? 'Cancel' : 'Edit Profile'}</span>
-						</a>
+							<FaPen />
+						</NavLink>
 					</div>
-					{isEditing && (
-						<ProfileForm profile={profile} isEditing={isEditing} handleSubmit={handleSubmit} />
-					)}
 				</m.section>
 
 				<section className="flex-grow">

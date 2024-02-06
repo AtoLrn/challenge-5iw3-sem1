@@ -89,17 +89,17 @@ export default function MainPage() {
 							{t('identity')}
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
-							<input type="text" name="username" placeholder="Username" className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input type="text" name="username" placeholder={t('username')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<Title kind="h4" className="z-20 pb-4 pt-2">
 							{t('account')}
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
-							<input type="email" name="email" placeholder="Email Address" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input type="email" name="email" placeholder={t('email-address')} className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<div className="flex flex-row gap-4 mb-10">
-							<input value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" name="password" placeholder="Password" className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-							<input value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.currentTarget.value)} type="password" name="passwordConfirm" placeholder="Confirm Password" className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" name="password" placeholder={t('password')} className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.currentTarget.value)} type="password" name="passwordConfirm" placeholder={t('confirm-password')} className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						{ password !== passwordConfirmation && 
 						
@@ -110,11 +110,11 @@ export default function MainPage() {
 						
 						<div className="checkbox-container flex flex-row gap-3 mb-4 items-center">
 							<input id="isProfessional" type="checkbox" name="isProfessional" className="checkBox cursor-pointer" onChange={handleCheck}/>
-							<label htmlFor="isProfessional" className="cursor-pointer">I am a tattoo artist</label>
+							<label htmlFor="isProfessional" className="cursor-pointer">{t('checkbox-tattoo-artist')}</label>
 						</div>
 						{showFileButton && <div className="flex flex-row gap-3 mb-4 items-center">
 							<input id="kbisFile" type="file" required name="kbisFile" className="cursor-pointer" accept="image/png, image/jpeg, application/pdf"/>
-							<label htmlFor="kbisFile" className="cursor-pointer">KBIS File</label>
+							<label htmlFor="kbisFile" className="cursor-pointer">{t('kbis-file')}</label>
 						</div>}
 						<div className="flex items-center justify-between">
 							<button disabled={password !== passwordConfirmation || navigation.state === 'submitting'} type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">

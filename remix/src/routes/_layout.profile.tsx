@@ -1,5 +1,5 @@
 import { motion as m } from 'framer-motion'
-import { FaInstagram, FaPen, FaXmark } from 'react-icons/fa6'
+import { FaPen, FaXmark } from 'react-icons/fa6'
 import { Title } from 'src/components/Title'
 import { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import stylesheet from '../style/profile.css'
@@ -153,18 +153,6 @@ export default function ProfilePage() {
 								<Title kind="h1" className="text-xl font-bold text-white">
 									{user.name}
 								</Title>
-								{user.isProfessional && (
-									<a
-										href={'https://instagram.com/'}
-										target="_blank"
-										rel="noopener noreferrer"
-										title="Go to Instagram"
-										className="instagram-btn bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-md shadow-md md:mt-4 flex items-center mt-4 gap-2"
-									>
-										<FaInstagram className="text-2xl lg:text-md" />
-										<span className="items-center gap-2">Instagram</span>
-									</a>
-								)}
 							</div>
 						</div>
 						<p

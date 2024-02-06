@@ -4,4 +4,5 @@ export interface User {
     name: string
     avatar: string
     isProfessional: boolean
+    isKbisVerified?: boolean
 }

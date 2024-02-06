@@ -7,6 +7,7 @@ const schema = z.object({
 	username: z.string().min(1),
 	picture: z.string().min(1),
 	roles: z.string().array(),
+	kbisVerified: z.boolean()
 })
 
 
@@ -24,14 +25,15 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
-	const { id, email, username, picture, roles } = schema.parse(body)
+	const { id, email, username, picture, roles, kbisVerified } = schema.parse(body)
     
 	return {
 		id,
 		email: email,
 		name: username,
 		avatar: picture,
-		isProfessional: roles.includes('ROLE_PRO')
+		isProfessional: roles.includes('ROLE_PRO'),
+		isKbisVerified: kbisVerified
 	}
 }
 
