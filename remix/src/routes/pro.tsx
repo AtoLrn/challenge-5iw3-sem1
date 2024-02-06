@@ -1,4 +1,4 @@
-import { Outlet } from '@remix-run/react'
+import { Outlet, useLoaderData } from '@remix-run/react'
 import { ProNavigation } from './../components/Pro/Navigation'
 import { User } from 'src/utils/types/user'
 import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
@@ -39,9 +39,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export default function ProLayout () {
+	const { user } = useLoaderData<typeof loader>()
 	
 	return <main className='w-screen h-screen flex gradient-bg relative text-white'>
-		<ProNavigation />
+		<ProNavigation user={user as User}/>
 		<Outlet />
 	</main>
 }

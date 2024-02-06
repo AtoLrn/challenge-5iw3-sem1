@@ -1,9 +1,13 @@
 import { NavLink } from '@remix-run/react'
 import * as HoverCard from '@radix-ui/react-hover-card'
 import {useTranslation} from 'react-i18next'
+import {User} from 'src/utils/types/user';
 
+export interface NavigationProps {
+  user: User;
+}
 
-export const ProNavigation = () => {
+export const ProNavigation: React.FC<NavigationProps> = ({ user }) => {
 	const { i18n, t } = useTranslation()
 
     const links = [
@@ -71,9 +75,9 @@ export const ProNavigation = () => {
             <HoverCard.Root>
                 <HoverCard.Trigger asChild>
                     <a className="flex items-center justify-start w-full h-16 py-2 px-8 gap-4 cursor-pointer" href='/pro/profile'>
-                        <img className="rounded-full" height={32} width={32} src='https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'/>
+                        <img className="rounded-full" height={32} width={32} src={user.avatar}/>
                         <div className="flex flex-col ">
-                            <span className="text-sm">Your name</span>
+                            <span className="text-sm">{ user.name }</span>
                             <span className="opacity-70 text-sm">Tattoo artist</span>
                         </div>
                     </a>

@@ -38,7 +38,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function() {
 	const { user } = useLoaderData<typeof loader>()
 
-
 	return <>
 		<Navigation user={user} />
 		<Outlet />
