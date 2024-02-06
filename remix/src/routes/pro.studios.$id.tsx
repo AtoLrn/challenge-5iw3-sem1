@@ -15,6 +15,7 @@ import { Artist } from 'src/utils/types/artist'
 import { createPartnership } from 'src/utils/requests/partnership'
 import { getSession } from 'src/session.server'
 import { getArtists } from 'src/utils/requests/artists'
+import {useTranslation} from 'react-i18next'
 
 
 
@@ -109,6 +110,7 @@ export default function () {
 	const [ isSearching, setSearching ] = useState(false)
 	const [ artistId, setArtistId ] = useState<number>()
 	const [ artist, setArtist ] = useState<string>()
+    const { t } = useTranslation()
 
 	const fetch  = useFetcher<ActionReturnType>()
 
@@ -144,7 +146,7 @@ export default function () {
 	return <div className="flex-1 p-8 flex flex-col items-start gap-4">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			},{
 				name: 'Studios',
@@ -169,7 +171,7 @@ export default function () {
 		</section>
 		<hr className='w-full opacity-30'/>
 		<Title kind='h3' className='mt-4'>
-			Your Guests
+			{t('your-guests')}
 		</Title>
 		<TimePicker kind={TimePickerKind.SLOT} slots={[
 			new Date('2023-12-16T09:00:00'),
@@ -209,7 +211,7 @@ export default function () {
 				<Dialog.Portal>
 					<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
 					<Dialog.Content className="flex flex-col items-stretch justify-start gap-8 p-4 z-20 bg-gray-600 bg-opacity-50 w-96 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
-						<h1 className='font-title text-xl font-bold'>Invite a tattoo artist</h1>
+						<h1 className='font-title text-xl font-bold'>{t('invite-artist')}</h1>
 						<fetch.Form method='POST' className='w-full flex flex-col gap-2'>
 							<input onChange={(e) => {
 								setSearching(true)
@@ -217,7 +219,7 @@ export default function () {
 								debounce(e)
 							}} 
 							value={artist}
-							placeholder="Artist's name" type="text" name='artist' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+							placeholder={t('artist-name')} type="text" name='artist' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 						
 							<input  type="hidden" name='artistId' value={artistId} />
 							<input  type="hidden" name='kind' value='POST' />
@@ -237,10 +239,10 @@ export default function () {
 							<div className='w-full flex items-center justify-end gap-4'>
 								<Dialog.Close asChild>
 									<button className="outline-non px-4 py-2 bg-red-700 rounded-md text-whitee" aria-label="Close">
-									Cancel
+									    {t('cancel')}
 									</button>
 								</Dialog.Close>
-								<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">Invite</button>
+								<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('invite')}</button>
 							</div>
 						</fetch.Form>
 						

@@ -71,8 +71,8 @@ export default function MainPage() {
 
 					{/* LOGIN FORM */}
 					<Form method='POST' className="flex flex-col">
-						<input id="email" type="email" name="email" placeholder="Email Address" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
-						<input id="password" type="password" name="password" placeholder="Password" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
+						<input id="email" type="email" name="email" placeholder={t('email-address')} className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
+						<input id="password" type="password" name="password" placeholder={t('password')} className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] mb-8 placeholder-gray-300 transition ease-in-out duration-300"/>
 
 						<div className="flex items-center justify-between">
 							<button disabled={navigation.state === 'submitting'} type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">

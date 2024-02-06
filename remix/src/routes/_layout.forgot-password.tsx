@@ -69,7 +69,7 @@ export default function ForgotPassword() {
 					{/* FORGOT PASSWORD FORM */}
 					<Form method='POST' className="flex flex-col">
 						<div className="flex flex-row gap-4 mb-8">
-							<input type="text" required name="email" placeholder="email" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input type="text" required name="email" placeholder={t('email-address')} className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 							{navigation.state === 'submitting' ? t('loading') : t('reset-password-link')}

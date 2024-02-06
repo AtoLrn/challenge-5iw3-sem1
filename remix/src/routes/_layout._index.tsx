@@ -88,7 +88,7 @@ export default function MainPage() {
 					<input id='search-bar'  onChange={(event) => {
 						setLoading(true)
 						debounce(event)
-					}} autoComplete='off' name="title" type="text" className='bg bg-transparent h-16 w-4/5 border-b-2 border-white text-2xl outline-none' placeholder='Search for tattoos, cities, studios & artists'/>
+					}} autoComplete='off' name="title" type="text" className='bg bg-transparent h-16 w-4/5 border-b-2 border-white text-2xl outline-none' placeholder={t('search-input-placeholder')}/>
 					<button className='border-b-2 h-16 border-white w-1/5 cursor-pointer text-2xl flex  justify-center items-center gap-2' ><span>{t('search')}</span> <AiOutlineArrowRight /></button>
 				</Form>
 

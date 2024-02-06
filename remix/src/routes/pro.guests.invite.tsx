@@ -41,16 +41,16 @@ export default function () {
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			},{
-				name: 'Guests',
+				name: t('guests'),
 				url: '/pro/guests'
 			}
 		]}/>
 		<Title kind="h2">{t('invite-guest')}</Title>
 		<Link to={'/pro/guests'}>
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{('return')}</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('return-button')}</button>
 		</Link>
 		<Form method='POST' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>

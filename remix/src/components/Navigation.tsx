@@ -13,7 +13,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 	const [lastScrollY, setLastScrollY] = useState(0)
 	const [popOverOpen, setPopOverOpen] = useState(false)
 
-	const { i18n } = useTranslation()
+	const { i18n, t } = useTranslation()
 
 	const handleMouseEnter = () => {
 		setPopOverOpen(true)
@@ -39,8 +39,10 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 		const currentLanguage = i18n.language
 
 		if (currentLanguage === 'en') {
+            window.localStorage.setItem('i18nextLng', 'fr')
 			i18n.changeLanguage('fr')
 		} else if(currentLanguage === 'fr') {
+            window.localStorage.setItem('i18nextLng', 'en')
 			i18n.changeLanguage('en')
 		}
 	}
@@ -66,18 +68,18 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
           INKIT
 				</a>
 				<ul className="flex gap-4 items-center">
+                    <li className="cursor-pointer">
+                        <img width={16} src={`/images/${i18n.language}-flag.png`} alt="flag" onClick={changeLanguage}/>
+                    </li>
 					{user ? (
 						<>
-							<li className="cursor-pointer">
-								<p onClick={changeLanguage}>{i18n.language}</p>
-							</li>
 
 							{ user.isProfessional && <li className="cursor-pointer">
-								<NavLink to="/pro">Go to Dashboard</NavLink>
+								<NavLink to="/pro">Dashboard</NavLink>
 							</li> }
 							
 							<li className="cursor-pointer">
-								<NavLink to="/appointments">Appointments</NavLink>
+								<NavLink to="/appointments">{t('appointments')}</NavLink>
 							</li>
 							<li className="cursor-pointer">
 								<NavLink to="/messages">Messages</NavLink>
@@ -103,7 +105,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 											onMouseLeave={handleMouseLeave}
 										>
 											<div className='border mt-4 px-4 py-2 rounded-md shadow bg-black'>
-								            <NavLink className="text-white" to="/logout">Logout</NavLink>
+								            <NavLink className="text-white" to="/logout">{t('logout')}</NavLink>
 											</div>
 										</Popover.Content>
 									</Popover.Portal>
@@ -113,10 +115,10 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 					) : (
 						<>
 							<li className="cursor-pointer">
-								<NavLink to="/login">Login</NavLink>
+								<NavLink to="/login">{t('login')}</NavLink>
 							</li>
 							<li className="cursor-pointer">
-								<NavLink to="/sign-up">Sign-up</NavLink>
+								<NavLink to="/sign-up">{t('sign-up')}</NavLink>
 							</li>
 						</>
 					)}
