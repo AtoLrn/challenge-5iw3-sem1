@@ -44,7 +44,16 @@ export default function Prestations() {
 	const prestations = data as Prestation[]
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
-		<BreadCrumb routes={[{ name: 'Home', url: '/pro' }, { name: 'Prestation', url: '/pro/prestation' }]} />
+		<BreadCrumb routes={[
+            { 
+                name: t('home'), 
+                url: '/pro' 
+            },
+            { 
+                name: 'Prestation', 
+                url: '/pro/prestation'
+            }
+        ]} />
 		<Title kind="h2">{t('prestation')}</Title>
 		<Link to={'/pro/prestations/add'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>

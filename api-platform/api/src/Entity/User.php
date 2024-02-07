@@ -37,6 +37,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(
+            security: 'is_granted("ROLE_ADMIN")',
+            uriTemplate: '/admin/users',
+            normalizationContext: ['groups' => 'admin:collection']
+        ),
+        new GetCollection(
             normalizationContext: ['groups' => 'user:collection']
         ),
         new Post(
@@ -225,19 +230,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read', 'studio:read'])]
+    #[Groups(['admin:collection', 'post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read', 'studio:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['post:collection', 'user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['admin:collection', 'post:collection', 'user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'user:patch', 'user:read:me', 'user:patch:me'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[Groups(['user:patch', 'user:read', 'user:collection', 'user:read:me'])]
+    #[Groups(['admin:collection', 'user:patch', 'user:read', 'user:collection', 'user:read:me'])]
     #[ORM\Column]
     # Possible roles : ROLE_USER, ROLE_ADMIN, ROLE_PRO, ROLE_STUDIO
     private array $roles = [];
@@ -248,43 +253,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read'])]
+    #[Groups(['admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read'])]
+    #[Groups(['admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 
-    #[Groups(['user:read', 'user:patch'])]
+    #[Groups(['admin:collection', 'user:read', 'user:patch'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $isBanned = false;
 
-    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[Groups(['admin:collection', 'user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagramToken = null;
 
-    #[Groups(['user:read', 'user:collection', 'user:patch', 'user:read:me'])]
-    #[ORM\Column(options: ["default" => false])]
-    private ?bool $isVerified = false;
-
-    #[Groups(['user:read', 'user:read:me'])]
+    #[Groups(['admin:collection', 'user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
 
-    #[Groups(['user:read', 'user:read:me'])]
+    #[Groups(['admin:collection', 'user:read', 'user:read:me'])]
     #[ORM\Column]
     private ?\DateTime $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
-    #[Groups(['user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    #[Groups(['admin:collection', 'user:patch:me', 'user:read', 'user:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true, options: ["default" => "Hello this is me"])]
+    private ?string $description = "Hello this is me";
 
-    #[Groups(['user:read', 'user:read:me'])]
+    #[Groups(['admin:collection', 'user:read', 'user:read:me'])]
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
 
@@ -297,12 +298,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
     private Collection $messages;
 
-    #[Groups(['user:read', 'user:patch', 'user:read:me'])]
+    #[Groups(['admin:collection', 'user:read', 'user:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $kbisVerified = false;
 
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PostPicture::class, orphanRemoval: true)]
     private Collection $postPictures;
+
+    #[Groups(['admin:collection', 'user:read', 'user:collection', 'user:patch', 'user:read:me'])]
+    #[ORM\Column(options: ["default" => false])]
+    private ?bool $verified = null;
 
     public function __construct()
     {
@@ -440,18 +445,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setInstagramToken(?string $instagramToken): static
     {
         $this->instagramToken = $instagramToken;
-
-        return $this;
-    }
-
-    public function isVerified(): ?bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setIsVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
 
         return $this;
     }
@@ -660,6 +653,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $postPicture->setCreator(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): static
+    {
+        $this->verified = $verified;
 
         return $this;
     }

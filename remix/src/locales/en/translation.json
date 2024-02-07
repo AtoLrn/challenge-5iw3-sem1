@@ -135,7 +135,6 @@
   "studio-name": "Studio name",
   "studio-description": "Describe your studio in a few words",
   "max-nb-employees": "Maximum number of employees",
-  "kbis-file": "Kbis file",
   "opening-time": "Opening time",
   "closing-time": "Closing time",
   "address": "Address",
@@ -147,5 +146,17 @@
   "to": "to",
   "add-post": "Add a post",
   "post-created": "Post successfully created",
-  "delete": "Delete"
+  "delete": "Delete",
+  "statistics": "Statistics",
+  "users": "Users",
+  "list-of-users": "List of all users",
+  "introduce-yourself": "Introduce yourself, talk about your experience...",
+  "update-description": "Update your description",
+  "success": "Success !",
+  "requests": "Requests",
+  "ban": "Ban",
+  "account-verified": "Account Verified",
+  "account-not-verified": "Account not Verified",
+  "verified": "Verified",
+  "not-verified": "Verified"
 }

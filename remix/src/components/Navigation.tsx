@@ -73,8 +73,11 @@ export const Navigation: React.FC<NavigationProps> = ({ user }) => {
 					</li>
 					{user ? (
 						<>
+							{ user.isAdmin && <li className="cursor-pointer">
+								<NavLink to="/admin">Admin</NavLink>
+							</li> }
 
-							{ user.isProfessional && <li className="cursor-pointer">
+							{ user.isProfessional && user.isKbisVerified && <li className="cursor-pointer">
 								<NavLink to="/pro">Dashboard</NavLink>
 							</li> }
 							

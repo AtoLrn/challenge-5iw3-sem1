@@ -1,10 +1,12 @@
 import { z } from 'zod'
 import { User } from '../types/user'
+import {use} from 'i18next'
 
 const schema = z.object({
 	id: z.number(),
 	email: z.string().min(1),
 	username: z.string().min(1),
+	description: z.string().min(1),
 	picture: z.string().min(1),
 	roles: z.string().array(),
 	kbisVerified: z.boolean()
@@ -25,14 +27,16 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
-	const { id, email, username, picture, roles, kbisVerified } = schema.parse(body)
+	const { id, email, username, description, picture, roles, kbisVerified } = schema.parse(body)
     
 	return {
 		id,
 		email: email,
 		name: username,
 		avatar: picture,
+		description: description,
 		isProfessional: roles.includes('ROLE_PRO'),
+		isAdmin: roles.includes('ROLE_ADMIN'),
 		isKbisVerified: kbisVerified
 	}
 }
@@ -101,6 +105,7 @@ export interface PatchMePassword {
 export interface PatchMe {
     email?: string,
     username?: string,
+    description?: string
 }
 
 export interface Me {

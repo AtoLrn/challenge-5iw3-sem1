@@ -122,7 +122,6 @@
   "studio-name": "Nom du studio",
   "studio-description": "Décrivez-nous votre studio",
   "max-nb-employees": "Nombre maximum d'employés",
-  "kbis-file": "Fichier Kbis",
   "opening-time": "Heure d'ouverture",
   "closing-time": "Heure de fermeture",
   "address": "Adresse",
@@ -135,5 +134,17 @@
   "about-to-day-off": "Vous allez prendre un jour de congé de",
   "add-post": "Ajouter une publication",
   "post-created": "Publication ajoutée avec succès !",
-  "delete": "Supprimer"
+  "delete": "Supprimer",
+  "statistics": "Statistiques",
+  "users": "Utilisateurs",
+  "list-of-users": "Liste de tous les utilisateurs",
+  "introduce-yourself": "Introduisez vous, parlez de votre expérience...",
+  "update-description": "Modifier votre description",
+  "success": "Succès !",
+  "requests": "Demandes",
+  "ban": "Bannis",
+  "account-verified": "Compte Verifié",
+  "account-not-verified": "Compte non Vérifié",
+  "verified": "Verifié",
+  "not-verified": "Non Vérifié"
 }
