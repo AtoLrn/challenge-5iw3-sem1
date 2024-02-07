@@ -27,6 +27,13 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
             ], 401);
         }
 
+        if ($token->getUser()->isIsBanned()) {
+            return new JsonResponse([
+                "code" => 401,
+                "message" => 'This Account is banned'
+            ], 401);
+        }
+
         return $this->baseHandler->onAuthenticationSuccess($request, $token);
     }
 }

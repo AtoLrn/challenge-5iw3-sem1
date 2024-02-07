@@ -36,8 +36,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export default function AdminLayout () {
-	const { user } = useLoaderData<typeof loader>()
-	
 	return <main className='w-screen h-screen flex gradient-bg relative text-white'>
 		<AdminNavigation />
 		<Outlet />

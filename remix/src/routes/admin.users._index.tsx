@@ -1,20 +1,14 @@
-import {ActionFunctionArgs, LoaderFunctionArgs, json, redirect} from '@remix-run/node'
-import { Form, Link, MetaFunction, NavLink, useLoaderData } from '@remix-run/react'
+import {LoaderFunctionArgs, json} from '@remix-run/node'
+import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import {useTranslation} from 'react-i18next'
 import { Title } from 'src/components/Title'
 import {getSession} from 'src/session.server'
-import {createPost, getPosts} from 'src/utils/requests/post'
-import {Post} from 'src/utils/types/post'
-import * as Dialog from '@radix-ui/react-dialog'
 import {useEffect, useState} from 'react'
 import {getUsers} from 'src/utils/requests/admin/users'
-import {getArtists} from 'src/utils/requests/artists'
 import {ListItemProps} from 'src/components/Admin/ListItem'
 import {User} from 'src/utils/types/admin/user'
 import {BreadCrumb} from 'src/components/Breadcrumb'
 import {List} from 'src/components/Admin/List'
-import {Prestation} from 'src/utils/types/prestation'
-import {boolean} from 'zod'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -152,10 +146,10 @@ export default function () {
                     filterUsers()
                 }}>{t('verified')}</button>
             <button 
-                className={`text-sm mr-4 px-2 py-1 rounded-md border-1 bg-opacity-30 ${isArtist ? 'bg-green-500 border-green-500' : null}`}
+                className={`text-sm mr-4 px-2 py-1 rounded-md border-1 bg-opacity-30 ${isArtist ? 'bg-blue-500 border-blue-500' : null}`}
                 onClick={() => setIsArtist(!isArtist)}>{t('artist')}</button>
             <button 
-                className={`text-sm px-2 py-1 rounded-md border-1 bg-opacity-30 ${isAdmin ? 'bg-green-500 border-green-500' : null}`}
+                className={`text-sm px-2 py-1 rounded-md border-1 bg-opacity-30 ${isAdmin ? 'bg-orange-500 border-orange-500' : null}`}
                 onClick={() => setIsAdmin(!isAdmin)}>Admin</button>
         </div>
 
