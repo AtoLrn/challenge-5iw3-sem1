@@ -5,9 +5,12 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Get;
 use App\Controller\Studio\GetStudioInviteController;
+use App\Controller\Studio\GetStudioController;
 use App\Controller\Studio\PostStudioController;
 use App\Controller\Studio\InviteStudioController;
+use App\Controller\Studio\GetMyStudioController;
 use App\Repository\StudioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,6 +23,12 @@ use DateTimeZone;
 #[ApiResource(
     operations: [
         new GetCollection(
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+        ),
+        new GetCollection(
+            uriTemplate: '/studio/mine',
+            security: 'is_granted("ROLE_USER")',
+            controller: GetMyStudioController::class,
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
         ),
         new Post(
@@ -47,6 +56,11 @@ use DateTimeZone;
             normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
             controller: GetStudioInviteController::class
         ),
+        new Get(
+            uriTemplate: '/studio/search/{id}',
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+            controller: GetStudioController::class
+        ),
         new GetCollection(
             uriTemplate: '/studios',
             security: 'is_granted("ROLE_USER")',
@@ -61,10 +75,10 @@ class Studio
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['studio:read'])]
+    #[Groups(['studio:read', 'partnership:read'])]
     private ?int $id = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -93,6 +107,7 @@ class Studio
     #[ORM\Column(length: 255, options: ["default" => "PENDING"])]
     private ?string $status = null;
 
+    #[Groups(['studio:read'])]
     #[ORM\OneToMany(mappedBy: 'studioId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
 
@@ -422,6 +437,4 @@ class Studio
 
         return $this;
     }
-
-
 }

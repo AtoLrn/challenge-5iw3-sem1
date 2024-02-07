@@ -3,7 +3,7 @@ import { ProfileInterface } from './profileForm'
 import { Validation } from './validation'
 
 export interface Booking {
-  profile: ProfileInterface,
+  	profile: ProfileInterface,
 	prestation: Prestation,
 	date: string,
 	duration: number,

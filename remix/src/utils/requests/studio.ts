@@ -1,9 +1,12 @@
 import { z } from 'zod'
+import { Studio } from '../types/studio'
+import { Validation } from '../types/validation'
 
 const schema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
 	location: z.string().min(1),
+	status: z.string().min(1),
 	maxCapacity: z.number(),
 	openingTime: z.string().min(1),
 	closingTime: z.string().min(1),
@@ -27,7 +30,10 @@ export const createStudio = async (props: CreateStudio): Promise<Studio> => {
 	})
 	const body = await res.json()
 	const studio = schema.parse(body)
-	return studio
+	return {
+		...studio,
+		status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+	}
 }
 
 export interface CreateStudio {
@@ -44,22 +50,5 @@ export interface CreateStudio {
     friday: string,
     saturday: string,
     sunday: string,
-}
-
-
-export interface Studio {
-    id: string,
-    name: string,
-    description: string,
-    location: string,
-    maxCapacity: number,
-    openingTime: string,
-    closingTime: string,
-    monday: string,
-    tuesday: string,
-    wednesday: string,
-    thursday: string,
-    friday: string,
-    saturday: string,
-    sunday: string,
+    token: string
 }

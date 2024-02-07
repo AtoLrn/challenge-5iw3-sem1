@@ -1,17 +1,32 @@
 import { z } from 'zod'
+import { Studio } from './../types/studio'
+import { Validation } from '../types/validation'
+import { partnerShipSchema } from './partnership'
 
-const schema = z.object({
-	'hydra:member': z.array(z.object({
-		id: z.number(),
-		name: z.string().min(1)
-	}))
+const studioSchema = z.object({
+	id: z.number(),
+	name: z.string().min(1),
+	description: z.string().min(1),
+	location: z.string().min(1),
+	maxCapacity: z.number(),
+	status: z.string().min(1),
+	openingTime: z.string().nullable(),
+	closingTime: z.string().nullable(),
+	monday: z.boolean().nullable(),
+	tuesday: z.boolean().nullable(),
+	wednesday: z.boolean().nullable(),
+	thursday: z.boolean().nullable(),
+	friday: z.boolean().nullable(),
+	saturday: z.boolean().nullable(),
+	sunday: z.boolean().nullable(),
+
+	partnerShips: z.array(partnerShipSchema)
 })
 
+const schema = z.object({
+	'hydra:member': z.array(studioSchema)
+})
 
-export interface Studio {
-	id: number,
-	name: string
-}
 
 export const getStudios = async (options?: { name: string}): Promise<Studio[]> => {
 	const res = await fetch(`${process.env.API_URL}/studios`)
@@ -26,11 +41,63 @@ export const getStudios = async (options?: { name: string}): Promise<Studio[]> =
 				return name.includes(options.name)
 			})
 
-			return x
+			return x.map((studio) => {
+				return {
+					...studio,
+					status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+				}
+			})
 		}
 
-		return parsedBody['hydra:member']
+		return parsedBody['hydra:member'].map((studio) => {
+			return {
+				...studio,
+				status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+			}
+		})
 	} catch {
 		return []
 	}
+}
+
+export const getMyStudios = async ({token}: { token: string}): Promise<Studio[]> => {
+	const res = await fetch(`${process.env.API_URL}/studio/mine`, {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+		},
+	})
+
+	const body = await res.json()
+
+	try {
+		const parsedBody = schema.parse(body)
+
+
+
+		return parsedBody['hydra:member'].map((studio) => {
+			return {
+				...studio,
+				status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+			}
+		})
+	} catch (e) {
+		console.log(e)
+		return []
+	}
+}
+
+export const getStudio = async ({ id }: { id: string}): Promise<Studio> => {
+	const res = await fetch(`${process.env.API_URL}/studio/search/${id}`)
+
+	
+	const body = await res.json()
+
+	const studio = studioSchema.parse(body)
+
+	return {
+		...studio,
+		status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+	}
+	
 }

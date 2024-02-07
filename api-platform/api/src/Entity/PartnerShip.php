@@ -36,12 +36,12 @@ class PartnerShip
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['studio:invite:read', 'partnership:read'])]
+    #[Groups(['studio:invite:read', 'partnership:read', 'studio:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'partnerShips')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read'])]
+    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read', 'studio:read'])]
     private ?User $userId = null;
 
     #[ORM\ManyToOne(inversedBy: 'partnerShips')]
@@ -50,15 +50,15 @@ class PartnerShip
     private ?Studio $studioId = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read'])]
+    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read', 'studio:read'])]
     private ?\DateTime $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read'])]
+    #[Groups(['studio:invite:create', 'studio:invite:read', 'partnership:read', 'studio:read'])]
     private ?\DateTime $endDate = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['studio:invite:read', 'partnership:read', 'partnership:answer'])]
+    #[Groups(['studio:invite:read', 'partnership:read', 'partnership:answer', 'studio:read'])]
     private ?string $status = null;
 
     #[ORM\Column]

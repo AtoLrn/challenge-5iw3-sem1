@@ -1,4 +1,4 @@
-import { Link, MetaFunction, useFetcher } from '@remix-run/react'
+import { Link, MetaFunction, useFetcher, useLoaderData } from '@remix-run/react'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
@@ -8,7 +8,7 @@ import { ListItemProps } from 'src/components/Pro/ListItem'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 import { useCallback, useState } from 'react'
 import { withDebounce } from 'src/utils/debounce'
-import { ActionFunctionArgs, json, redirect } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { zx } from 'zodix'
 import { z } from 'zod'
 import { Artist } from 'src/utils/types/artist'
@@ -16,6 +16,9 @@ import { createPartnership } from 'src/utils/requests/partnership'
 import { getSession } from 'src/session.server'
 import { getArtists } from 'src/utils/requests/artists'
 import {useTranslation} from 'react-i18next'
+import { Studio } from 'src/utils/types/studio'
+import { getStudio } from 'src/utils/requests/studios'
+import { Validation } from 'src/utils/types/validation'
 
 
 
@@ -35,6 +38,11 @@ export type ActionReturnType = {
 	artists: Artist[]
 	error?: string
 	status?: 204
+}
+
+export type LoaderReturnType = {
+	error?: string
+	studio: Studio
 }
 
 export interface Appointement {
@@ -59,9 +67,16 @@ export const AppointementItem: React.FC<ListItemProps<Appointement>> = ({ item }
 	</div>
 }
 
-export async function action ({ request }: ActionFunctionArgs) {
+export async function action ({ request, params }: ActionFunctionArgs) {
 	const session = await getSession(request.headers.get('Cookie'))
 
+	const { id } = params
+
+	if (!id) {
+		return json({
+			error: 'Something wrong happened in form validation'
+		})
+	}
 
 	const token = session.get('token')
 	if (!token) {
@@ -72,13 +87,15 @@ export async function action ({ request }: ActionFunctionArgs) {
 		const body = await zx.parseForm(request, formSchema)
 		
 		if (body.kind === 'SEARCH') {
+			const artists = await getArtists()
+
 			return json<ActionReturnType>({
-				artists: await getArtists()
+				artists
 			})
 		} else {
 			await createPartnership({
 				token,
-				studioId: 10,
+				studioId: +id,
 				artistId: parseInt(body.artistId),
 				startDate: new Date(),
 				endDate: new Date()
@@ -98,6 +115,31 @@ export async function action ({ request }: ActionFunctionArgs) {
 	}
 }
 
+export async function loader ({ request, params }: LoaderFunctionArgs) {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const { id } = params
+
+	if (!id) {
+		return json({
+			error: 'Something wrong happened in form validation'
+		})
+	}
+
+	const token = session.get('token')
+	if (!token) {
+		return redirect('/login')
+	}
+
+	const studio = await getStudio({
+		id
+	})
+
+	return json<LoaderReturnType>({
+		studio
+	})
+}
+
 export const meta: MetaFunction = () => {
 	return [
 		{
@@ -107,6 +149,8 @@ export const meta: MetaFunction = () => {
 }
 
 export default function () {
+	const [ isOpen, setOpen ] = useState(false)
+	const { studio } = useLoaderData<LoaderReturnType>()
 	const [ isSearching, setSearching ] = useState(false)
 	const [ artistId, setArtistId ] = useState<number>()
 	const [ artist, setArtist ] = useState<string>()
@@ -152,12 +196,12 @@ export default function () {
 				name: 'Studios',
 				url: '/pro/studios'
 			},{
-				name: 'Poivre Noir',
-				url: '/pro/studios/poivre-noir'
+				name: studio.name,
+				url: `/pro/studios/${studio.id}`
 			}
 		]}/>
 		<section className='flex items-center justify-between w-full'>
-			<Title kind='h1'>Poivre Noir</Title>
+			<Title kind='h1'>{studio.name}</Title>
 
 			<div className='flex items-center gap-2'>
 				<Link to={'/pro/studios/poivre-noir/edit'}>
@@ -173,36 +217,14 @@ export default function () {
 		<Title kind='h3' className='mt-4'>
 			{t('your-guests')}
 		</Title>
-		<TimePicker kind={TimePickerKind.SLOT} slots={[
-			new Date('2023-12-16T09:00:00'),
-			new Date('2023-12-16T09:30:00'),
-			new Date('2023-12-10T09:00:00'),
-			new Date('2023-12-10T09:30:00'),
-			new Date('2023-12-16T10:00:00'),
-			new Date('2023-12-16T019:00:00'),
-			new Date('2023-12-16T020:00:00'),	
-			new Date('2023-12-16T11:00:00'),
-			new Date('2023-12-16T18:00:00'),
-			new Date('2023-12-16T19:00:00'),
-			new Date('2023-12-16T20:00:00')
-		]} />
-		<TimePicker 
-			kind={TimePickerKind.DAY} 
-			availables={[
-				new Date('2023-12-16T00:00:00'),
-				new Date('2023-12-15T00:00:00'),
-				new Date('2023-12-14T00:00:00')
-			]} 
-			defaultSelectedDay={new Date('2023-12-17T00:00:00')}
-		/>
 
 		<section className='flex items-center justify-start gap-6'>
-			{ guests.map((guest, index) => {
-				return  <img key={index} className={ 'rounded-full relative object-cover w-28 h-28 cursor-pointer' } src={guest}/>
+			{ studio.partnerShips.map((guest) => {
+				return  <img key={guest.userId?.id} className={ `rounded-full relative object-cover w-28 h-28 cursor-pointer border-4 ${guest.status === Validation.ACCEPTED.toUpperCase() ? 'border-green-500' : guest.status === Validation.PENDING.toUpperCase() ? 'bg-orange-500 border-orange-500' : 'bg-red-500 border-red-500'  }` } src={guest.userId?.picture} alt={guest.userId?.username}/>
 			}) }
 			
 
-			<Dialog.Root>
+			<Dialog.Root open={isOpen} onOpenChange={(open) => setOpen(open)}>
 				<Dialog.Trigger asChild>
 					<div  className={ 'rounded-full relative object-cover w-28 h-28 cursor-pointer bg-opacity-20 bg-zinc-600 flex justify-center items-center' } >
 						<AiOutlinePlus size={32} opacity={0.5} />
@@ -212,7 +234,7 @@ export default function () {
 					<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
 					<Dialog.Content className="flex flex-col items-stretch justify-start gap-8 p-4 z-20 bg-gray-600 bg-opacity-50 w-96 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
 						<h1 className='font-title text-xl font-bold'>{t('invite-artist')}</h1>
-						<fetch.Form method='POST' className='w-full flex flex-col gap-2'>
+						<fetch.Form onSubmit={() => setOpen(false)} method='POST' className='w-full flex flex-col gap-2'>
 							<input onChange={(e) => {
 								setSearching(true)
 								setArtist(e.target.value)
