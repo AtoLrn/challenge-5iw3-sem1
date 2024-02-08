@@ -19,7 +19,7 @@ class StudioFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $user = $manager->getRepository(User::class)->findOneBy(['username' => 'artist-1']);
+        $user = $manager->getRepository(User::class)->findOneBy(['username' => 'pro-1']);
 
         for ($i = 1; $i < 10; $i++) {
             $studio = new Studio;

@@ -5,7 +5,7 @@ const schema = z.object({
 	id: z.number(),
 	email: z.string().min(1),
 	username: z.string().min(1),
-	description: z.string().min(1),
+	description: z.string().optional(),
 	picture: z.string().min(1),
 	roles: z.string().array(),
 	kbisVerified: z.boolean()
@@ -26,8 +26,10 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
+	console.log(body)
+
 	const { id, email, username, description, picture, roles, kbisVerified } = schema.parse(body)
-    
+	    
 	return {
 		id,
 		email: email,
