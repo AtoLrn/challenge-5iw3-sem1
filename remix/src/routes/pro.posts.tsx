@@ -7,6 +7,7 @@ import {createPost, getPosts} from 'src/utils/requests/post'
 import {Post} from 'src/utils/types/post'
 import * as Dialog from '@radix-ui/react-dialog'
 import {useState} from 'react'
+import { FaTrashAlt } from "react-icons/fa";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -88,11 +89,12 @@ export default function () {
 								id="picture"
 								className="bg-transparent border-b border-white text-white"
 								accept="image/png, image/jpeg"
+                                required
 							/>
 						</div>
 						<div className='flex gap-2 items-center justify-end w-full'>
 							<Dialog.Close asChild>
-								<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
+								<button onClick={() => setIsDialogOpen(false)} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
 							</Dialog.Close>
 							<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('create')}</button>
 						</div>
@@ -114,15 +116,19 @@ export default function () {
 		}
 
 		<div className='flex flex-row flex-wrap overflow-scroll'>
-			{
+			{posts.length > 0 ?
 				posts.map((post: Post) => {
 					return <div>
 						<div className='pb-2 flex flex-col items-center mb-4 mr-4 justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
 							<img width={244} className='p-4' src={post.picture} alt={post.picture} />
-							<NavLink className="px-2 py-1 rounded-lg bg-red-900" to={`/pro/posts/delete/${post.id}`}>{t('delete')}</NavLink>
+							<NavLink className="px-3 py-3 rounded-lg bg-red-900" to={`/pro/posts/delete/${post.id}`}>
+                                <FaTrashAlt />
+                            </NavLink>
 						</div>
 					</div>
 				})
+            :
+                <p className='opacity-50'>{t('no-post')}</p>
 			}
 		</div>
 	</div>

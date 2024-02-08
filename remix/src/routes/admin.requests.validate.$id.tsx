@@ -1,6 +1,6 @@
 import {LoaderFunctionArgs, redirect} from '@remix-run/node'
 import {getSession} from 'src/session.server'
-import {deleteUser} from 'src/utils/requests/admin/users'
+import {patchUser} from 'src/utils/requests/admin/users'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const session = await getSession(request.headers.get('Cookie'))
@@ -9,16 +9,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	try {
 		if (!params.id) {
-			redirect('/admin/users')
+			redirect('/admin/requests')
 		}
 
-		await deleteUser(token as string, params.id as string)
+		await patchUser(token as string, params.id as string, {
+            kbisVerified: true
+        })
 
-		return redirect('/admin/users')
+		return redirect('/admin/requests?success=true')
 	} catch(e) {
 		if (e instanceof Error)
-			return redirect(`/admin/users?error=${e.message}`)
+			return redirect(`/admin/requests?error=${e.message}`)
 
-		return redirect(`/admin/users?error${'Unexpected Error'}`)
+		return redirect(`/admin/requests?error${'Unexpected Error'}`)
 	}
 }

@@ -4,6 +4,7 @@ import { createPrestation } from 'src/utils/requests/prestations'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
+import {useTranslation} from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -54,11 +55,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function () {
 	const { errors } = useLoaderData<typeof loader>()
+    const { t } = useTranslation()
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			},{
 				name: 'Prestations',

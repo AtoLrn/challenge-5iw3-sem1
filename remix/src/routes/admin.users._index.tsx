@@ -75,6 +75,7 @@ export default function () {
     const [ isVerified, setIsVerified ] = useState<FilterBooleanChoice>(FilterBooleanChoice.not)
     const [ isArtist, setIsArtist ] = useState<boolean>(false)
     const [ isAdmin, setIsAdmin ] = useState<boolean>(false)
+    const [ isBanned, setIsBanned ] = useState<boolean>(false)
 
     const filterUsers = () => {
         const filteredUsers = users.filter((user: User) => {
@@ -83,6 +84,9 @@ export default function () {
                 isStaying = false
             }
             if (isArtist && !user.roles.includes('ROLE_PRO')) {
+                isStaying = false
+            }
+            if (isBanned && !user.isBanned) {
                 isStaying = false
             }
             if (isVerified === FilterBooleanChoice.true && !user.verified) {
@@ -102,7 +106,7 @@ export default function () {
 
     useEffect(() => {
         filterUsers()
-    }, [isAdmin, isArtist, isVerified, username])
+    }, [isAdmin, isArtist, isVerified, isBanned, username])
 
     const getClassName = (state: FilterBooleanChoice) => {
         let className = "";
@@ -158,8 +162,11 @@ export default function () {
                 className={`text-sm mr-4 px-2 py-1 rounded-md border-1 bg-opacity-30 ${isArtist ? 'bg-blue-500 border-blue-500' : null}`}
                 onClick={() => setIsArtist(!isArtist)}>{t('artist')}</button>
             <button 
-                className={`text-sm px-2 py-1 rounded-md border-1 bg-opacity-30 ${isAdmin ? 'bg-orange-500 border-orange-500' : null}`}
+                className={`text-sm mr-4 px-2 py-1 rounded-md border-1 bg-opacity-30 ${isAdmin ? 'bg-orange-500 border-orange-500' : null}`}
                 onClick={() => setIsAdmin(!isAdmin)}>Admin</button>
+            <button 
+                className={`text-sm px-2 py-1 rounded-md border-1 bg-opacity-30 ${isBanned ? 'bg-red-500 border-red-500' : null}`}
+                onClick={() => setIsBanned(!isBanned)}>{t('ban')}</button>
         </div>
 
 		<List items={userList as User[]} ListItem={UserItem} />

@@ -13,6 +13,7 @@ use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
 use App\Controller\User\GetArtistController;
 use App\Controller\Auth\VerifyController;
+use App\Controller\User\ArtistWaitingController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
 use App\Controller\User\ProfilePictureController;
@@ -50,6 +51,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_ADMIN")',
             uriTemplate: '/admin/users/{id}',
             normalizationContext: ['groups' => 'admin:read']
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_ADMIN")',
+            uriTemplate: '/admin/artist/waiting',
+            normalizationContext: ['groups' => 'admin:collection'],
+            controller: ArtistWaitingController::class,
         ),
         new Delete(
             security: 'is_granted("ROLE_ADMIN")',
@@ -313,7 +320,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(['admin:read', 'admin:collection', 'user:read', 'user:collection', 'admin:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
-    private ?bool $verified = null;
+    private ?bool $verified = false;
 
     public function __construct()
     {

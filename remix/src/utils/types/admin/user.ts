@@ -23,3 +23,12 @@ export interface UserPatch {
     kbisVerified?: boolean
     roles?: string[]
 }
+
+export interface ArtistWaiting {
+    id: number
+    email: string
+    username: string
+    picture: string
+    kbisFileUrl: string
+    kbisVerified: boolean
+}

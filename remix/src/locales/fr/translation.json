@@ -154,5 +154,18 @@
   "to-ban": "Bannir",
   "update": "Modifier",
   "user-updated": "Utilisateur Modifié !",
-  "about-to-delete-user": "Vous allez supprimer cet utilisateur pour toujours, êtes vous sur ?"
+  "about-to-delete-user": "Vous allez supprimer cet utilisateur pour toujours, êtes vous sur ?",
+  "approve": "Approuver",
+  "file": "Fichier",
+  "user-approved": "Utilisateur approuvé !",
+  "list-of-requests": "Liste des demandes en attente",
+  "no-request": "Il n'y a aucune demande en attente",
+  "user-number": "Nombre d'Utilisateurs",
+  "artist-number": "Nombre de Tatoueurs",
+  "banned-number": "Nombre d'Utilisateurs bannis",
+  "no-one-to-chat": "Vous n'avez personne avec qui parler",
+  "no-one-to-chat-client": "Vous n'avez personne avec qui parler, attendez qu'un tatoueur accepte votre demande.",
+  "no-post": "Vous n'avez aucune publication, créez votre première pour améliorer votre profil !",
+  "no-prestation": "Vous n'avez aucune prestation, créez votre première pour montrer ce que vous faites !",
+  "tattoo-artist": "Tatoueur"
 }

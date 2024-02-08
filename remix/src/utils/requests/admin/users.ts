@@ -1,4 +1,4 @@
-import { User, UserPatch } from '../../types/admin/user'
+import { ArtistWaiting, User, UserPatch } from '../../types/admin/user'
 import { z } from 'zod'
 
 const schemaCollection = z.object({
@@ -27,6 +27,17 @@ const schema = z.object({
     roles: z.string().array(),
     createdAt: z.string().min(1),
     updatedAt: z.string().min(1),
+})
+
+const schemaWaitingArtist = z.object({
+	'hydra:member': z.array(z.object({
+		id: z.number(),
+		username: z.string().min(1),
+		picture: z.string().min(1),
+		email: z.string().min(1),
+		kbisFileUrl: z.string().min(1),
+        kbisVerified: z.boolean(),
+	}))
 })
 
 export const getUsers = async (token: string): Promise<User[]> => {
@@ -101,4 +112,23 @@ export const deleteUser = async (token: string, id: string): Promise<true> => {
 	const body = await res.json()
 
 	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
+
+export const getWaitingArtists = async (token: string): Promise<ArtistWaiting[]> => {
+    const res = await fetch(`${process.env.API_URL}/admin/artist/waiting`, {
+		headers: {
+			'Accept': 'application/ld+json',
+			'Authorization': `Bearer ${token}`
+		},
+    })
+
+	const body = await res.json()
+
+    try {
+        const parsedBody = schemaWaitingArtist.parse(body)
+
+        return parsedBody['hydra:member']
+    } catch {
+        return []
+    }
 }

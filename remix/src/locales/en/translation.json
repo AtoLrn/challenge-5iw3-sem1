@@ -166,5 +166,18 @@
   "to-ban": "Ban",
   "update": "Update",
   "user-updated": "User Updated !",
-  "about-to-delete-user": "You are about to delete this user forever, are you sure ?"
+  "about-to-delete-user": "You are about to delete this user forever, are you sure ?",
+  "approve": "Approve",
+  "file": "File",
+  "user-approved": "User approved !",
+  "list-of-requests": "List of pending requests",
+  "no-request": "There is no pending request",
+  "user-number": "Number of Users",
+  "artist-number": "Number of Artists",
+  "banned-number": "Number of banned Users",
+  "no-one-to-chat": "You have no one to chat with",
+  "no-one-to-chat-client": "You have no one to chat with, wait for a tattoo artist to approve one of your request.",
+  "no-post": "You don't have any post, make your first one to improve you profile !",
+  "no-prestation": "You don't have any prestation, create your first one to show what you do !",
+  "tattoo-artist": "Tattoo Artist"
 }

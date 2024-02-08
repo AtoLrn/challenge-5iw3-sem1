@@ -58,6 +58,10 @@ export default function Prestations() {
 		<Link to={'/pro/prestations/add'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>
 		</Link>
-		<List items={prestations} ListItem={PrestationItem} />
+        {prestations.length > 0 ?
+            <List items={prestations} ListItem={PrestationItem} />
+        :
+            <p className='opacity-50'>{t('no-prestation')}</p>
+        }
 	</div>
 }

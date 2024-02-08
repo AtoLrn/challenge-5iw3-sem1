@@ -74,13 +74,17 @@ export default function () {
 				url: '/pro/chat'
 			}
 		]}/>
+		<Title kind="h2">{t('pro-chat-page-title')}</Title>
 		{ errors.map((error) => {
-			return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+			return <div className='mb-4 font-bold text-red-600 border-b border-white self-start' key={error}>
 				{error}
 			</div>
 		})}
-		<Title kind="h2">{t('pro-chat-page-title')}</Title>
-		<List items={channels} ListItem={ChannelItem} />
+		{channels.length > 0 ?
+            <List items={channels} ListItem={ChannelItem} />
+        :
+            <p className='opacity-50'>{t('no-one-to-chat')}</p>
+        }
 	</div>
 }
 
