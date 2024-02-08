@@ -12,3 +12,14 @@ export interface User {
     createdAt: string
     updatedAt: string
 }
+
+export interface UserPatch {
+    email?: string
+    username?: string
+    verified?: boolean
+    isBanned?: boolean
+    description?: string
+    kbisFileUrl?: string
+    kbisVerified?: boolean
+    roles?: string[]
+}

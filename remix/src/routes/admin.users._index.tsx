@@ -19,6 +19,9 @@ export const meta: MetaFunction = () => {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+	const url = new URL(request.url)
+	const error = url.searchParams.get('error')
+
 	const session = await getSession(request.headers.get('Cookie'))
 
 	const token = session.get('token')
@@ -27,6 +30,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	return json({
 		users: users,
+        errors: [error]
 	})
 }
 
@@ -64,7 +68,7 @@ const enum FilterBooleanChoice {
 
 export default function () {
 	const { t } = useTranslation()
-	const { users } = useLoaderData<typeof loader>()
+	const { users, errors } = useLoaderData<typeof loader>()
 
     const [ userList, setUserList ] = useState<User[]>(users)
     const [ username, setUsername ] = useState("")
@@ -130,6 +134,11 @@ export default function () {
             }
         ]}/>
 		<Title kind="h2">{t('list-of-users')}</Title>
+        { errors.map((error) => {
+            return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
+                {error}
+            </div>
+        })}
 
         <div className='flex'>
             <input placeholder={t('username')} className='mr-4 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300' value={username} onChange={(e) => setUsername(e.target.value)} />

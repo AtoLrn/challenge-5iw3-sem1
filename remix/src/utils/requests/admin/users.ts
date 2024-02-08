@@ -1,4 +1,4 @@
-import { User } from '../../types/admin/user'
+import { User, UserPatch } from '../../types/admin/user'
 import { z } from 'zod'
 
 const schemaCollection = z.object({
@@ -65,4 +65,40 @@ export const getUser = async (token: string, id: string): Promise<User> => {
     } catch {
         throw new Error('Error while retrieving this user')
     }
+}
+
+export const patchUser = async (token: string, id: string, data: UserPatch): Promise<true> => {
+	const res = await fetch(`${process.env.API_URL}/admin/users/${id}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/merge-patch+json',
+			'Authorization': `Bearer ${token}`
+		},
+		body: JSON.stringify(data)
+	})
+
+	if (res.status === 200) {
+		return true
+	}
+
+	const body = await res.json()
+    
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
+
+export const deleteUser = async (token: string, id: string): Promise<true> => {
+	const res = await fetch(`${process.env.API_URL}/admin/users/${id}`, {
+		method: 'DELETE',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+	})
+
+	if (res.status === 204) {
+		return true
+	}
+
+	const body = await res.json()
+
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }

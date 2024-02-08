@@ -158,5 +158,13 @@
   "account-verified": "Account Verified",
   "account-not-verified": "Account not Verified",
   "verified": "Verified",
-  "not-verified": "Verified"
+  "not-verified": "Verified",
+  "creation-date": "Creation date",
+  "last-update": "Last Update",
+  "make-admin": "Make Admin",
+  "make-artist": "Make Artist",
+  "to-ban": "Ban",
+  "update": "Update",
+  "user-updated": "User Updated !",
+  "about-to-delete-user": "You are about to delete this user forever, are you sure ?"
 }

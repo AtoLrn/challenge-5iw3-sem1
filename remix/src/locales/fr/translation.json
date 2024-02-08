@@ -146,5 +146,13 @@
   "account-verified": "Compte Verifié",
   "account-not-verified": "Compte non Vérifié",
   "verified": "Verifié",
-  "not-verified": "Non Vérifié"
+  "not-verified": "Non Vérifié",
+  "creation-date": "Date de création",
+  "last-update": "Dernière modification",
+  "make-admin": "Rendre Admin",
+  "make-artist": "Rendre Tatoueur",
+  "to-ban": "Bannir",
+  "update": "Modifier",
+  "user-updated": "Utilisateur Modifié !",
+  "about-to-delete-user": "Vous allez supprimer cet utilisateur pour toujours, êtes vous sur ?"
 }
