@@ -14,6 +14,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	const token = session.get('token')
 
+
 	if (!token) {
 		return json<LoaderReturnType>({
 			user: undefined
@@ -25,10 +26,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			token
 		})
 
-
 		return json<LoaderReturnType>({ user })
 
 	} catch (e) {
+		console.log(e)
 		return json<LoaderReturnType>({
 			user: undefined
 		})
