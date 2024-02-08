@@ -6,6 +6,8 @@ import {getSession} from 'src/session.server'
 import {createPost, getPosts} from 'src/utils/requests/post'
 import {Post} from 'src/utils/types/post'
 import * as Dialog from '@radix-ui/react-dialog'
+import {useState} from 'react'
+import { FaTrashAlt } from 'react-icons/fa'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -61,17 +63,19 @@ export default function () {
 	const { t } = useTranslation()
 	const { posts, errors, success } = useLoaderData<typeof loader>()
 
+	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
+
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<Title kind="h2">{t('posts')}</Title>
 
-		<Dialog.Root>
+		<Dialog.Root open={isDialogOpen}>
 			<Dialog.Trigger asChild>
-		        <button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('create')}</button>
+		        <button onClick={() => setIsDialogOpen(true)} className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('create')}</button>
 			</Dialog.Trigger>
 			<Dialog.Portal>
 				<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
 				<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/4 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
-					<Form encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
+					<Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
 						<div className='flex flex-col gap-2'>
 							<Title kind={'h2'}>
 								{t('add-post')}
@@ -85,11 +89,12 @@ export default function () {
 								id="picture"
 								className="bg-transparent border-b border-white text-white"
 								accept="image/png, image/jpeg"
+								required
 							/>
 						</div>
 						<div className='flex gap-2 items-center justify-end w-full'>
 							<Dialog.Close asChild>
-								<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
+								<button onClick={() => setIsDialogOpen(false)} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
 							</Dialog.Close>
 							<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('create')}</button>
 						</div>
@@ -111,15 +116,19 @@ export default function () {
 		}
 
 		<div className='flex flex-row flex-wrap overflow-scroll'>
-			{
+			{posts.length > 0 ?
 				posts.map((post: Post) => {
 					return <div>
 						<div className='pb-2 flex flex-col items-center mb-4 mr-4 justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
 							<img width={244} className='p-4' src={post.picture} alt={post.picture} />
-							<NavLink className="px-2 py-1 rounded-lg bg-red-900" to={`/pro/posts/delete/${post.id}`}>{t('delete')}</NavLink>
+							<NavLink className="px-3 py-3 rounded-lg bg-red-900" to={`/pro/posts/delete/${post.id}`}>
+								<FaTrashAlt />
+							</NavLink>
 						</div>
 					</div>
 				})
+				:
+				<p className='opacity-50'>{t('no-post')}</p>
 			}
 		</div>
 	</div>

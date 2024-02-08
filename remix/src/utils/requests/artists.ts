@@ -16,9 +16,9 @@ export const getArtists = async (options?: { name: string}): Promise<Artist[]> =
 
 	const body = await res.json()
 
-
 	try {
 		const parsedBody = schema.parse(body)
+		console.log(parsedBody)
 
 		if (options && options.name) {
 			return parsedBody['hydra:member'].filter(({ username }) => {

@@ -1,23 +1,22 @@
-import { Link, MetaFunction, NavLink, useLoaderData } from '@remix-run/react'
+import { Form, Link, MetaFunction, NavLink, useLoaderData } from '@remix-run/react'
 import { Title } from 'src/components/Title'
 import { motion as m } from 'framer-motion'
 import { FaArrowRight, FaPen} from 'react-icons/fa6'
 import { Validation } from 'src/utils/types/validation'
 import { Badge } from 'src/components/Pro/Badge'
 import {useTranslation} from 'react-i18next'
-import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
+import {ActionFunctionArgs, LoaderFunctionArgs, json, redirect} from '@remix-run/node'
 import {getSession} from 'src/session.server'
-import {me} from 'src/utils/requests/me'
+import {me, patchMe} from 'src/utils/requests/me'
 import {User} from 'src/utils/types/user'
+import {useState} from 'react'
+import { z } from 'zod'
+import { zx } from 'zodix'
 
+const schema = z.object({
+	description: z.string().min(1),
+}) 
 
-type ProfileData = {
-  username: string;
-  avatar: string;
-  email: string;
-  isProfessional: boolean;
-  isAdmin: boolean;
-};
 
 export const meta: MetaFunction = () => {
 	return [
@@ -29,9 +28,15 @@ export const meta: MetaFunction = () => {
 
 export interface LoaderReturnType {
 	user: User
+    errors: (string | null)[]
+    success: string | null
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+	const url = new URL(request.url)
+	const error = url.searchParams.get('error')
+	const success = url.searchParams.get('success')
+
 	const session = await getSession(request.headers.get('Cookie'))
 
 	const token = session.get('token')
@@ -46,7 +51,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		})
 
 		return json<LoaderReturnType>({ 
-			user
+			user,
+			errors: [error],
+			success: success
 		})
 
 	} catch (e) {
@@ -54,9 +61,37 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	}
 }
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token')
+
+	try {
+		const { description } = await zx.parseForm(request, schema)
+		console.log(description)
+
+		if (!token) {
+			return redirect('/login')
+		}
+
+		await patchMe(token, {
+			description
+		})
+
+		return redirect('/pro/profile?success=true')
+	} catch (e) {
+		if (e instanceof Error)
+			return redirect(`/pro/profile?error=${e.message}`)
+
+		return redirect(`/pro/profile?error=${'Unexpected Error'}`)
+	}
+
+}
+
 export default function () {
 	const { t } = useTranslation()
-	const { user } = useLoaderData<typeof loader>()
+	const { user, errors, success } = useLoaderData<typeof loader>()
+
+	const [ description, setDescription ] = useState(user.description)
 
 	const appointments = [
 
@@ -99,7 +134,18 @@ export default function () {
 				{t('day-off')}
 			</Link>
 
-			<div className="container mx-auto flex flex-col gap-10 relative">
+			{ errors.map((error) => {
+				return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
+					{error}
+				</div>
+			})}
+			{success ?
+				<div className='font-bold text-green-600 border-b border-white self-start'>
+					{t('success')}
+				</div> : null
+			}
+
+			<div className="container overflow-scroll mx-auto flex flex-col gap-10 relative">
 				{/* Profile card with glass effect - make this a sidebar on desktop */}
 				<m.section
 					initial="hidden"
@@ -108,7 +154,7 @@ export default function () {
 					custom={0}
 					variants={cardVariants}
 				>
-					<div className="flex items-end justify-between bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg w-full z-20 relative">
+					<div className="flex flex-col items-end justify-between bg-opacity-20 bg-neutral-700 backdrop-filter backdrop-blur-lg p-5 text-white shadow-lg w-full z-20 relative">
 						<div className="flex items-center space-x-4 w-full">
 							<img
 								src={user.avatar}
@@ -123,6 +169,15 @@ export default function () {
 									{user.email}
 								</p>
 							</div>
+						</div>
+						<div className='w-full my-4'>
+							<Form method='POST' className='flex flex-col items-start'>
+								<label htmlFor="description">{t('introduce-yourself')}</label>
+								<textarea cols={100} rows={8} onChange={(e) => setDescription(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='description' id='description' value={description} />
+								<button type="submit" className="edit-btn bg-red-950 text-white px-3 py-3 rounded-md shadow-md flex items-center gap-2 hover:bg-red-900 justify-center">
+									{t('update-description')}
+								</button>
+							</Form>
 						</div>
                     	<NavLink
 							to={'/profile'}

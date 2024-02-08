@@ -30,7 +30,7 @@ class VerifyController
 
         $user = $this->userRepository->findOneBy(['email' => $decodedToken['email']]);
 
-        $user->setIsVerified(true);
+        $user->setVerified(true);
 
         return $user;
     }

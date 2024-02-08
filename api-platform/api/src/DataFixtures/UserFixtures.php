@@ -28,29 +28,27 @@ class UserFixtures extends Fixture
                     "password"
                 )
             );
-            $user->setIsVerified(true);
+            $user->setVerified(true);
             $user->setRoles(["ROLE_USER"]);
 
             $manager->persist($user);
         }
 
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 1; $i < 11; $i++) {
             $user = new User;
-            $user->setUsername("artist-" . $i);
-            $user->setEmail("artist-" . $i . "@gmail.com");
+            $user->setUsername("pro-". $i);
+            $user->setEmail("pro-". $i . "@gmail.com");
             $user->setPassword(
                 $this->userPasswordHasherInterface->hashPassword(
-                    $user,
-                    "password"
+                    $user, "password"
                 )
             );
-            $user->setIsVerified(true);
-            $user->setRoles(["ROLE_USER", "ROLE_PRO"]);
+            $user->setVerified(true);
             $user->setKbisVerified(true);
+            $user->setRoles(["ROLE_USER", "ROLE_PRO"]);
 
             $manager->persist($user);
         }
-
 
         $user = new User;
         $user->setUsername("admin");
@@ -61,9 +59,9 @@ class UserFixtures extends Fixture
                 "password"
             )
         );
-        $user->setIsVerified(true);
-        $user->setRoles(["ROLE_ADMIN", "ROLE_PRO"]);
+        $user->setVerified(true);
         $user->setKbisVerified(true);
+        $user->setRoles(["ROLE_USER", "ROLE_ADMIN", "ROLE_PRO"]);
 
         $manager->persist($user);
 

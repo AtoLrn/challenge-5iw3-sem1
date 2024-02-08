@@ -78,7 +78,7 @@ export const ProNavigation: React.FC<NavigationProps> = ({ user }) => {
 						<img className="rounded-full" height={32} width={32} src={user.avatar}/>
 						<div className="flex flex-col ">
 							<span className="text-sm">{ user.name }</span>
-							<span className="opacity-70 text-sm">Tattoo artist</span>
+							<span className="opacity-70 text-sm">{t('tattoo-artist')}</span>
 						</div>
 					</a>
 				</HoverCard.Trigger>
