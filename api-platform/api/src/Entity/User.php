@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\ForgetPasswordController;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
+use App\Controller\User\GetArtistController;
 use App\Controller\Auth\VerifyController;
 use App\Controller\User\GetMeController;
 use App\Controller\User\PatchMeController;
@@ -112,10 +113,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: GetMeController::class,
             read: false
         ),
-        new Get(
+        new GetCollection(
             uriTemplate: '/artists',
             normalizationContext: ['groups' => 'user:read:artist'],
             controller: ArtistController::class,
+            read: false
+        ),
+        new Get(
+            uriTemplate: '/artists/{id}',
+            normalizationContext: ['groups' => 'user:read:artist'],
+            controller: GetArtistController::class,
             read: false
         ),
         new Get(

@@ -111,7 +111,7 @@ export default function MainPage() {
 									} }}
 							
 									className='w-full cursor-pointer ' key={artist.id}>
-									<Link to={`/search/${encodeURIComponent(artist.username.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
+									<Link to={`/artist/${encodeURIComponent(artist.id)}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
 										<img src={artist.picture} alt="" className='rounded-full w-10 h-10' />
 										{artist.username}
 									</Link>
@@ -129,7 +129,7 @@ export default function MainPage() {
 									} }}
 							
 									className='w-full cursor-pointer ' key={artist.id}>
-									<Link to={`/search/${encodeURIComponent(artist.name.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
+									<Link to={`/studio/${encodeURIComponent(artist.name.replaceAll(' ', '-'))}`} className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl'>
 										<img src={artist.name} alt="" className='rounded-full w-10 h-10' />
 										{artist.name}
 									</Link>

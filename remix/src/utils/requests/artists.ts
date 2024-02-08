@@ -1,12 +1,14 @@
 import { z } from 'zod'
 import { Artist } from '../types/artist'
 
+export const schemaArtist = z.object({
+	id: z.number(),
+	username: z.string().min(1),
+	picture: z.string().min(1)
+})
+
 const schema = z.object({
-	'hydra:member': z.array(z.object({
-		id: z.number(),
-		username: z.string().min(1),
-		picture: z.string().min(1)
-	}))
+	'hydra:member': z.array(schemaArtist)
 })
 
 export const getArtists = async (options?: { name: string}): Promise<Artist[]> => {
@@ -29,4 +31,16 @@ export const getArtists = async (options?: { name: string}): Promise<Artist[]> =
 	} catch {
 		return []
 	}
+}
+
+export const getArtist = async ({ name }: { name: string }): Promise<Artist> => {
+	const res = await fetch(`${process.env.API_URL}/artists/${name}`)
+
+	
+	const body = await res.json()
+
+	const artist = schemaArtist.parse(body)
+
+	return artist
+	
 }

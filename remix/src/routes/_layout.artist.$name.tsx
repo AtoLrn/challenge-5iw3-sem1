@@ -1,21 +1,43 @@
 import { Title } from 'src/components/Title'
 import { SlStar } from 'react-icons/sl'
+import { getArtist } from 'src/utils/requests/artists'
+import { LoaderFunctionArgs, json } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
 
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+	const { name } = params
+
+	if (!name) {
+		throw new Response(null, {
+			status: 404,
+			statusText: 'Not Found',
+		}) 
+	}
+
+	const artist = await getArtist({
+		name
+	})
+
+	return json({
+		artist
+	})
+}
 
 export default function MainPage() {
-
+	const { artist } = useLoaderData<typeof loader>()
 
 	return (
-		<main className='min-h-screen max-h-screen min-w-full gradient-bg text-white flex flex-col justify-center items-center gap-4 relative'>
-			<div className="flex w-screen min-h-screen pt-20">
+		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col justify-center items-center gap-4 relative'>
+			<div className="container mx-auto flex w-screen min-h-screen pt-20">
 				<div className="w-1/3 px-4 pt-16 justify-center">
-					<img src="https://cdn.pixabay.com/photo/2017/08/06/10/26/woman-2591043_1280.jpg" alt="tattoo artist picture"/>
+					<img className='w-full aspect-square' src={artist.picture} alt="tattoo artist picture"/>
 				</div>
-				<div className="w-2/3 p-16 overflow-y-auto max-h-screen">
+				<div className="w-2/3 p-16">
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-row justify-between">
 							<div>
-								<Title kind="h1" className='z-20 pb-2'>John Doe</Title>
+								<Title kind="h1" className='z-20 pb-2'>{artist.username}</Title>
 								<div className="flex gap-2">
 									<span className="font-bold">Rating :</span>
 									<div className="flex">
