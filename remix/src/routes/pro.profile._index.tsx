@@ -52,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 		return json<LoaderReturnType>({ 
 			user,
-            errors: [error],
+			errors: [error],
 			success: success
 		})
 
@@ -62,20 +62,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const session = await getSession(request.headers.get('Cookie'))
-    const token = session.get('token')
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token')
 
 	try {
 		const { description } = await zx.parseForm(request, schema)
-        console.log(description)
+		console.log(description)
 
 		if (!token) {
 			return redirect('/login')
 		}
 
-        await patchMe(token, {
-            description
-        })
+		await patchMe(token, {
+			description
+		})
 
 		return redirect('/pro/profile?success=true')
 	} catch (e) {
@@ -91,7 +91,7 @@ export default function () {
 	const { t } = useTranslation()
 	const { user, errors, success } = useLoaderData<typeof loader>()
 
-    const [ description, setDescription ] = useState(user.description)
+	const [ description, setDescription ] = useState(user.description)
 
 	const appointments = [
 
@@ -134,16 +134,16 @@ export default function () {
 				{t('day-off')}
 			</Link>
 
-            { errors.map((error) => {
-                return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
-                    {error}
-                </div>
-            })}
-            {success ?
-                <div className='font-bold text-green-600 border-b border-white self-start'>
-                    {t('success')}
-                </div> : null
-            }
+			{ errors.map((error) => {
+				return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
+					{error}
+				</div>
+			})}
+			{success ?
+				<div className='font-bold text-green-600 border-b border-white self-start'>
+					{t('success')}
+				</div> : null
+			}
 
 			<div className="container overflow-scroll mx-auto flex flex-col gap-10 relative">
 				{/* Profile card with glass effect - make this a sidebar on desktop */}
@@ -170,15 +170,15 @@ export default function () {
 								</p>
 							</div>
 						</div>
-                        <div className='w-full my-4'>
-                            <Form method='POST' className='flex flex-col items-start'>
-                                <label htmlFor="description">{t('introduce-yourself')}</label>
-                                <textarea cols={100} rows={8} onChange={(e) => setDescription(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='description' id='description' value={description} />
-                                <button type="submit" className="edit-btn bg-red-950 text-white px-3 py-3 rounded-md shadow-md flex items-center gap-2 hover:bg-red-900 justify-center">
-                                    {t('update-description')}
-                                </button>
-                            </Form>
-                        </div>
+						<div className='w-full my-4'>
+							<Form method='POST' className='flex flex-col items-start'>
+								<label htmlFor="description">{t('introduce-yourself')}</label>
+								<textarea cols={100} rows={8} onChange={(e) => setDescription(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='description' id='description' value={description} />
+								<button type="submit" className="edit-btn bg-red-950 text-white px-3 py-3 rounded-md shadow-md flex items-center gap-2 hover:bg-red-900 justify-center">
+									{t('update-description')}
+								</button>
+							</Form>
+						</div>
                     	<NavLink
 							to={'/profile'}
 							className="edit-btn bg-red-950 text-white px-3 py-3 rounded-md shadow-md flex items-center gap-2 hover:bg-red-900 justify-center"

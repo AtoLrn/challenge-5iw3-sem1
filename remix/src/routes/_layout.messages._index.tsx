@@ -56,13 +56,13 @@ export default function () {
 				<div className="w-2/3 h-full">
 
 					<div className="flex flex-col items-center justify-center h-full">
-                        {channels.length > 0 ?
-                            <Title kind={'h2'}>
-                                {t('choose-artist-to-chat')}
-                            </Title>
-                        :
-                            <p className='opacity-50'>{t('no-one-to-chat-client')}</p>
-                        }
+						{channels.length > 0 ?
+							<Title kind={'h2'}>
+								{t('choose-artist-to-chat')}
+							</Title>
+							:
+							<p className='opacity-50'>{t('no-one-to-chat-client')}</p>
+						}
 						{ errors.map((error) => {
 							return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
 								{error}

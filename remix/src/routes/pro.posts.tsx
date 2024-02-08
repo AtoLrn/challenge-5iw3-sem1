@@ -7,7 +7,7 @@ import {createPost, getPosts} from 'src/utils/requests/post'
 import {Post} from 'src/utils/types/post'
 import * as Dialog from '@radix-ui/react-dialog'
 import {useState} from 'react'
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt } from 'react-icons/fa'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -63,7 +63,7 @@ export default function () {
 	const { t } = useTranslation()
 	const { posts, errors, success } = useLoaderData<typeof loader>()
 
-    const [ isDialogOpen, setIsDialogOpen ] = useState(false)
+	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<Title kind="h2">{t('posts')}</Title>
@@ -89,7 +89,7 @@ export default function () {
 								id="picture"
 								className="bg-transparent border-b border-white text-white"
 								accept="image/png, image/jpeg"
-                                required
+								required
 							/>
 						</div>
 						<div className='flex gap-2 items-center justify-end w-full'>
@@ -122,13 +122,13 @@ export default function () {
 						<div className='pb-2 flex flex-col items-center mb-4 mr-4 justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
 							<img width={244} className='p-4' src={post.picture} alt={post.picture} />
 							<NavLink className="px-3 py-3 rounded-lg bg-red-900" to={`/pro/posts/delete/${post.id}`}>
-                                <FaTrashAlt />
-                            </NavLink>
+								<FaTrashAlt />
+							</NavLink>
 						</div>
 					</div>
 				})
-            :
-                <p className='opacity-50'>{t('no-post')}</p>
+				:
+				<p className='opacity-50'>{t('no-post')}</p>
 			}
 		</div>
 	</div>

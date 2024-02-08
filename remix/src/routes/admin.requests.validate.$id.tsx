@@ -13,8 +13,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		}
 
 		await patchUser(token as string, params.id as string, {
-            kbisVerified: true
-        })
+			kbisVerified: true
+		})
 
 		return redirect('/admin/requests?success=true')
 	} catch(e) {

@@ -81,10 +81,10 @@ export default function () {
 			</div>
 		})}
 		{channels.length > 0 ?
-            <List items={channels} ListItem={ChannelItem} />
-        :
-            <p className='opacity-50'>{t('no-one-to-chat')}</p>
-        }
+			<List items={channels} ListItem={ChannelItem} />
+			:
+			<p className='opacity-50'>{t('no-one-to-chat')}</p>
+		}
 	</div>
 }
 

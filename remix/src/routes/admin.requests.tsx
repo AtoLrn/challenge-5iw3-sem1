@@ -44,7 +44,7 @@ export const UserItem: React.FC<ListItemProps<ArtistWaiting>> = ({ item }) => {
 		<span className='flex-1'>{item.email}</span>
 		<div className='flex items-center justify-end'>
 			<Link to={item.kbisFileUrl} target='_blank' className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>{t('file')}</Link>
-        </div>
+		</div>
 		<div className='flex items-center justify-end'>
 			<Link to={`/admin/requests/validate/${item.id}`} className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1 hover:bg-opacity-30 hover:bg-green-500 hover:border-green-500'>{t('approve')}</Link>
 		</div>
@@ -57,32 +57,32 @@ export default function () {
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8 overflow-scroll">
 		<BreadCrumb routes={[
-            { 
-                name: t('home'), 
-                url: '/admin' 
-            },
-            { 
-                name: t('requests'), 
-                url: '/admin/requests'
-            }
-        ]}/>
+			{ 
+				name: t('home'), 
+				url: '/admin' 
+			},
+			{ 
+				name: t('requests'), 
+				url: '/admin/requests'
+			}
+		]}/>
 		<Title kind="h2">{t('list-of-requests')}</Title>
-        { errors.map((error) => {
-            return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
-                {error}
-            </div>
-        })}
-        {success ?
-            <div className='font-bold text-green-600 border-b border-white self-start'>
-                {t('user-approved')}
-            </div> : null
-        }
+		{ errors.map((error) => {
+			return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
+				{error}
+			</div>
+		})}
+		{success ?
+			<div className='font-bold text-green-600 border-b border-white self-start'>
+				{t('user-approved')}
+			</div> : null
+		}
 
 		{users.length > 0 ? 
-            <List items={users} ListItem={UserItem} />
-        :
-            <p>{t('no-request')}</p>
-        }
+			<List items={users} ListItem={UserItem} />
+			:
+			<p>{t('no-request')}</p>
+		}
 	</div>
 }
 

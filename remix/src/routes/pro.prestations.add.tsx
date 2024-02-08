@@ -55,7 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function () {
 	const { errors } = useLoaderData<typeof loader>()
-    const { t } = useTranslation()
+	const { t } = useTranslation()
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[

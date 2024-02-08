@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { User } from '../types/user'
-import {use} from 'i18next'
 
 const schema = z.object({
 	id: z.number(),

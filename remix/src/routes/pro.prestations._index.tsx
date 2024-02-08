@@ -45,23 +45,23 @@ export default function Prestations() {
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
-            { 
-                name: t('home'), 
-                url: '/pro' 
-            },
-            { 
-                name: 'Prestation', 
-                url: '/pro/prestation'
-            }
-        ]} />
+			{ 
+				name: t('home'), 
+				url: '/pro' 
+			},
+			{ 
+				name: 'Prestation', 
+				url: '/pro/prestation'
+			}
+		]} />
 		<Title kind="h2">{t('prestation')}</Title>
 		<Link to={'/pro/prestations/add'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>
 		</Link>
-        {prestations.length > 0 ?
-            <List items={prestations} ListItem={PrestationItem} />
-        :
-            <p className='opacity-50'>{t('no-prestation')}</p>
-        }
+		{prestations.length > 0 ?
+			<List items={prestations} ListItem={PrestationItem} />
+			:
+			<p className='opacity-50'>{t('no-prestation')}</p>
+		}
 	</div>
 }
