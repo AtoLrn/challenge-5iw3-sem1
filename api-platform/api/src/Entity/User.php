@@ -294,7 +294,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Studio::class)]
     private Collection $studios;
 
-    #[Groups(['admin:read', 'admin:collection', 'user:patch:me', 'user:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['admin:read', 'admin:collection', 'user:patch:me', 'user:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'user:read:artist'])]
     #[ORM\Column(type: Types::TEXT, nullable: true, options: ["default" => "Hello this is me"])]
     private ?string $description = "Hello this is me";
 
@@ -302,6 +302,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $kbisFileUrl = null;
 
+    #[Groups(['user:read:artist'])]
     #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Prestation::class)]
     private Collection $prestations;
 
@@ -315,6 +316,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ["default" => false])]
     private ?bool $kbisVerified = false;
 
+    #[Groups(['user:read:artist'])]
     #[ORM\OneToMany(mappedBy: 'creator', targetEntity: PostPicture::class, orphanRemoval: true)]
     private Collection $postPictures;
 

@@ -3,6 +3,8 @@ import { SlStar } from 'react-icons/sl'
 import { getArtist } from 'src/utils/requests/artists'
 import { LoaderFunctionArgs, json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
+import {ArtistPostPicture, ArtistPrestation} from 'src/utils/types/artist'
+import {useTranslation} from 'react-i18next'
 
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -18,6 +20,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const artist = await getArtist({
 		name
 	})
+    console.log(artist)
 
 	return json({
 		artist
@@ -26,12 +29,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export default function MainPage() {
 	const { artist } = useLoaderData<typeof loader>()
+    const { t } = useTranslation()
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col justify-center items-center gap-4 relative'>
 			<div className="container mx-auto flex w-screen min-h-screen pt-20">
 				<div className="w-1/3 px-4 pt-16 justify-center">
-					<img className='w-full aspect-square' src={artist.picture} alt="tattoo artist picture"/>
+					<img className='w-full rounded-full aspect-square' src={artist.picture} alt="tattoo artist picture"/>
 				</div>
 				<div className="w-2/3 p-16">
 					<div className="flex flex-col gap-4">
@@ -57,42 +61,33 @@ export default function MainPage() {
 							</div>
 						</div>
 						<div>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum iste qui quisquam similique? Aperiam consectetur consequuntur, ex facere libero minima mollitia nihil nobis ratione repellat reprehenderit soluta ullam ut.
+                            {artist.description}
 						</div>
 						<div className="pt-12">
 							<Title kind="h3" className='z-20 pb-4 font-title'>Prestations</Title>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Tattoo</p>
-								</div>
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Fill</p>
-								</div>
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Piercing</p>
-								</div>
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Barber</p>
-								</div>
-							</div>
+                            {artist.prestations?.length > 0 ?
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                                    {artist.prestations?.map((prestation: ArtistPrestation) => {
+                                        return <div key={prestation.picture} className="flex items-center justify-center h-full bg-transparent text-white border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+                                            <p className="text-center">{prestation.name}</p>
+                                        </div>
+                                    })}
+                                </div>
+                            :
+                                <p className='opacity-50'>{t('artist-no-prestation')}</p>
+                            }
 						</div>
 						<div className="pt-12">
 							<Title kind="h3" className='z-20 pb-4'>Portfolio</Title>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-							</div>
-						</div>
-						<div className="pt-12">
-							<Title kind="h2" className='z-20 pb-4'>Flashes</Title>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-							</div>
+                            {artist.postPictures?.length > 0 ?
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                                    {artist.postPictures?.map((postPicture: ArtistPostPicture) => {
+                                        return <img key={postPicture.picture} src={postPicture.picture} alt={postPicture.picture} className="w-full h-48 object-cover"/>
+                                    })}
+                                </div>
+                            :
+                                <p>{t('artist-no-post')}</p>
+                            }
 						</div>
 
 						<form className="max-w-md mx-auto my-8">

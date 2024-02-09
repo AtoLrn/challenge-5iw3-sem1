@@ -179,5 +179,7 @@
   "no-one-to-chat-client": "You have no one to chat with, wait for a tattoo artist to approve one of your request.",
   "no-post": "You don't have any post, make your first one to improve you profile !",
   "no-prestation": "You don't have any prestation, create your first one to show what you do !",
-  "tattoo-artist": "Tattoo Artist"
+  "tattoo-artist": "Tattoo Artist",
+  "artist-no-prestation": "This tattoo artist don't seem to have any prestation...",
+  "artist-no-post": "This tatto artist didn't fill his portoflio"
 }

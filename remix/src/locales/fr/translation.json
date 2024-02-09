@@ -167,5 +167,7 @@
   "no-one-to-chat-client": "Vous n'avez personne avec qui parler, attendez qu'un tatoueur accepte votre demande.",
   "no-post": "Vous n'avez aucune publication, créez votre première pour améliorer votre profil !",
   "no-prestation": "Vous n'avez aucune prestation, créez votre première pour montrer ce que vous faites !",
-  "tattoo-artist": "Tatoueur"
+  "tattoo-artist": "Tatoueur",
+  "artist-no-prestation": "Ce tatoueur ne semble pas avoir de prestation...",
+  "artist-no-post": "Ce tatoueur n'a pas remplis son portfolio"
 }
