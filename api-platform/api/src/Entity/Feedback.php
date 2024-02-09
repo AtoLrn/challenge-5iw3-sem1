@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Feedback\FeedbackCreateController;
 use App\Repository\FeedbackRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,6 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_USER")'
         ),
         new Post(
+            controller: FeedbackCreateController::class,
             normalizationContext: ['groups' => 'feedback:read'],
             denormalizationContext: ['groups' => 'feedback:create'],
             security: 'is_granted("ROLE_USER")'
@@ -56,6 +58,11 @@ class Feedback
     #[ORM\Column]
     #[Groups(['feedback:read'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'feedback')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['feedback:read', 'feedback:create'])]
+    private ?User $submittedBy = null;
 
     public function getId(): ?int
     {
@@ -106,6 +113,18 @@ class Feedback
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getSubmittedBy(): ?User
+    {
+        return $this->submittedBy;
+    }
+
+    public function setSubmittedBy(?User $submittedBy): static
+    {
+        $this->submittedBy = $submittedBy;
 
         return $this;
     }
