@@ -72,3 +72,20 @@ export const createPrestation = async (formData: FormData, token: string): Promi
 
 	return response
 }
+
+export const updatePrestation = async (formData: FormData, token: string): Promise<Response> => {
+	const response = await fetch(`${process.env.API_URL}/prestations/${formData.get('id')}`, {
+		method: 'PATCH',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+		body: formData,
+	})
+
+	if (!response.ok) {
+		throw new Error(`Error ${response.status}: ${response.statusText}`)
+	}
+
+
+	return response
+}

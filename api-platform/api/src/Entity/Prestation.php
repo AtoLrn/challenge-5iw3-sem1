@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Prestation\PrestationCreateController;
+use App\Controller\Prestation\PrestationPatchController;
 use App\Controller\Prestation\PrestationUserController;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -64,6 +65,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
           security: 'is_granted("ROLE_USER")'
       ),
       new Patch(
+          controller: PrestationPatchController::class,
+          openapiContext: [
+              'requestBody' => [
+                  'content' => [
+                      'application/merge-patch+json' => [
+                          'schema' => [
+                              'type' => 'object',
+                              'properties' => [
+                                  'name' => [
+                                      'type' => 'string',
+                                  ],
+                                  'kind' => [
+                                      'type' => 'string',
+                                  ],
+                                  'picture' => [
+                                      'type' => 'string',
+                                      'format' => 'binary',
+                                  ],
+                              ],
+                          ]
+                      ]
+                  ]
+              ]
+          ],
           normalizationContext: ['groups' => 'prestation:read'],
           denormalizationContext: ['groups' => 'prestation:patch'],
           security: 'is_granted("ROLE_USER")'

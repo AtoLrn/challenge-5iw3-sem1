@@ -69,7 +69,7 @@ export default function () {
 			<Title kind='h1'>{ prestation.name }</Title>
 
 			<div className='flex items-center gap-2'>
-				<Link to={'/pro/prestations/super-tattoo/edit'}>
+				<Link to={'/pro/prestations/edit/' + prestation.id}>
 					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Edit</button>
 				</Link>
 			</div>
