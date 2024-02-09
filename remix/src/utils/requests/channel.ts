@@ -23,7 +23,7 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
 
 		return {
 			id: channel.id,
-            description: channel.description,
+			description: channel.description,
 			requestingUser: {
 				id: channel.requestingUser.id,
 				username: channel.requestingUser.username,
@@ -54,11 +54,11 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 	if (res.status !== 200) {
 	    throw new Error(body['hydra:description'] ?? 'Error in the request')
 	}
-    console.log(body)
+	console.log(body)
 
 	const formatBody = {
 		id: body.id,
-        description: body.description,
+		description: body.description,
 		tattooArtist: {
 			id: body.tattooArtist.id,
 			username: body.tattooArtist.username,

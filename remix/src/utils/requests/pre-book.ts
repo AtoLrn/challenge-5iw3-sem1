@@ -17,7 +17,7 @@ export const createPreBook = async (token: string, description: string, userId: 
 	}
 
 	const body = await res.json()
-    console.log(body)
+	console.log(body)
 
 	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
@@ -28,11 +28,11 @@ const schemaCollection = z.object({
 		description: z.string().min(1),
 		chat: z.boolean(),
 		book: z.boolean(),
-        requestingUser: z.object({
-            id: z.number(),
-            username: z.string().min(1),
-            picture: z.string().min(1)
-        })
+		requestingUser: z.object({
+			id: z.number(),
+			username: z.string().min(1),
+			picture: z.string().min(1)
+		})
 	}))
 })
 

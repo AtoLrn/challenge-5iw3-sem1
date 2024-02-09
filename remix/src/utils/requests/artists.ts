@@ -11,15 +11,15 @@ export const schemaArtistProfile = z.object({
 	id: z.number(),
 	username: z.string().min(1),
 	picture: z.string().min(1),
-    description: z.string().min(1),
-    prestations: z.array(z.object({
-        name: z.string().min(1),
-        kind: z.string().min(1),
-        picture: z.string().min(1)
-    })),
-    postPictures: z.array(z.object({
-        picture: z.string().min(1)
-    }))
+	description: z.string().min(1),
+	prestations: z.array(z.object({
+		name: z.string().min(1),
+		kind: z.string().min(1),
+		picture: z.string().min(1)
+	})),
+	postPictures: z.array(z.object({
+		picture: z.string().min(1)
+	}))
 })
 
 const schema = z.object({

@@ -1,6 +1,5 @@
 import {LoaderFunctionArgs, redirect} from '@remix-run/node'
 import {getSession} from 'src/session.server'
-import {patchUser} from 'src/utils/requests/admin/users'
 import {patchPreBook} from 'src/utils/requests/pre-book'
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
