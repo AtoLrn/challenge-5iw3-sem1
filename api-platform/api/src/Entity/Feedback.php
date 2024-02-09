@@ -61,7 +61,7 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['feedback:read', 'feedback:create'])]
+    #[Groups(['feedback:read'])]
     private ?User $submittedBy = null;
 
     public function getId(): ?int
