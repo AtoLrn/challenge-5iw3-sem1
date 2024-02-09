@@ -79,8 +79,6 @@ export const updatePrestation = async (id: string | number, prestationData: { na
     kind: prestationData.kind,
   };
 
-	console.log(jsonData)
-
   const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
     method: 'PATCH',
     headers: {
@@ -90,11 +88,24 @@ export const updatePrestation = async (id: string | number, prestationData: { na
     body: JSON.stringify(jsonData),
   });
 
-	console.log(response)
-
   if (!response.ok) {
     throw new Error(`Error ${response.status}: ${response.statusText}`);
   }
 
   return response;
 };
+
+export const deletePrestation = async (id: string | number, token: string): Promise<Response> => {
+	const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
+		method: 'DELETE',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+	})
+
+	if (!response.ok) {
+		throw new Error(`Error ${response.status}: ${response.statusText}`)
+	}
+
+	return response
+}

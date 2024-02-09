@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, MetaFunction, useLoaderData } from '@remix-run/react'
-import { getPrestation, updatePrestation } from 'src/utils/requests/prestations'
+import { deletePrestation, getPrestation, updatePrestation } from 'src/utils/requests/prestations'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
@@ -111,9 +111,10 @@ export default function EditPrestationForm() {
         <option value="Barber">Barber</option>
       </select>
 			</div>
-			
-			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Create</button>
+
+				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Update</button>
 		</Form>
+
 	</div>
 }
 
