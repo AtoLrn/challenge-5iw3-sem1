@@ -65,30 +65,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
           security: 'is_granted("ROLE_USER")'
       ),
       new Patch(
-          controller: PrestationPatchController::class,
-          openapiContext: [
-              'requestBody' => [
-                  'content' => [
-                      'application/merge-patch+json' => [
-                          'schema' => [
-                              'type' => 'object',
-                              'properties' => [
-                                  'name' => [
-                                      'type' => 'string',
-                                  ],
-                                  'kind' => [
-                                      'type' => 'string',
-                                  ],
-                                  'picture' => [
-                                      'type' => 'string',
-                                      'format' => 'binary',
-                                  ],
-                              ],
-                          ]
-                      ]
-                  ]
-              ]
-          ],
           normalizationContext: ['groups' => 'prestation:read'],
           denormalizationContext: ['groups' => 'prestation:patch'],
           security: 'is_granted("ROLE_USER")'
@@ -108,11 +84,11 @@ class Prestation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['prestation:collection', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['prestation:collection', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch'])]
     #[ORM\Column(length: 255)]
     private ?\App\Enum\Kind $kind = null;
 

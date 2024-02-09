@@ -73,19 +73,28 @@ export const createPrestation = async (formData: FormData, token: string): Promi
 	return response
 }
 
-export const updatePrestation = async (formData: FormData, token: string): Promise<Response> => {
-	const response = await fetch(`${process.env.API_URL}/prestations/${formData.get('id')}`, {
-		method: 'PATCH',
-		headers: {
-			'Authorization': `Bearer ${token}`
-		},
-		body: formData,
-	})
+export const updatePrestation = async (id: string | number, prestationData: { name?: string; kind?: Kind; }, token: string): Promise<Response> => {
+  const jsonData = {
+    name: prestationData.name,
+    kind: prestationData.kind,
+  };
 
-	if (!response.ok) {
-		throw new Error(`Error ${response.status}: ${response.statusText}`)
-	}
+	console.log(jsonData)
 
+  const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/merge-patch+json',
+    },
+    body: JSON.stringify(jsonData),
+  });
 
-	return response
-}
+	console.log(response)
+
+  if (!response.ok) {
+    throw new Error(`Error ${response.status}: ${response.statusText}`);
+  }
+
+  return response;
+};
