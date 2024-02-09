@@ -10,6 +10,7 @@ export interface Channel {
 	id: number
     tattooArtist: UserChannel
     requestingUser: UserChannel
+    description: string
     messages: Message[]
 }
 

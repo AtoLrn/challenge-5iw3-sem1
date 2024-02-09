@@ -32,6 +32,10 @@ export const ProNavigation: React.FC<NavigationProps> = ({ user }) => {
 			url: '/pro/posts'
 		},
 		{
+			name: t('requests'),
+			url: '/pro/requests'
+		},
+		{
 			name: 'Chat',
 			url: '/pro/chat'
 		},

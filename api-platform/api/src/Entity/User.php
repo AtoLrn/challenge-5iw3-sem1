@@ -243,13 +243,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['admin:collection', 'admin:read', 'post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read', 'studio:read'])]
+    #[Groups(['admin:collection', 'admin:read', 'post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'admin:patch', 'user:read:me', 'user:patch:me'])]
+    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'user:read', 'user:forget-password', 'user:collection', 'user:register', 'user:register:read', 'user:login', 'admin:patch', 'user:read:me', 'user:patch:me', 'bookRequest:collection'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     #[ORM\Column(length: 180, unique: true)]
@@ -266,12 +266,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read'])]
+    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
-    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read'])]
+    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection'])]
     #[ORM\Column(length: 255, options: ["default" => 'https://www.gravatar.com/avatar/?d=identicon'])]
     private ?string $picture = 'https://www.gravatar.com/avatar/?d=identicon';
 

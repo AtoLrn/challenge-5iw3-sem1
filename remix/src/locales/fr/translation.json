@@ -169,5 +169,10 @@
   "no-prestation": "Vous n'avez aucune prestation, créez votre première pour montrer ce que vous faites !",
   "tattoo-artist": "Tatoueur",
   "artist-no-prestation": "Ce tatoueur ne semble pas avoir de prestation...",
-  "artist-no-post": "Ce tatoueur n'a pas remplis son portfolio"
+  "artist-no-post": "Ce tatoueur n'a pas remplis son portfolio",
+  "make-request": "Faire une demande",
+  "pre-book-send": "Votre requête a bien été envoyée au tatoueur, maintenant attendez qu'il la valide.",
+  "see-description": "Voir description",
+  "request-approved": "Demande approuvée !",
+  "about-to-delete-request": "Vous allez supprimer cette demande pour toujours, êtes vous sur ?"
 }
