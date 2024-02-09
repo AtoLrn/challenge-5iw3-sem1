@@ -9,7 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Prestation\PrestationCreateController;
-use App\Controller\Prestation\PrestationPatchController;
+use App\Controller\Prestation\PrestationPictureController;
 use App\Controller\Prestation\PrestationUserController;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -74,6 +74,42 @@ use Symfony\Component\Serializer\Annotation\Groups;
           denormalizationContext: ['groups' => 'prestation:delete'],
           security: 'is_granted("ROLE_USER")'
       ),
+        new Post(
+            uriTemplate: '/prestations/{id}/picture',
+            controller: PrestationPictureController::class,
+            openapiContext: [
+                'summary' => 'Update the picture of a prestation',
+                'description' => 'Update the picture of a prestation',
+                'parameters' => [
+                    [
+                        'in' => 'path',
+                        'name' => 'id',
+                        'required' => true,
+                        'type' => 'integer',
+                        'description' => 'The id of the prestation to update the picture',
+                    ],
+                ],
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'picture' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['picture']
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            normalizationContext: ['groups' => 'prestation:read'],
+            security: 'is_granted("ROLE_USER")',
+            deserialize: false
+        )
     ]
 )]
 class Prestation

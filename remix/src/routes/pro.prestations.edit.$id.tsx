@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, MetaFunction, useLoaderData } from '@remix-run/react'
-import { deletePrestation, getPrestation, updatePrestation } from 'src/utils/requests/prestations'
+import { getPrestation, updatePrestation } from 'src/utils/requests/prestations'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
