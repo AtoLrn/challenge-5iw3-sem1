@@ -5,6 +5,7 @@ import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
 import {useTranslation} from 'react-i18next'
+import { Kind } from 'src/utils/types/kind'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -42,39 +43,30 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   });
 };
 
+export const action = async ({ params, request }: ActionFunctionArgs) => {
+	const formData = await request.formData();
+	const id = parseInt(params.id as string)
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token') as string
+	const prestationData: { name?: string; kind?: Kind } = {
+		name: formData.get('name')?.toString() ?? '',
+		kind: formData.get('kind')?.toString() as Kind,
+	};
+
 	try {
-		const formData = await request.formData()
-		const newFormData = new FormData()
-
-		formData.forEach((value, key) => {
-			if (key === 'picture' && value instanceof File) {
-				newFormData.append(key, value, value.name)
-			} else {
-				newFormData.append(key, value.toString())
-			}
-		})
-
-		const session = await getSession(request.headers.get('Cookie'))
-		const token = session.get('token') as string
-
-		await updatePrestation(newFormData, token)
-
-		return redirect('/pro/prestations')
-
-	} catch (e) {
-		if (e instanceof Error)
-			return redirect(`/pro/prestations/add?error=${e.message}`)
-
-		return redirect(`/pro/prestations/add?error=${'Unexpected Error'}`)
+		await updatePrestation(id, prestationData, token);
+		return redirect(`/pro/prestations/${id}?success=update`);
+	} catch (error) {
+		console.error('Failed to update prestation:', error);
+		return redirect(`/pro/prestations/edit/${id}?error=Failed to update`);
 	}
-}
+};
 
 export default function EditPrestationForm() {
 	const { errors } = useLoaderData<typeof loader>()
 	const { t } = useTranslation()
-	const { prestation } = useLoaderData<typeof loader>();
+	const { prestation } = useLoaderData<typeof loader>()
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
@@ -84,6 +76,9 @@ export default function EditPrestationForm() {
 			},{
 				name: 'Prestations',
 				url: '/pro/prestations'
+			},{
+				name: prestation?.name ?? '',
+				url: `/pro/prestations/${prestation?.id ?? ''}`
 			}
 		]}/>
 		<Title kind="h2">Prestations</Title>
@@ -103,7 +98,7 @@ export default function EditPrestationForm() {
 				</a>
 			</div>
     )}
-		<Form method='POST' encType='multipart/form-data' className='w-full flex flex-col gap-4'>
+		<Form method='PATCH' encType='multipart/form-data' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>
 				<input placeholder='Name (flash, ...)' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' defaultValue={prestation?.name} />
 				<select
@@ -115,7 +110,6 @@ export default function EditPrestationForm() {
         <option value="Jewelery">Jewelery</option>
         <option value="Barber">Barber</option>
       </select>
-				<input placeholder='Picture' type="file" name='picture' accept=".png, .jpg, .jpeg" className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
 			</div>
 			
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Create</button>
