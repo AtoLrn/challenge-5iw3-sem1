@@ -16,6 +16,7 @@ export function meta() {
 	]
 }
 
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const session = await getSession(request.headers.get('Cookie'))
 
@@ -104,10 +105,12 @@ export default function MainPage() {
 							{ bookings.length === 0 && <span>No Appointements for now</span>}
 							{ bookings.map((book) => {
 								return <AppointmentRow key={book.id} kind={'book'}
+									chatId={book.channel?.id}
 									isChatting={book.chat}
 									artistUsername={book.tattooArtist.username}
 									artistPicture={book.tattooArtist.picture}
 									projectDescription={book.description}
+									onCancel={() => alert(book.id)}
 								/>
 							})}
 						</div>

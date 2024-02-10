@@ -6,13 +6,21 @@ export const userSchema = z.object({
 	picture: z.string()
 })
 
+export const channelSchema = z.object({
+	id: z.number(),
+	description: z.string().min(1),
+	requestingUser: userSchema,
+	tattooArtist: userSchema
+}).optional()
+
 export const bookingSchema = z.object({
 	id: z.number(),
 	description: z.string().min(1),
 	chat: z.boolean(),
 	book: z.boolean(),
 	requestingUser: userSchema,
-	tattooArtist: userSchema
+	tattooArtist: userSchema,
+	channel: channelSchema
 })
 
 export const bookingCollection = z.object({
@@ -39,6 +47,13 @@ export const getBookings = async ({ token }: BaseBookingRequest): Promise<Array<
 	}
 }
 
+export interface BookingChannel {
+    id: number,
+    description: string
+    requestingUser: BookingUser
+    tattooArtist: BookingUser
+}
+
 export interface BookingUser {
     id: number,
     username: string
@@ -52,6 +67,7 @@ export interface Booking {
     book: boolean
     requestingUser: BookingUser
     tattooArtist: BookingUser
+	channel?: BookingChannel
 }
 
 
