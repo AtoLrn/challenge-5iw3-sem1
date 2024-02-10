@@ -37,7 +37,7 @@ const schemaCollection = z.object({
 })
 
 export const getPreBook = async (token: string): Promise<PreBook[]> => {
-	const res = await fetch(`${process.env.API_URL}/me/book-request`, {
+	const res = await fetch(`${process.env.API_URL}/pro/book-request`, {
 		headers: {
 			'Authorization': `Bearer ${token}`,
 			'Accept': 'application/ld+json',

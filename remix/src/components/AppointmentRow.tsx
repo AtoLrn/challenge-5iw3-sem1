@@ -6,19 +6,22 @@ import { FaStar } from 'react-icons/fa6'
 import { t } from 'i18next'
 import * as Dialog from '@radix-ui/react-dialog'
 import {Title} from './Title.tsx'
+import { Badge } from './Pro/Badge.tsx'
+import { Validation } from 'src/utils/types/validation.ts'
 
 export interface AppointmentRowProps {
-    kind: 'current' | 'past',
-    artistFirstName: string,
-    artistLastName: string,
-    appointmentDate: string,
-    appointmentTime: string,
-    address: string,
-    city: string,
+    kind: 'current' | 'past' | 'book',
+    artistUsername: string,
+	artistPicture: string,
+	isChatting?: boolean,
+    appointmentDate?: string,
+    appointmentTime?: string,
+    address?: string,
+    city?: string,
     projectDescription: string,
 }
 
-export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirstName, artistLastName, appointmentDate, appointmentTime, address, city, projectDescription}) => {
+export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistUsername, isChatting, artistPicture, appointmentDate, appointmentTime, address, city, projectDescription}) => {
 	return (
 		<div className="flex flex-row items-center gap-8 border-b-1 pb-8 mb-8">
 			<div className="w-4/12 flex flex-row items-center gap-4">
@@ -26,40 +29,51 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirst
 					<Avatar.Root className="AvatarRoot">
 						<Avatar.Image
 							className="AvatarImage rounded-full w-12 h-12 object-cover"
-							src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+							src={artistPicture}
 							alt="Artist picture"
 						/>
 					</Avatar.Root>
 				</div>
 				<div className="font-title text-center text-xl">
-					{artistFirstName} {artistLastName}
+					{artistUsername}
 				</div>
 			</div>
+			{isChatting !== undefined ?
+			
+				<div className="w-3/12 flex flex-row gap-4">
+					<Badge state={isChatting ? Validation.ACCEPTED : Validation.PENDING} />
+				</div>
+				:
+			
+				<div className="w-3/12 flex flex-row gap-4">
+					<div>
+						<LuCalendarClock size={20} />
+					</div>
+					<div className="flex flex-col text-sm">
+						<div>
+							{appointmentDate}
+						</div>
+						<div>
+							{appointmentTime}
+						</div>
+					</div>
+				</div>
+			}
+			
 			<div className="w-3/12 flex flex-row gap-4">
-				<div>
-					<LuCalendarClock size={20} />
-				</div>
-				<div className="flex flex-col text-sm">
+				{isChatting === undefined && <>
 					<div>
-						{appointmentDate}
+						<FiMapPin size={20} />
 					</div>
-					<div>
-						{appointmentTime}
-					</div>
-				</div>
-			</div>
-			<div className="w-3/12 flex flex-row gap-4">
-				<div>
-					<FiMapPin size={20} />
-				</div>
-				<div className="flex flex-col text-sm underline">
-					<div>
-						{address}
-					</div>
-					<div>
-						{city}
-					</div>
-				</div>
+					<div className="flex flex-col text-sm underline">
+						<div>
+							{address}
+						</div>
+						<div>
+							{city}
+						</div>
+					</div></> } 
+				
 			</div>
 			<div className="w-2/12 flex flex-col gap-4">
 

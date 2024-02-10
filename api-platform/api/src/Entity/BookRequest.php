@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\BookRequest\BookRequestCreateController;
 use App\Controller\BookRequest\BookRequestDeleteController;
 use App\Controller\BookRequest\BookRequestGetMeController;
+use App\Controller\BookRequest\BookRequestGetMeUserController;
 use App\Controller\BookRequest\BookRequestPatchController;
 use App\Repository\BookRequestRepository;
 use Doctrine\DBAL\Types\Types;
@@ -30,8 +31,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new GetCollection(
             security: 'is_granted("ROLE_USER")',
-            uriTemplate: '/me/book-request',
+            uriTemplate: '/pro/book-request',
             controller: BookRequestGetMeController::class,
+            normalizationContext: ['groups' => 'bookRequest:me:collection']
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/me/book-request',
+            controller: BookRequestGetMeUserController::class,
             normalizationContext: ['groups' => 'bookRequest:me:collection']
         ),
         new Post(
@@ -80,7 +87,7 @@ class BookRequest
     private ?User $requestingUser = null;
 
     #[ORM\ManyToOne]
-    #[Groups(['bookRequest:collection'])]
+    #[Groups(['bookRequest:collection', 'bookRequest:me:collection'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $tattooArtist = null;
 
