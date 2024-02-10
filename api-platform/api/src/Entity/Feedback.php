@@ -8,8 +8,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Feedback\FeedbackCreateController;
 use App\Repository\FeedbackRepository;
+use DateTimeZone;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -63,6 +65,15 @@ class Feedback
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['feedback:read'])]
     private ?User $submittedBy = null;
+
+    /**
+     * @throws Exception
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->createdAt = new \DateTimeImmutable('now', new DateTimeZone('Europe/Paris'));
+    }
 
     public function getId(): ?int
     {

@@ -34,7 +34,6 @@ class FeedbackCreateController
         $feedback = new Feedback();
         $feedback->setRating($data->getRating());
         $feedback->setComment($data->getComment());
-        $feedback->setCreatedAt(new \DateTimeImmutable());
         $feedback->setSubmittedBy($user);
         $feedback->setPrestation($prestation);
 
