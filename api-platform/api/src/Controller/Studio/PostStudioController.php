@@ -8,7 +8,6 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use DateTimeZone;
 use App\Utils\Files;
 
 #[AsController]
@@ -23,44 +22,64 @@ class PostStudioController
 
     public function __invoke(Request $request): Studio
     {
-
-        $data = json_decode($request->getContent(), true);
         $user = $this->security->getUser();
 
+        $name = $request->request->get('name');
+        $openingTime = $request->request->get('openingTime');
+        $closingTime = $request->request->get('closingTime');
+        $maxCapacity = $request->request->get('maxCapacity');
+        $location = $request->request->get('location');
+        $description = $request->request->get('description');
+        $monday = $request->request->get('monday') ?? '0';
+        $tuesday = $request->request->get('tuesday')  ?? '0';
+        $wednesday = $request->request->get('wednesday')  ?? '0';
+        $thursday = $request->request->get('thursday')  ?? '0';
+        $friday = $request->request->get('friday')  ?? '0';
+        $saturday = $request->request->get('saturday')  ?? '0';
+        $sunday = $request->request->get('sunday')  ?? '0';
+
         // Checks if the studio already exists
-        if ($this->studioRepository->findOneBy(["name" => $data["name"]])) {
-            throw new \Exception("The studio named " . $data["name"] . " already exists");
+        if ($this->studioRepository->findOneBy(["name" => $name])) {
+            throw new \Exception("The studio named " . $name . " already exists");
         }
 
-        // Checks if the opening time is before the closing time
-        if ($data["openingTime"] >= $data["closingTime"]) {
+        $openingMoment = explode(":", $openingTime);
+        $closingMoment = explode(":", $closingTime);
+        if (
+            intval($openingMoment[0]) > intval($closingMoment[0]) ||
+            intval($openingMoment[0]) === intval($closingMoment[0]) && intval($openingMoment[1]) >= intval($closingMoment[1])
+
+        ) {
             throw new \Exception("The opening time must be before the closing time");
         }
 
-        if (!$request->files->get('picture')) {
+
+        $pictureFile = $request->files->get('picture');
+
+        if (!$pictureFile) {
             throw new UnprocessableEntityHttpException('File needed');
         }
 
-        $pictureFile = $request->files->get('picture');
+
         $pictureFileUrl = $this->files->upload($pictureFile);
 
         $studio = new Studio();
 
         $studio->setOwner($user);
-        $studio->setName($data["name"]);
-        $studio->setMaxCapacity($data["maxCapacity"]);
-        $studio->setLocation($data["location"]);
-        $studio->setStatus("pending");
-        $studio->setDescription($data["description"]);
-        $studio->setOpeningTime($data["openingTime"]);
-        $studio->setClosingTime($data["closingTime"]);
-        $studio->setMonday($data["monday"]);
-        $studio->setTuesday($data["tuesday"]);
-        $studio->setWednesday($data["wednesday"]);
-        $studio->setThursday($data["thursday"]);
-        $studio->setFriday($data["friday"]);
-        $studio->setSaturday($data["saturday"]);
-        $studio->setSunday($data["sunday"]);
+        $studio->setName($name);
+        $studio->setMaxCapacity($maxCapacity);
+        $studio->setLocation($location);
+        $studio->setStatus("PENDING");
+        $studio->setDescription($description);
+        $studio->setOpeningTime($openingTime);
+        $studio->setClosingTime($closingTime);
+        $studio->setMonday($monday);
+        $studio->setTuesday($tuesday);
+        $studio->setWednesday($wednesday);
+        $studio->setThursday($thursday);
+        $studio->setFriday($friday);
+        $studio->setSaturday($saturday);
+        $studio->setSunday($sunday);
         $studio->setTakenSeats(0);
         $studio->setPicture($pictureFileUrl);
 

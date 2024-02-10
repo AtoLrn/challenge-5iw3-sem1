@@ -20,14 +20,13 @@ const schema = z.object({
 	maxCapacity: z.coerce.number(),
 	openingTime: z.string().min(1),
 	closingTime: z.string().min(1),
-	monday: z.string().min(1),
-	tuesday: z.string().min(1),
-	wednesday: z.string().min(1),
-	thursday: z.string().min(1),
-	friday: z.string().min(1),
-	saturday: z.string().min(1),
-	sunday: z.string().min(1),
-	picture: z.string().min(1),
+	monday: z.string().min(1).optional(),
+	tuesday: z.string().min(1).optional(),
+	wednesday: z.string().min(1).optional(),
+	thursday: z.string().min(1).optional(),
+	friday: z.string().min(1).optional(),
+	saturday: z.string().min(1).optional(),
+	sunday: z.string().min(1).optional()
 })
 
 export const meta: MetaFunction = () => {
@@ -48,19 +47,39 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	}
 
 	try {
-		const result = await zx.parseFormSafe(request, schema)
+		const fd = await request.formData()
+
+		const picture = fd.get('picture')
+
+		if (!(picture instanceof File) || !picture) {
+			json({
+				errors: {
+					server: 'File isnt the right type'
+				}
+			})
+		}
+
+		const result = await zx.parseFormSafe(fd, schema)
 		if (!result.success) {
 			return json({
 				errors:  result.error.formErrors.fieldErrors
 			})
 		}
 
-		const req = await zx.parseForm(request, schema)
-		const studio = await createStudio({...req, token })
 
-		return json({
-			studio
-		})
+	
+		const body = {
+			...result.data,
+			picture
+		}
+
+
+
+		// req.picture = fd.get('picture')
+
+		const studio = await createStudio({...body, token })
+
+		return redirect(`/pro/studio/${studio.id}`)
 
 		/*return redirect(`/pro/studios/${studio.name}`)*/
 
@@ -154,7 +173,7 @@ export default function () {
 			})}
 		</div>
 		
-		<Form method='POST' className='w-full gap-4'>
+		<Form method='POST' className='w-full gap-4' encType='multipart/form-data'>
 
 			<p className="font-title text-xl mb-4">{t('new-studio-details')}</p>
 			<div className='flex w-full gap-8'>

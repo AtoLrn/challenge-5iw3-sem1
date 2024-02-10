@@ -21,24 +21,35 @@ const schema = z.object({
 })
 
 export const createStudio = async (props: CreateStudio): Promise<Studio> => {
+	const formData = new FormData()
 
-	console.log("--------------------------------------")
 
-	const res = await fetch(`${process.env.API_URL}/studios`, {
-		method: 'POST',
-		headers: {
-			'Authorization': `Bearer ${props.token}`,
-			'Content-Type': 'application/ld+json'
-		},
-		body: JSON.stringify(props)
-	})
-	const body = await res.json()
-	console.log("body", body)
-	const studio = schema.parse(body)
-	return {
-		...studio,
-		status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+	for ( const [key, name] of Object.entries(props)) {
+		if (key === 'token') { continue }
+		formData.set(key, name)
 	}
+
+	try {
+		const res = await fetch(`${process.env.API_URL}/studios/add`, {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${props.token}`
+			},
+			body: formData
+		})
+
+		const body = await res.json()
+		console.log('body', body)
+
+		const studio = schema.parse(body)
+		
+		return {
+			...studio,
+			status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+		}
+	} catch (e) {
+		console.log('ANTOINE: ', e)
+	} 
 }
 
 export interface CreateStudio {
@@ -48,13 +59,13 @@ export interface CreateStudio {
     maxCapacity: number,
     openingTime: string,
     closingTime: string
-    monday: string,
-    tuesday: string,
-    wednesday: string,
-    thursday: string,
-    friday: string,
-    saturday: string,
-    sunday: string,
+    monday?: string,
+    tuesday?: string,
+    wednesday?: string,
+    thursday?: string,
+    friday?: string,
+    saturday?: string,
+    sunday?: string,
     token: string,
-	picture: string
+	picture: File
 }

@@ -54,6 +54,30 @@ use DateTimeZone;
                                         'type' => 'string',
                                         'format' => 'binary'
                                     ],
+                                    'name' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                    'maxCapacity' => [
+                                        'type' => 'number',
+                                        'default' => '10'
+                                    ],
+                                    'openingTime' => [
+                                        'type' => 'string',
+                                        'default' => '10:00'
+                                    ],
+                                    'closingTime' => [
+                                        'type' => 'string',
+                                        'default' => '20:00'
+                                    ],
+                                    'location' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
                                 ],
                                 'required' => ['picture']
                             ]
