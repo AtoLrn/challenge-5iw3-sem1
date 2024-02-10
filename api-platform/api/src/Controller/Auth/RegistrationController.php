@@ -60,6 +60,9 @@ class RegistrationController
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $passwordInput));
         $user->setEmail($emailInput);
         $user->setUsername($usernameInput);
+        if($request->request->get('phoneNumber')) {
+            $user->setPhoneNumber($request->request->get('phoneNumber'));
+        }
 
         $roles = ['ROLE_USER'];
 
