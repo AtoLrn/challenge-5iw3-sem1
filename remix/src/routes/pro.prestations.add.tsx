@@ -80,9 +80,9 @@ export default function () {
 			<div className='grid grid-cols-2 w-full gap-4'>
 				<input placeholder='Name (flash, ...)' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
 				<select name="kind" className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300'>
-					<option value="Tattoo">Tattoo</option>
-					<option value="Jewelery">Jewelery</option>
-					<option value="Barber">Barber</option>
+					<option value="Tattoo">{t('tattoo')}</option>
+					<option value="Jewelery">{t('jewelry')}</option>
+					<option value="Barber">{t('barber')}</option>
 				</select>
 				<input placeholder='Picture' type="file" name='picture' accept=".png, .jpg, .jpeg" className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
 				

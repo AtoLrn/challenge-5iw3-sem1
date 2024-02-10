@@ -4,7 +4,22 @@ import { Artist } from '../types/artist'
 export const schemaArtist = z.object({
 	id: z.number(),
 	username: z.string().min(1),
-	picture: z.string().min(1)
+	picture: z.string().min(1),
+})
+
+export const schemaArtistProfile = z.object({
+	id: z.number(),
+	username: z.string().min(1),
+	picture: z.string().min(1),
+	description: z.string().min(1),
+	prestations: z.array(z.object({
+		name: z.string().min(1),
+		kind: z.string().min(1),
+		picture: z.string().min(1)
+	})),
+	postPictures: z.array(z.object({
+		picture: z.string().min(1)
+	}))
 })
 
 const schema = z.object({
@@ -35,11 +50,10 @@ export const getArtists = async (options?: { name: string}): Promise<Artist[]> =
 
 export const getArtist = async ({ name }: { name: string }): Promise<Artist> => {
 	const res = await fetch(`${process.env.API_URL}/artists/${name}`)
-
 	
 	const body = await res.json()
 
-	const artist = schemaArtist.parse(body)
+	const artist = schemaArtistProfile.parse(body)
 
 	return artist
 	

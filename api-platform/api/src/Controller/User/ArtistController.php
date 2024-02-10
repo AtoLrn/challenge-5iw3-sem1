@@ -17,7 +17,7 @@ class ArtistController
 
     public function __invoke(): array
     {
-        $artists = $this->userRepository->findBy(['isVerified' => true]);
+        $artists = $this->userRepository->findBy(['verified' => true, 'kbisVerified' => true]);
 
         return array_filter($artists, function ($artist) {
             return in_array('ROLE_PRO', $artist->getRoles());

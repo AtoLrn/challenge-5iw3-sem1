@@ -72,7 +72,7 @@ class PostPicture
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['post:create', 'post:collection', 'post:read'])]
+    #[Groups(['post:create', 'user:read:artist', 'post:collection', 'post:read'])]
     private ?string $picture = null;
 
     #[ORM\ManyToOne(inversedBy: 'postPictures')]

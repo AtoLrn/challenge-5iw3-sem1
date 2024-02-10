@@ -1,5 +1,5 @@
 {
-  "search-input-placeholder": "Search for artits, studios...",
+  "search-input-placeholder": "Search for artists, studios...",
   "return-button": "Return",
   "find-your-tattoo-artist": "Find your tattoo artist",
   "search": "Search",
@@ -179,5 +179,12 @@
   "no-one-to-chat-client": "You have no one to chat with, wait for a tattoo artist to approve one of your request.",
   "no-post": "You don't have any post, make your first one to improve you profile !",
   "no-prestation": "You don't have any prestation, create your first one to show what you do !",
-  "tattoo-artist": "Tattoo Artist"
+  "tattoo-artist": "Tattoo Artist",
+  "artist-no-prestation": "This tattoo artist don't seem to have any prestation...",
+  "artist-no-post": "This tatto artist didn't fill his portoflio",
+  "make-request": "Make request",
+  "pre-book-send": "Your request has been sent to the tattoo artist, now wait for them to accept it.",
+  "see-description": "See description",
+  "request-approved": "Request approved !",
+  "about-to-delete-request": "You are about to delete this request forever, are you sure ?"
 }
