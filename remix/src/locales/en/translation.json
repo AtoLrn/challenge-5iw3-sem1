@@ -62,9 +62,12 @@
   "new-request": "New request",
   "invitations": "Invitations",
   "upcoming-appointments": "Upcoming appointments",
+  "bookings": "Bookings",
   "past-appointments": "Past appointments",
   "project-description": "Project description",
   "cancel-appointment": "Cancel appointment",
+  "cancel-book": "Cancel booking",
+  "go-to-chat": "Go to chat",
   "reschedule": "Reschedule",
   "new-appointment": "New appointment",
   "review": "Review",
@@ -75,6 +78,7 @@
   "booking-page": "Booking page",
   "your-nexts-appointement": "Your next appointments",
   "minutes": "minutes",
+  "hour": "hour",
   "export-appointements-csv": "Export appointments to CSV",
   "kbis-file": "KBIS File",
   "checkbox-tattoo-artist": "I am a tattoo artist",
@@ -186,5 +190,10 @@
   "pre-book-send": "Your request has been sent to the tattoo artist, now wait for them to accept it.",
   "see-description": "See description",
   "request-approved": "Request approved !",
-  "about-to-delete-request": "You are about to delete this request forever, are you sure ?"
+  "about-to-delete-request": "You are about to delete this request forever, are you sure ?",
+  "close": "Close",
+  "book": "Book",
+  "artist-book-ready": "You artist indicated that you can now choose a schedule to book your appointement",
+  "submit": "Submit",
+  "validate-demand": "Validation of the booking"
 }

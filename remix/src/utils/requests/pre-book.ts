@@ -17,7 +17,6 @@ export const createPreBook = async (token: string, description: string, userId: 
 	}
 
 	const body = await res.json()
-	console.log(body)
 
 	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
@@ -37,7 +36,7 @@ const schemaCollection = z.object({
 })
 
 export const getPreBook = async (token: string): Promise<PreBook[]> => {
-	const res = await fetch(`${process.env.API_URL}/me/book-request`, {
+	const res = await fetch(`${process.env.API_URL}/pro/book-request`, {
 		headers: {
 			'Authorization': `Bearer ${token}`,
 			'Accept': 'application/ld+json',
