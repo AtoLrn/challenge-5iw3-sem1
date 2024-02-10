@@ -75,7 +75,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
           security: 'is_granted("ROLE_USER")'
       ),
         new Post(
-            uriTemplate: '/prestations/{id}/picture',
+            uriTemplate: '/prestations/{id}/update-picture',
             controller: PrestationPictureController::class,
             openapiContext: [
                 'summary' => 'Update the picture of a prestation',

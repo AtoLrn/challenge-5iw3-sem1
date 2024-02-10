@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Form, Link, MetaFunction, useLoaderData } from '@remix-run/react'
-import { getPrestation, updatePrestation } from 'src/utils/requests/prestations'
+import { getPrestation, updatePrestation, updatePrestationPicture } from 'src/utils/requests/prestations'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
@@ -54,6 +54,19 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 		kind: formData.get('kind')?.toString() as Kind,
 	};
 
+	const pictureFile = formData.get('picture');
+  if (pictureFile instanceof File) {
+    const pictureFormData = new FormData();
+    pictureFormData.append('picture', pictureFile);
+
+    try {
+      await updatePrestationPicture(id, pictureFormData, token);
+    } catch (error) {
+      console.error('Failed to update prestation picture:', error);
+      return redirect(`/pro/prestations/edit/${id}?error=Failed to update picture`);
+    }
+  }
+
 	try {
 		await updatePrestation(id, prestationData, token);
 		return redirect(`/pro/prestations/${id}?success=update`);
@@ -82,7 +95,7 @@ export default function EditPrestationForm() {
 			}
 		]}/>
 		<Title kind="h2">Prestations</Title>
-		<Link to={'/pro/prestations'}>
+		<Link to={'/pro/prestations/' + prestation?.id}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Return</button>
 		</Link>
 		{ errors.map((error) => {
@@ -110,6 +123,8 @@ export default function EditPrestationForm() {
         <option value="Jewelery">Jewelery</option>
         <option value="Barber">Barber</option>
       </select>
+			<input type="file" name="picture" className="outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300" />
+
 			</div>
 
 				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Update</button>

@@ -95,6 +95,23 @@ export const updatePrestation = async (id: string | number, prestationData: { na
   return response;
 };
 
+export const updatePrestationPicture = async (id: string | number, formData: FormData, token: string): Promise<Response> => {
+	const response = await fetch(`${process.env.API_URL}/prestations/${id}/update-picture`, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+		body: formData,
+	})
+
+	if (!response.ok) {
+		console.error('Failed to update prestation picture:', response)
+		throw new Error(`Error ${response.status}: ${response.statusText}`)
+	}
+
+	return response
+}
+
 export const deletePrestation = async (id: string | number, token: string): Promise<Response> => {
 	const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
 		method: 'DELETE',
