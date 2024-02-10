@@ -17,6 +17,6 @@ export interface Studio {
 	friday: boolean | null,
 	saturday: boolean | null,
 	sunday: boolean | null,
-
+	picture: string,
 	partnerShips: PartnerShip[]  
 }

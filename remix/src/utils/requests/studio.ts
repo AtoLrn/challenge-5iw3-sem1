@@ -17,9 +17,13 @@ const schema = z.object({
 	friday: z.string().min(1),
 	saturday: z.string().min(1),
 	sunday: z.string().min(1),
+	picture: z.string().min(1)
 })
 
 export const createStudio = async (props: CreateStudio): Promise<Studio> => {
+
+	console.log("--------------------------------------")
+
 	const res = await fetch(`${process.env.API_URL}/studios`, {
 		method: 'POST',
 		headers: {
@@ -29,6 +33,7 @@ export const createStudio = async (props: CreateStudio): Promise<Studio> => {
 		body: JSON.stringify(props)
 	})
 	const body = await res.json()
+	console.log("body", body)
 	const studio = schema.parse(body)
 	return {
 		...studio,
@@ -50,5 +55,6 @@ export interface CreateStudio {
     friday: string,
     saturday: string,
     sunday: string,
-    token: string
+    token: string,
+	picture: string
 }

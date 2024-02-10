@@ -38,10 +38,30 @@ use DateTimeZone;
             normalizationContext: ['groups' => 'studio:read'],
         ),
         new Post(
+            uriTemplate: '/studios/add',
             security: 'is_granted("ROLE_USER")',
             denormalizationContext: ['groups' => 'studio:creation'],
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
-            controller: PostStudioController::class
+            controller: PostStudioController::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'picture' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ],
+                                ],
+                                'required' => ['picture']
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            deserialize: false
         ),
         new Post(
             uriTemplate: '/studio/{id}/invites',
@@ -152,6 +172,10 @@ class Studio
     #[ORM\Column]
     #[Groups(['studio:creation', 'studio:read'])]
     private ?int $takenSeats = 0;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['studio:creation', 'studio:read'])]
+    private ?string $picture = null;
 
 
     public function __construct()
@@ -434,6 +458,18 @@ class Studio
     public function setTakenSeats(int $takenSeats): static
     {
         $this->takenSeats = $takenSeats;
+
+        return $this;
+    }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(string $picture): static
+    {
+        $this->picture = $picture;
 
         return $this;
     }

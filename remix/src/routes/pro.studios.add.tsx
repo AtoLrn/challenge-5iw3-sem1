@@ -27,6 +27,7 @@ const schema = z.object({
 	friday: z.string().min(1),
 	saturday: z.string().min(1),
 	sunday: z.string().min(1),
+	picture: z.string().min(1),
 })
 
 export const meta: MetaFunction = () => {
@@ -173,8 +174,8 @@ export default function () {
 
 					{/* DOCUMENT */}
 					<div className="flex flex-col gap-1">
-						<label htmlFor='document' className='text-sm'>{t('kbis-file')}</label>
-						<input placeholder='Document' type="file" name='document' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
+						<label htmlFor='picture' className='text-sm'>{t('picture')}</label>
+						<input placeholder='Document' type="file" name='picture' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
 					</div>
 					{/* /DOCUMENT */}
 

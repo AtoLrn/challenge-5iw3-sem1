@@ -7,15 +7,17 @@ use App\Repository\StudioRepository;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use DateTimeZone;
+use App\Utils\Files;
 
 #[AsController]
 class PostStudioController
 {
     public function __construct(
         private Security $security,
-        private StudioRepository $studioRepository
-
+        private StudioRepository $studioRepository,
+        private Files $files,
     ) {
     }
 
@@ -35,6 +37,12 @@ class PostStudioController
             throw new \Exception("The opening time must be before the closing time");
         }
 
+        if (!$request->files->get('picture')) {
+            throw new UnprocessableEntityHttpException('File needed');
+        }
+
+        $pictureFile = $request->files->get('picture');
+        $pictureFileUrl = $this->files->upload($pictureFile);
 
         $studio = new Studio();
 
@@ -54,6 +62,7 @@ class PostStudioController
         $studio->setSaturday($data["saturday"]);
         $studio->setSunday($data["sunday"]);
         $studio->setTakenSeats(0);
+        $studio->setPicture($pictureFileUrl);
 
         return $studio;
     }
