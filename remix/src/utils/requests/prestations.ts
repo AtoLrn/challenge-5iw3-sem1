@@ -2,6 +2,25 @@ import { z } from 'zod'
 import { Prestation } from '../types/prestation'
 import { Kind } from '../types/kind'
 
+type PrestationId = string | number;
+
+interface PrestationData {
+  name: string;
+  kind: Kind;
+}
+
+interface UpdatePrestationParams {
+  id: PrestationId;
+  prestationData: PrestationData;
+  token: string;
+}
+
+interface UpdatePrestationPictureParams {
+  id: string | number;
+  formData: FormData;
+  token: string;
+}
+
 const prestationsSchema = z.array(z.object({
 	id: z.number(),
 	name: z.string(),
@@ -73,7 +92,7 @@ export const createPrestation = async (formData: FormData, token: string): Promi
 	return response
 }
 
-export const updatePrestation = async (id: string | number, prestationData: { name?: string; kind?: Kind; }, token: string): Promise<Response> => {
+export const updatePrestation = async ({ id, prestationData, token }: UpdatePrestationParams): Promise<Response> => {
   const jsonData = {
     name: prestationData.name,
     kind: prestationData.kind,
@@ -95,7 +114,7 @@ export const updatePrestation = async (id: string | number, prestationData: { na
   return response;
 };
 
-export const updatePrestationPicture = async (id: string | number, formData: FormData, token: string): Promise<Response> => {
+export const updatePrestationPicture = async ({ id, formData, token }: UpdatePrestationPictureParams): Promise<Response> => {
 	const response = await fetch(`${process.env.API_URL}/prestations/${id}/update-picture`, {
 		method: 'POST',
 		headers: {
