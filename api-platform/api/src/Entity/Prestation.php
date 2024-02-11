@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Prestation\PrestationCreateController;
+use App\Controller\Prestation\PrestationDeleteController;
 use App\Controller\Prestation\PrestationPatchController;
 use App\Controller\Prestation\PrestationPictureController;
 use App\Controller\Prestation\PrestationUserController;
@@ -72,6 +73,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
           security: 'is_granted("ROLE_USER")'
       ),
       new Delete(
+          controller: PrestationDeleteController::class,
           normalizationContext: ['groups' => 'prestation:read'],
           denormalizationContext: ['groups' => 'prestation:delete'],
           security: 'is_granted("ROLE_USER")'
