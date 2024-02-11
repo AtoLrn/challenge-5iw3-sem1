@@ -324,6 +324,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ["default" => false])]
     private ?bool $verified = false;
 
+    #[Groups(['user:read:artist'])]
     #[ORM\OneToMany(mappedBy: 'submittedBy', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 

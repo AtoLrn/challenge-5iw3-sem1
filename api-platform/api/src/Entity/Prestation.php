@@ -106,6 +106,7 @@ class Prestation
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: Feedback::class, orphanRemoval: true)]
+    #[Groups(['prestation:collection', 'prestation:read', 'user:read:artist'])]
     private Collection $feedback;
 
     public function __construct()

@@ -45,12 +45,12 @@ class Feedback
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(['feedback:read', 'feedback:create'])]
+    #[Groups(['feedback:read', 'feedback:create', 'user:read:artist'])]
     #[Assert\Range(notInRangeMessage: 'The rating must be between 1 and 10', min: 1, max: 10)]
     private ?int $rating = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['feedback:read', 'feedback:create'])]
+    #[Groups(['feedback:read', 'feedback:create', 'user:read:artist'])]
     private ?string $comment = null;
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
@@ -64,7 +64,7 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['feedback:read'])]
+    #[Groups(['feedback:read', 'user:read:artist'])]
     private ?User $submittedBy = null;
 
     /**

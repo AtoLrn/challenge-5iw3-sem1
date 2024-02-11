@@ -83,6 +83,20 @@ export default function MainPage() {
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
 	const [ description, setDescription ] = useState('')
 
+	let totalRating = 0;
+  let reviewCount = 0;
+
+  artist.prestations?.forEach((prestation) => {
+    if (prestation.feedback && prestation.feedback.length > 0) {
+      prestation.feedback.forEach((feedback) => {
+        totalRating += feedback.rating;
+        reviewCount += 1;
+      });
+    }
+  });
+
+	const averageRating = reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : "N/A";
+
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col justify-center items-center gap-4 relative'>
 			<div className="container mx-auto flex w-screen min-h-screen pt-20">
@@ -107,13 +121,13 @@ export default function MainPage() {
 								<div className="flex gap-2">
 									<span className="font-bold">Rating :</span>
 									<div className="flex">
-										<span>5 &nbsp;</span>
+										<span>{averageRating} &nbsp;</span>
 										<SlStar size={20} />
 									</div>
 								</div>
 								<div className="flex gap-2">
 									<span className="font-bold">Reviews :</span>
-									<span>100</span>
+									<span>{reviewCount}</span>
 								</div>
 							</div>
 							<div>
@@ -181,6 +195,7 @@ export default function MainPage() {
 							}
 						</div>
 
+						{/*
 						<form className="max-w-md mx-auto my-8">
 
 							<div className="flex flex-col space-y-4">
@@ -211,6 +226,26 @@ export default function MainPage() {
 							<button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Envoyer</button>
 						</form>
 
+						*/}
+
+							{artist.prestations?.map((prestation) => {
+									return prestation.feedback?.map((feedback) => {
+											return (
+													<div key={feedback.comment} className="flex flex-col gap-2">
+															<div className="flex gap-2">
+																	<span className="font-bold">Rating :</span>
+																	<div className="flex">
+																			<span>{feedback.rating} &nbsp;</span>
+																			<SlStar size={20} />
+																	</div>
+															</div>
+															<div>
+																	{feedback.comment}
+															</div>
+													</div>
+											);
+									});
+							})}
 
 					</div>
 				</div>

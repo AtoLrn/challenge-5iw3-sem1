@@ -11,6 +11,12 @@ export type ArtistPrestation = {
     name: string
     kind: string
     picture: string
+    feedback?: ArtistFeedback[]
+}
+
+export type ArtistFeedback = {
+    rating: number
+    comment: string
 }
 
 export type ArtistPostPicture = {

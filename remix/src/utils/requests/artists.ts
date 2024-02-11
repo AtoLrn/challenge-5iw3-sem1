@@ -15,7 +15,11 @@ export const schemaArtistProfile = z.object({
 	prestations: z.array(z.object({
 		name: z.string().min(1),
 		kind: z.string().min(1),
-		picture: z.string().min(1)
+		picture: z.string().min(1),
+		feedback: z.array(z.object({
+			rating: z.number(),
+			comment: z.string().min(1)
+		})).optional()
 	})),
 	postPictures: z.array(z.object({
 		picture: z.string().min(1)
