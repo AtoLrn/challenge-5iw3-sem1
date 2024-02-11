@@ -12,6 +12,7 @@ use App\Controller\Channel\ChannelGetMeController;
 use App\Repository\ChannelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -87,24 +88,32 @@ class Channel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
+    #[Groups(['channel:collection', 'channel:create', 'channel:read', 'bookRequest:me:collection'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
+    #[Groups(['channel:collection', 'channel:create', 'channel:read', 'bookRequest:me:collection'])]
     private ?User $tattooArtist = null;
 
     #[ORM\ManyToOne]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['channel:collection', 'channel:create', 'channel:read'])]
+    #[Groups(['channel:collection', 'channel:create', 'channel:read', 'bookRequest:me:collection'])]
     private ?User $requestingUser = null;
 
     #[ORM\OneToMany(mappedBy: 'channel', targetEntity: Message::class)]
     #[Groups(['channel:read', 'message:channel:read'])]
     private Collection $messages;
+
+    #[Groups(['channel:read', 'message:channel:read', 'bookRequest:me:collection'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[Groups(['channel:read', 'message:channel:read'])]
+    #[ORM\OneToOne(mappedBy: 'channel', cascade: ['persist', 'remove'])]
+    private ?BookRequest $bookRequest = null;
 
     public function __construct()
     {
@@ -166,6 +175,40 @@ class Channel
                 $message->setChannel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getBookRequest(): ?BookRequest
+    {
+        return $this->bookRequest;
+    }
+
+    public function setBookRequest(?BookRequest $bookRequest): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($bookRequest === null && $this->bookRequest !== null) {
+            $this->bookRequest->setChannel(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($bookRequest !== null && $bookRequest->getChannel() !== $this) {
+            $bookRequest->setChannel($this);
+        }
+
+        $this->bookRequest = $bookRequest;
 
         return $this;
     }

@@ -1,11 +1,34 @@
 import { Title } from 'src/components/Title'
 import { SlStar } from 'react-icons/sl'
 import { getArtist } from 'src/utils/requests/artists'
-import { LoaderFunctionArgs, json } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction, json, redirect } from '@remix-run/node'
+import { Form, useLoaderData } from '@remix-run/react'
+import {ArtistPostPicture, ArtistPrestation} from 'src/utils/types/artist'
+import {useTranslation} from 'react-i18next'
+import * as Dialog from '@radix-ui/react-dialog'
+import {useState} from 'react'
+import {getSession} from 'src/session.server'
+import {createPreBook} from 'src/utils/requests/pre-book'
+import { z } from 'zod'
+import { zx } from 'zodix'
 
+const schema = z.object({
+	description: z.string().min(1),
+}) 
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const meta: MetaFunction = () => {
+	return [
+		{
+			title: 'Artist'
+		}
+	]
+}
+
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+	const url = new URL(request.url)
+	const error = url.searchParams.get('error')
+	const success = url.searchParams.get('success')
+
 	const { name } = params
 
 	if (!name) {
@@ -20,21 +43,64 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	})
 
 	return json({
-		artist
+		artist,
+		errors: [error],
+		success: success
 	})
 }
 
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token')
+
+	if (!token) {
+		return redirect('/login')
+	}
+	if(!params.name) {
+		return redirect('/')
+	}
+
+	try {
+		const { description } = await zx.parseForm(request, schema)
+
+		await createPreBook(token as string, description, params.name as string)
+
+		return redirect(`/artist/${params.name}?success=true`)
+
+	} catch (e) {
+		if (e instanceof Error)
+			return redirect(`/artist/${params.name}?error=${e.message}`)
+		
+		return redirect(`/artist/${params.name}?error=${'Unexpected Error'}`)
+	}
+}
+
+
 export default function MainPage() {
-	const { artist } = useLoaderData<typeof loader>()
+	const { artist, errors, success } = useLoaderData<typeof loader>()
+	const { t } = useTranslation()
+
+	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
+	const [ description, setDescription ] = useState('')
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col justify-center items-center gap-4 relative'>
 			<div className="container mx-auto flex w-screen min-h-screen pt-20">
 				<div className="w-1/3 px-4 pt-16 justify-center">
-					<img className='w-full aspect-square' src={artist.picture} alt="tattoo artist picture"/>
+					<img className='w-full rounded-full aspect-square' src={artist.picture} alt="tattoo artist picture"/>
 				</div>
 				<div className="w-2/3 p-16">
 					<div className="flex flex-col gap-4">
+						{ errors.map((error) => {
+							return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
+								{error}
+							</div>
+						})}
+						{success ?
+							<div className='font-bold text-green-600 border-b border-white self-start'>
+								{t('pre-book-send')}
+							</div> : null
+						}
 						<div className="flex flex-row justify-between">
 							<div>
 								<Title kind="h1" className='z-20 pb-2'>{artist.username}</Title>
@@ -51,48 +117,68 @@ export default function MainPage() {
 								</div>
 							</div>
 							<div>
-								<button className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-                                    Book now
-								</button>
+								<Dialog.Root open={isDialogOpen}>
+									<Dialog.Trigger asChild>
+										<button onClick={() => setIsDialogOpen(true)} className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+											{t('make-request')}
+										</button>
+									</Dialog.Trigger>
+									<Dialog.Portal>
+										<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
+										<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+											<Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
+												<div className='flex flex-col gap-2'>
+													<Title kind={'h2'}>
+                                                    Description
+													</Title>
+												</div>
+												<hr className='pb-4' />
+												<div className='pb-4 flex items-center gap-2'>
+								                <textarea cols={70} rows={8} onChange={(e) => setDescription(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='description' id='description' value={description} />
+												</div>
+												<div className='flex gap-2 items-center justify-end w-full'>
+													<Dialog.Close asChild>
+														<button onClick={() => {
+															setIsDialogOpen(false)
+															setDescription('')
+														}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
+													</Dialog.Close>
+													<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('create')}</button>
+												</div>
+											</Form>
+										</Dialog.Content>
+									</Dialog.Portal>
+								</Dialog.Root>
 							</div>
 						</div>
 						<div>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum iste qui quisquam similique? Aperiam consectetur consequuntur, ex facere libero minima mollitia nihil nobis ratione repellat reprehenderit soluta ullam ut.
+							{artist.description}
 						</div>
 						<div className="pt-12">
 							<Title kind="h3" className='z-20 pb-4 font-title'>Prestations</Title>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Tattoo</p>
+							{artist.prestations?.length > 0 ?
+								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+									{artist.prestations?.map((prestation: ArtistPrestation) => {
+										return <div key={prestation.picture} className="flex items-center justify-center h-full bg-transparent text-white border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+											<p className="text-center">{prestation.name}</p>
+										</div>
+									})}
 								</div>
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Fill</p>
-								</div>
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Piercing</p>
-								</div>
-								<div className="flex items-center justify-center h-full bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-									<p className="text-center">Barber</p>
-								</div>
-							</div>
+								:
+								<p className='opacity-50'>{t('artist-no-prestation')}</p>
+							}
 						</div>
 						<div className="pt-12">
 							<Title kind="h3" className='z-20 pb-4'>Portfolio</Title>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-							</div>
-						</div>
-						<div className="pt-12">
-							<Title kind="h2" className='z-20 pb-4'>Flashes</Title>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-								<img src="https://png.pngtree.com/background/20230426/original/pngtree-man-with-bird-tattooed-back-in-the-salon-picture-image_2487443.jpg" alt="Image 1" className="w-full h-48 object-cover"/>
-							</div>
+							{artist.postPictures?.length > 0 ?
+								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+									{artist.postPictures?.map((postPicture: ArtistPostPicture) => {
+										return <img key={postPicture.picture} src={postPicture.picture} alt={postPicture.picture} className="w-full h-48 object-cover"/>
+									})}
+								</div>
+								:
+								<p>{t('artist-no-post')}</p>
+							}
 						</div>
 
 						<form className="max-w-md mx-auto my-8">
