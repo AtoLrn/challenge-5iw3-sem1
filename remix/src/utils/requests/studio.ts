@@ -52,6 +52,37 @@ export const createStudio = async (props: CreateStudio): Promise<Studio> => {
 	} 
 }
 
+export const updateStudio = async (props: UpdateStudio): Promise<Studio> => {
+	const formData = new FormData()
+
+
+	for ( const [key, name] of Object.entries(props)) {
+		if (key === 'token') { continue }
+		formData.set(key, name)
+	}
+
+	try {
+		const res = await fetch(`${process.env.API_URL}/studios/${formData.id}`, {
+			method: 'PATCH',
+			headers: {
+				'Authorization': `Bearer ${props.token}`
+			},
+			body: formData
+		})
+
+		const body = await res.json()
+
+		const studio = schema.parse(body)
+
+		return {
+			...studio,
+			status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
+		}
+	} catch (e) {
+		console.log(e)
+	}
+}
+
 export interface CreateStudio {
     name: string,
     description: string,
@@ -67,5 +98,24 @@ export interface CreateStudio {
     saturday?: string,
     sunday?: string,
     token: string,
+	picture: File
+}
+
+export interface UpdateStudio {
+	id: number,
+	name: string,
+	description: string,
+	location: string,
+	maxCapacity: number,
+	openingTime: string,
+	closingTime: string
+	monday?: string,
+	tuesday?: string,
+	wednesday?: string,
+	thursday?: string,
+	friday?: string,
+	saturday?: string,
+	sunday?: string,
+	token: string,
 	picture: File
 }
