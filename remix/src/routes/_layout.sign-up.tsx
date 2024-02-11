@@ -103,8 +103,7 @@ export default function MainPage() {
 							<input type="email" name="email" placeholder={t('email-address')} className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<div className="flex flex-row gap-4 mb-8">
-							<span className="text-gray-300">+33</span>
-							<input type="tel" name="phoneNumber" pattern="[67][0-9]{8}" placeholder={t('telephone')} className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							<input type="tel" name="phoneNumber" pattern="(\+33[67][0-9]{8})" placeholder="+33651665260" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<div className="flex flex-row gap-4 mb-10">
 							<input value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" name="password" placeholder={t('password')} className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>

@@ -7,4 +7,5 @@ export interface User {
     isProfessional: boolean
     isAdmin: boolean
     isKbisVerified?: boolean
+    phoneNumber?: string
 }

@@ -53,6 +53,7 @@ const ProfileForm: React.FC<ProfileFormInterface> = ({ profile, isEditing, error
 							className="bg-transparent border-b border-white text-white"
 							defaultValue={profile.name}
 						/>
+						<input type="tel" name="phoneNumber" pattern="\+33[67][0-9]{8}" id='phoneNumber' placeholder='+33612345678' className='bg-transparent border-b border-white text-white' defaultValue={profile.phoneNumber} />
 					</div>
 					<div className="flex flex-col gap-2">
 						<label htmlFor="email">{t('email')}</label>
