@@ -199,7 +199,7 @@ export default function () {
 				<Link to={'/pro/studios/poivre-noir/edit'}>
 					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Add Closing Day</button>
 				</Link>
-				<Link to={'/pro/studios/poivre-noir/edit'}>
+				<Link to={`/pro/studios/edit/${studio.id}`}>
 					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Edit</button>
 				</Link>
 			</div>

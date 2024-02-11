@@ -6,11 +6,13 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\Studio\GetStudioInviteController;
 use App\Controller\Studio\GetStudioController;
 use App\Controller\Studio\PostStudioController;
 use App\Controller\Studio\InviteStudioController;
 use App\Controller\Studio\GetMyStudioController;
+use App\Controller\Studio\PatchStudioController;
 use App\Repository\StudioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -110,6 +112,55 @@ use DateTimeZone;
             security: 'is_granted("ROLE_USER")',
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
             denormalizationContext: ['groups' => 'studio:read'],
+        ),
+        new Patch(
+            uriTemplate: '/studio/{id}',
+            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
+            denormalizationContext: ['groups' => 'studio:creation'],
+            controller: PatchStudioController::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'picture' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ],
+                                    'name' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                    'maxCapacity' => [
+                                        'type' => 'number',
+                                        'default' => '10'
+                                    ],
+                                    'openingTime' => [
+                                        'type' => 'string',
+                                        'default' => '10:00'
+                                    ],
+                                    'closingTime' => [
+                                        'type' => 'string',
+                                        'default' => '20:00'
+                                    ],
+                                    'location' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                    'description' => [
+                                        'type' => 'string',
+                                        'default' => 'string'
+                                    ],
+                                ],
+                                'required' => ['picture']
+                            ]
+                        ]
+                    ]
+                ]
+            ],
         ),
     ]
 )]
