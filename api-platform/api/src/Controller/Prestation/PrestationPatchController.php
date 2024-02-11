@@ -28,12 +28,21 @@ class PrestationPatchController
             throw new NotFoundHttpException('Prestation not found');
         }
 
+        $currentUser = $this->security->getUser();
+        if (!$currentUser || $prestation->getProposedBy() !== $currentUser) {
+            throw new UnprocessableEntityHttpException('You are not allowed to update this prestation');
+        }
+
         $data = json_decode($request->getContent(), true);
 
-        $prestation->setName($data['name']);
-        $prestation->setKind($data['kind']);
+        try {
+            $kindEnum = Kind::from($data['kind']);
+        } catch (\ValueError $e) {
+            throw new UnprocessableEntityHttpException('Invalid kind value');
+        }
 
-        
+        $prestation->setName($data['name']);
+        $prestation->setKind($kindEnum);
 
         return $prestation;
     }
