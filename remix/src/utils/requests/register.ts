@@ -14,9 +14,9 @@ export const register = async (props: FormData): Promise<true> => {
 }
 
 export interface Register {
-    email: string,
-		phoneNumber?: string,
-    password: string,
+	email: string,
+	phoneNumber?: string,
+	password: string,
 	username: string
 	isProfessional: boolean
 }

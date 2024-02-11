@@ -33,8 +33,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		const formData = await request.formData()
 
 		const phoneNumber = formData.get("phoneNumber")?.toString() || "";
-		const normalizedPhoneNumber = phoneNumber.startsWith("0") ? phoneNumber.substring(1) : phoneNumber;
-		formData.set("phoneNumber", `+33${normalizedPhoneNumber}`);
+		formData.set("phoneNumber", phoneNumber);
 
 		formData.set('isProfessional', isProfessional.toString())
 		formData.delete('passwordConfirm')
