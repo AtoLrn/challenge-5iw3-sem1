@@ -3,6 +3,7 @@ import { Studio } from '../types/studio'
 import { Validation } from '../types/validation'
 
 const schema = z.object({
+	id: z.number(),
 	name: z.string().min(1),
 	description: z.string().min(1),
 	location: z.string().min(1),
@@ -39,7 +40,6 @@ export const createStudio = async (props: CreateStudio): Promise<Studio> => {
 		})
 
 		const body = await res.json()
-		console.log('body', body)
 
 		const studio = schema.parse(body)
 		
@@ -48,7 +48,7 @@ export const createStudio = async (props: CreateStudio): Promise<Studio> => {
 			status: studio.status === 'PENDING' ? Validation.PENDING : studio.status === 'ACCEPTED' ? Validation.ACCEPTED : Validation.REFUSED
 		}
 	} catch (e) {
-		console.log('ANTOINE: ', e)
+		console.log(e)
 	} 
 }
 

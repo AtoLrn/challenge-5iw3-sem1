@@ -74,14 +74,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		}
 
 
-
-		// req.picture = fd.get('picture')
-
 		const studio = await createStudio({...body, token })
+		return redirect(`/pro/studios/${studio.id}`)
 
-		return redirect(`/pro/studio/${studio.id}`)
-
-		/*return redirect(`/pro/studios/${studio.name}`)*/
 
 	} catch (err) {
 		console.log(err)
