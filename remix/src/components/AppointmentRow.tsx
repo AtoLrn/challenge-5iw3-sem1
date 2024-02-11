@@ -6,19 +6,25 @@ import { FaStar } from 'react-icons/fa6'
 import { t } from 'i18next'
 import * as Dialog from '@radix-ui/react-dialog'
 import {Title} from './Title.tsx'
+import { Badge } from './Pro/Badge.tsx'
+import { Validation } from 'src/utils/types/validation.ts'
+import { Link } from '@remix-run/react'
 
 export interface AppointmentRowProps {
-    kind: 'current' | 'past',
-    artistFirstName: string,
-    artistLastName: string,
-    appointmentDate: string,
-    appointmentTime: string,
-    address: string,
-    city: string,
+    kind: 'current' | 'past' | 'book',
+    artistUsername: string,
+	artistPicture: string,
+	isChatting?: boolean,
+	chatId?: number,
+    appointmentDate?: string,
+    appointmentTime?: string,
+    address?: string,
+    city?: string,
     projectDescription: string,
+	onCancel?: () => unknown
 }
 
-export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirstName, artistLastName, appointmentDate, appointmentTime, address, city, projectDescription}) => {
+export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, chatId, artistUsername, isChatting, artistPicture, appointmentDate, appointmentTime, address, city, projectDescription, onCancel}) => {
 	return (
 		<div className="flex flex-row items-center gap-8 border-b-1 pb-8 mb-8">
 			<div className="w-4/12 flex flex-row items-center gap-4">
@@ -26,40 +32,51 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirst
 					<Avatar.Root className="AvatarRoot">
 						<Avatar.Image
 							className="AvatarImage rounded-full w-12 h-12 object-cover"
-							src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+							src={artistPicture}
 							alt="Artist picture"
 						/>
 					</Avatar.Root>
 				</div>
 				<div className="font-title text-center text-xl">
-					{artistFirstName} {artistLastName}
+					{artistUsername}
 				</div>
 			</div>
+			{isChatting !== undefined ?
+			
+				<div className="w-3/12 flex flex-row gap-4">
+					<Badge state={isChatting ? Validation.ACCEPTED : Validation.PENDING} />
+				</div>
+				:
+			
+				<div className="w-3/12 flex flex-row gap-4">
+					<div>
+						<LuCalendarClock size={20} />
+					</div>
+					<div className="flex flex-col text-sm">
+						<div>
+							{appointmentDate}
+						</div>
+						<div>
+							{appointmentTime}
+						</div>
+					</div>
+				</div>
+			}
+			
 			<div className="w-3/12 flex flex-row gap-4">
-				<div>
-					<LuCalendarClock size={20} />
-				</div>
-				<div className="flex flex-col text-sm">
+				{isChatting === undefined && <>
 					<div>
-						{appointmentDate}
+						<FiMapPin size={20} />
 					</div>
-					<div>
-						{appointmentTime}
-					</div>
-				</div>
-			</div>
-			<div className="w-3/12 flex flex-row gap-4">
-				<div>
-					<FiMapPin size={20} />
-				</div>
-				<div className="flex flex-col text-sm underline">
-					<div>
-						{address}
-					</div>
-					<div>
-						{city}
-					</div>
-				</div>
+					<div className="flex flex-col text-sm underline">
+						<div>
+							{address}
+						</div>
+						<div>
+							{city}
+						</div>
+					</div></> } 
+				
 			</div>
 			<div className="w-2/12 flex flex-col gap-4">
 
@@ -70,8 +87,8 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirst
 						</button>
 					</Dialog.Trigger>
 					<Dialog.Portal>
-						<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
-						<Dialog.Content className="flex flex-col items-stretch justify-start gap-8 p-4 z-20 bg-zinc-600 bg-opacity-30 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+						<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-30 z-10 backdrop-blur-sm" />
+						<Dialog.Content className="flex flex-col items-stretch justify-start gap-8 p-4 z-20 bg-zinc-800 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
 							<div>
 								<div className="flex flex-row justify-between items-center">
 									<Title kind={'h3'}>
@@ -105,10 +122,30 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirst
 							</div>
 
 							<div className='w-full flex items-center justify-end gap-4 border-t-1 border-white pt-4'>
-								{kind === 'current' ? (
+								{kind === 'book' && (
+									<>
+										{ isChatting && <Dialog.Close asChild>
+											<Link to={`/messages/${chatId}`}>
+												<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+													{t('go-to-chat')}
+												</button>
+											</Link>
+										
+										</Dialog.Close>}
+										
+										<Dialog.Close asChild>
+											<button onClick={onCancel} className="bg-transparent hover:bg-white text-sm text-red-500 hover:text-black border border-red-500 font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+												{t('cancel-book')}
+											</button>
+										</Dialog.Close>
+									</>
+								) }
+
+
+								{kind === 'current' && (
 									<>
 										<Dialog.Close asChild>
-											<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+											<button onClick={onCancel} className="bg-transparent hover:bg-white text-sm text-red-500 hover:text-black border border-red-500 font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 												{t('cancel-appointment')}
 											</button>
 										</Dialog.Close>
@@ -118,7 +155,9 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirst
 											</button>
 										</Dialog.Close>
 									</>
-								) : (
+								) }
+								
+								{ kind === 'past' && (
 									<>
 										<Dialog.Close asChild>
 											<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
@@ -127,6 +166,12 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, artistFirst
 										</Dialog.Close>
 									</>
 								)}
+
+								<Dialog.Close asChild>
+									<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+										{t('close')}
+									</button>
+								</Dialog.Close>
 							</div>
 
 						</Dialog.Content>

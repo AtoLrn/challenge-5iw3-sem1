@@ -17,7 +17,6 @@ const schema = z.object({
 	description: z.string().min(1),
 }) 
 
-
 export const meta: MetaFunction = () => {
 	return [
 		{
@@ -67,7 +66,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	try {
 		const { description } = await zx.parseForm(request, schema)
-		console.log(description)
 
 		if (!token) {
 			return redirect('/login')

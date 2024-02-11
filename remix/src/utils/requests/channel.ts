@@ -23,6 +23,7 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
 
 		return {
 			id: channel.id,
+			description: channel.description,
 			requestingUser: {
 				id: channel.requestingUser.id,
 				username: channel.requestingUser.username,
@@ -33,6 +34,7 @@ export const getChannels = async (token: string, as: GetChannelAs ): Promise<Cha
 				username: channel.tattooArtist.username,
 				picture: channel.tattooArtist.picture,
 			},
+			bookRequest: channel.bookRequest,
 			messages: channel.messages
 		}
 	})
@@ -56,6 +58,7 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 
 	const formatBody = {
 		id: body.id,
+		description: body.description,
 		tattooArtist: {
 			id: body.tattooArtist.id,
 			username: body.tattooArtist.username,
@@ -66,6 +69,7 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 			username: body.requestingUser.username,
 			picture: body.requestingUser.picture,
 		},
+		bookRequest: body.bookRequest,
 		messages: body.messages.map((message: Message): Message => {
 			return {
 				id: message.id,

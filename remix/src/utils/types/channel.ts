@@ -6,10 +6,18 @@ export interface UserChannel {
     picture: string
 }
 
+export interface BookRequestChannel {
+    id: number
+    description: string
+    book: boolean
+}
+
 export interface Channel {
 	id: number
     tattooArtist: UserChannel
     requestingUser: UserChannel
+    bookRequest: BookRequestChannel
+    description: string
     messages: Message[]
 }
 

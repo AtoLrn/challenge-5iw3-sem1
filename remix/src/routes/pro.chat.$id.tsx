@@ -9,6 +9,8 @@ import { Message } from 'src/components/Messages/Message'
 import { formatDate } from '../utils/date'
 import { Message as MessageI } from '../utils/types/message'
 import {useEffect, useRef } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
+import {useTranslation} from 'react-i18next'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -83,6 +85,7 @@ export default function () {
 	const { channel, errors } = useLoaderData<typeof loader>()
 	const formRef = useRef<HTMLFormElement>(null)
 	const chatEndRef = useRef<HTMLDivElement>(null)
+	const { t } = useTranslation()
 
 	useEffect(() => {
 		chatEndRef.current?.scrollIntoView()
@@ -105,13 +108,77 @@ export default function () {
 		<div className="w-full h-full">
 
 			<div className="flex flex-col h-full">
-				<div className="sticky top-0 px-4 py-6 border-b">
+				<div className="flex justify-between sticky top-0 px-4 py-6 border-b">
 					<Title kind={'h3'}>
 						{channel.requestingUser.username}
 					</Title>
+					<div className='flex items-center gap-4'>
+
+						<Dialog.Root>
+						
+							<Dialog.Trigger asChild>
+								<button className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border-1'>{t('see-description')}</button>
+							</Dialog.Trigger>
+							<Dialog.Portal>
+								<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
+								<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+									<div className='flex flex-col gap-2'>
+										<Title kind={'h2'}>
+                                        Description
+										</Title>
+									</div>
+									<hr className='pb-4' />
+									<div className='pb-4 flex items-center gap-2'>
+										<textarea cols={70} rows={8} className='w-full resize-none outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' name='description' id='description' value={channel.description} />
+									</div>
+									<div className='flex gap-2 items-center justify-end w-full'>
+										<Dialog.Close asChild>
+											<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('return')}</button>
+										</Dialog.Close>
+									</div>
+								</Dialog.Content>
+							</Dialog.Portal>
+						</Dialog.Root>
+
+						<Dialog.Root>
+						
+							<Dialog.Trigger asChild>
+								<button className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border border-green-500 text-green-500'>{t('validate-demand')}</button>
+							</Dialog.Trigger>
+							<Dialog.Portal>
+								<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
+								<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+									<div className='flex flex-col gap-2'>
+										<Title kind={'h2'}>
+                                        	{t('validate-demand')}
+										</Title>
+									</div>
+									<hr className='pb-4' />
+									<Form className='flex flex-col w-full'>
+										<select className='w-full outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' name="duration" defaultValue='30min'>
+											<option value="30min">30 {t('minutes')}</option>
+											<option value="1h">1 {t('hour')}</option>
+											<option value="2h">2 {t('hour')}s</option>
+											<option value="3h">3 {t('hour')}s</option>
+											<option value="4h">4 {t('hour')}s</option>
+										</select>
+									</Form>
+									<div className='flex gap-2 items-center justify-end w-full'>
+										<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('submit')}</button>
+										<Dialog.Close asChild>
+											<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('return')}</button>
+										</Dialog.Close>
+									</div>
+								</Dialog.Content>
+							</Dialog.Portal>
+						</Dialog.Root>
+
+
+					</div>
+					
 				</div>
 
-				<div className='overflow-x-auto'>
+				<div className='flex flex-col-reverse overflow-x-auto'>
 					{/* ========== Messages ========== */}
 					{channel.messages.map((message: MessageI) => {
 						let kind: 'received' | 'sent'

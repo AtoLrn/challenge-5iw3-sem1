@@ -22,12 +22,6 @@ export const meta: MetaFunction = () => {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-	try {
-		const { name, description, addressId, seats } = await zx.parseForm(request, schema)
-		console.log(name, description, addressId, seats)
-	} catch (err) {
-		console.log(err)
-	} 
 	return json({})
 }
 

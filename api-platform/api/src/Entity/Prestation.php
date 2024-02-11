@@ -124,11 +124,11 @@ class Prestation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch', 'user:read:artist'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch', 'user:read:artist'])]
     #[ORM\Column(length: 255)]
     private ?\App\Enum\Kind $kind = null;
 
@@ -136,7 +136,7 @@ class Prestation
     #[ORM\ManyToOne(inversedBy: 'prestations')]
     private ?User $proposedBy = null;
 
-    #[Groups(['prestation:collection', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'user:read:artist', 'prestation:read'])]
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $picture = null;
 
