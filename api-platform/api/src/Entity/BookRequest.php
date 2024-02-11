@@ -95,6 +95,7 @@ class BookRequest
     #[ORM\OneToOne(inversedBy: 'bookRequest', cascade: ['persist', 'remove'])]
     private ?Channel $channel = null;
 
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $duration = null;
 
