@@ -30,6 +30,8 @@ class StudioFixtures extends Fixture
             $studio->setMaxCapacity($i + 3);
             $studio->setOwner($user);
             $studio->setPicture("https://static.wixstatic.com/media/446e2c_143574ff61174704bb639530b4ee8849~mv2.jpg/v1/fill/w_296,h_380,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/446e2c_143574ff61174704bb639530b4ee8849~mv2.jpg");
+            $studio->setOpeningTime("10:00");
+            $studio->setClosingTime("20:00");
 
             $studio->setStatus("PENDING");
 
