@@ -43,7 +43,6 @@ export const me = async ({ token }: Me): Promise<User> => {
 }
 
 export const patchMe = async (token: string, data: PatchMe): Promise<true> => {
-	console.log(data)
 	const res = await fetch(`${process.env.API_URL}/users/me`, {
 		method: 'PATCH',
 		headers: {
