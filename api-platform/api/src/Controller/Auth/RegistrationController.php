@@ -4,6 +4,7 @@ namespace App\Controller\Auth;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\SmsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ class RegistrationController
         private MailerInterface $mailer,
         private JWTTokenManagerInterface $jwtManager,
         private Files $files,
+        private SmsService $smsService
     )
     {}
 
@@ -99,6 +101,12 @@ class RegistrationController
             ->text("Votre compte a bien été créé, veuillez vérifier votre email à cette url:".$_ENV['FRONT_APP_URL']."/verify?token=".$jwt);
 
         $this->mailer->send($email);
+        if ($request->request->get('phoneNumber')) {
+            $this->smsService->sendSms(
+                $user->getPhoneNumber(),
+                "Votre compte a bien été créé, veuillez vérifier votre email pour activer votre compte."
+            );
+        }
 
         if(in_array('ROLE_PRO', $user->getRoles())) {
             $users = $this->userRepository->findAll();
