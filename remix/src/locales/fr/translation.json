@@ -63,6 +63,7 @@
   "booking-title": "Réservation",
   "booking-page": "Page de réservation",
   "minutes": "minutes",
+  "hour": "heure",
   "export-appointements-csv": "Exporter les rendez-vous en CSV",
   "see": "Voir",
   "new-request": "Nouvelle demande",
@@ -72,6 +73,8 @@
   "bookings": "Demandes",
   "project-description": "Description du projet",
   "cancel-appointment": "Annuler le rendez-vous",
+  "cancel-book": "Annuler la demande",
+  "go-to-chat": "Aller à la conversation",
   "cancel": "Annuler",
   "reschedule": "Replanifier",
   "new-appointment": "Nouveau rendez-vous",
@@ -175,5 +178,10 @@
   "pre-book-send": "Votre requête a bien été envoyée au tatoueur, maintenant attendez qu'il la valide.",
   "see-description": "Voir description",
   "request-approved": "Demande approuvée !",
-  "about-to-delete-request": "Vous allez supprimer cette demande pour toujours, êtes vous sur ?"
+  "about-to-delete-request": "Vous allez supprimer cette demande pour toujours, êtes vous sur ?",
+  "close": "Fermer",
+  "book": "Réserver",
+  "artist-book-ready": "Votre artiste a ouvert la reservation pour ce projet, vous pouvez donc réserver votre créneau",
+  "submit": "Valider",
+  "validate-demand": "Validation de la demande"
 }

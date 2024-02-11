@@ -21,8 +21,8 @@ class BookRequestPatchController
         private ChannelRepository $channelRepository,
         protected Security $security,
         private EntityManagerInterface $entityManager,
-    )
-    {}
+    ) {
+    }
 
     public function __invoke($id, Request $request): BookRequest
     {
@@ -30,23 +30,29 @@ class BookRequestPatchController
 
         $bookRequest = $this->bookRequestRepository->find($id);
 
-        if(!$bookRequest) {
+        if (!$bookRequest) {
             throw new NotFoundHttpException('Request not found');
         }
 
-        if($user !== $bookRequest->getTattooArtist() && !in_array('ROLE_ADMIN', $user->getRoles())) {
+        if ($user !== $bookRequest->getTattooArtist() && !in_array('ROLE_ADMIN', $user->getRoles())) {
             throw new UnprocessableEntityHttpException('You\'re not allowed to do that');
         }
 
         $data = json_decode($request->getContent(), true);
 
-        if(isset($data['chat']) && $data['chat']) {
+        if (isset($data['chat']) && $data['chat']) {
             $channel = new Channel();
             $channel->setRequestingUser($bookRequest->getRequestingUser());
             $channel->setTattooArtist($bookRequest->getTattooArtist());
             $channel->setDescription($bookRequest->getDescription());
+            $channel->setBookRequest($bookRequest);
 
             $this->entityManager->persist($channel);
+        }
+
+        if (isset($data['duration']) && $data['duration']) {
+            $bookRequest->setBook(true);
+            $bookRequest->setDuration($data['duration']);
         }
 
         return $bookRequest;

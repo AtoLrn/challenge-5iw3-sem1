@@ -17,7 +17,6 @@ export const createPreBook = async (token: string, description: string, userId: 
 	}
 
 	const body = await res.json()
-	console.log(body)
 
 	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }

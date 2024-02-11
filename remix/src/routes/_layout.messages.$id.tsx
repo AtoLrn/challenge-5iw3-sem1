@@ -10,6 +10,7 @@ import {GetChannelAs} from 'src/utils/types/channel'
 import { Message as MessageI } from '../utils/types/message'
 import {useEffect, useRef} from 'react'
 import { formatDate } from '../utils/date'
+import {useTranslation} from 'react-i18next'
 
 
 export function meta() {
@@ -72,6 +73,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 }
 
 export default function () {
+	const { t } = useTranslation()
 	const { channels, currentChannel, errors } = useLoaderData<typeof loader>()
 	const chatEndRef = useRef<HTMLDivElement>(null)
 	const formRef = useRef<HTMLFormElement>(null)
@@ -101,6 +103,20 @@ export default function () {
 								{currentChannel?.tattooArtist.username}
 							</Title>
 						</div>
+						<div className="flex flex-col gap-2 sticky top-0 px-4 py-6 border-b">
+							<Title kind={'h4'} >
+								{t('project-description')}
+							</Title>
+							<span className='opacity-70'>
+								{ currentChannel?.description }
+							</span>
+						</div>
+						{ currentChannel?.bookRequest.book && <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
+							<span>{t('artist-book-ready')}</span>
+							<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+								{t('book')}
+							</button>
+						</div>}
 
 						{/* ========== Messages ========== */}
 						<div className="h-full overflow-y-scroll p-4 flex flex-col space-y-2">

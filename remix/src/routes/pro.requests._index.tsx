@@ -45,7 +45,6 @@ export const PreBookItem: React.FC<ListItemProps<PreBook>> = ({ item }) => {
 	const deleteRequest = () => {
 		if(confirm(t('about-to-delete-request'))) {
 			navigate(`/pro/requests/delete/${item.id}`)
-			console.log(item.id)
 		} else {
 			return
 		}
