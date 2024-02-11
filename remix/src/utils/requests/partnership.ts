@@ -7,7 +7,7 @@ export const partnerShipSchema = z.object({
 	status: z.enum(['PENDING', 'ACCEPTED', 'DENIED']),
 	startDate: z.string().min(1),
 	endDate: z.string().min(1),
-	studio: z.object({
+	studioId: z.object({
 		id: z.number(),
 		name: z.string().min(1)
 	}).optional(),
@@ -36,9 +36,21 @@ export const createPartnership = async ({ token, artistId, startDate, endDate, s
 			endDate: `${endDate.getFullYear()}-${endDate.getMonth()+1}-${endDate.getDate()}`
 		})
 	})
+	
+	return res.status === 201
+}
 
-
-	console.log(await res.json())
+export const asnwerPartnership = async ({ token, id, status }: AnswerPartnership): Promise<boolean> => {
+	const res = await fetch(`${process.env.API_URL}/invites/${id}/answer`, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Content-Type': 'application/ld+json'
+		},
+		body: JSON.stringify({
+			status
+		})
+	})
 	
 	return res.status === 201
 }
@@ -61,7 +73,7 @@ export const getPartnerShip = async ({ token }: BasePartnerShip): Promise<Partne
 			status: partnerShip.status === 'ACCEPTED' ? Validation.ACCEPTED : partnerShip.status === 'PENDING' ? Validation.PENDING : Validation.REFUSED ,
 			startDate: new Date(partnerShip.startDate),
 			endDate: new Date(partnerShip.endDate),
-			studio: partnerShip.studio
+			studio: partnerShip.studioId
 		}
 	})
 
@@ -71,6 +83,11 @@ export const getPartnerShip = async ({ token }: BasePartnerShip): Promise<Partne
 export interface BasePartnerShip {
 	token: string
 }
+
+export type AnswerPartnership = {
+	id: string
+	status: 'ACCEPTED' | 'DENIED'
+} & BasePartnerShip
 
 export type CreatePartnership = {
 	studioId: number,

@@ -1,9 +1,9 @@
 import { Prestation } from './prestation'
-import { ProfileInterface } from './profileForm'
+import { ProfileFormInterface } from './profileForm'
 import { Validation } from './validation'
 
 export interface Booking {
-  	profile: ProfileInterface,
+  	profile: ProfileFormInterface,
 	prestation: Prestation,
 	date: string,
 	duration: number,
