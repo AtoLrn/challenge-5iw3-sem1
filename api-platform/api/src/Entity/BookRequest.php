@@ -95,6 +95,9 @@ class BookRequest
     #[ORM\OneToOne(inversedBy: 'bookRequest', cascade: ['persist', 'remove'])]
     private ?Channel $channel = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $duration = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -168,6 +171,18 @@ class BookRequest
     public function setChannel(?Channel $channel): static
     {
         $this->channel = $channel;
+
+        return $this;
+    }
+
+    public function getDuration(): ?string
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?string $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }

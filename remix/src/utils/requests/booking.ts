@@ -47,6 +47,7 @@ export const getBookings = async ({ token }: BaseBookingRequest): Promise<Array<
 	}
 }
 
+
 export interface BookingChannel {
     id: number,
     description: string
@@ -73,4 +74,9 @@ export interface Booking {
 
 export interface BaseBookingRequest {
     token: string
+}
+
+export interface SetTimeBookingRequest extends  BaseBookingRequest {
+	id: string
+    time: string
 }

@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { Form, MetaFunction, useLoaderData } from '@remix-run/react'
+import { Form, MetaFunction, useFetcher, useLoaderData } from '@remix-run/react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
@@ -8,9 +8,10 @@ import { IoSend } from 'react-icons/io5'
 import { Message } from 'src/components/Messages/Message'
 import { formatDate } from '../utils/date'
 import { Message as MessageI } from '../utils/types/message'
-import {useEffect, useRef } from 'react'
+import {useEffect, useRef, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import {useTranslation} from 'react-i18next'
+import { patchPreBook } from 'src/utils/requests/pre-book'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -67,9 +68,28 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 		}
 
 		const formData = await request.formData()
-		formData.set('channelId', params.id as string)
 
-		await sendMessage(formData, token)
+		const kind = formData.get('kind')
+
+		if (kind === 'message') {
+			formData.set('channelId', params.id as string)
+
+			await sendMessage(formData, token)
+		} else {
+			console.log('ANTOINE ouga')
+			const id = formData.get('bookId')?.toString()
+			const time = formData.get('duration')?.toString()
+
+			if (!id || !time) {
+				return redirect(`/pro/chat/${params.id}`)
+			}
+
+			await patchPreBook(token as string, id , {
+				duration: time
+			})
+		}
+
+
 
 		return redirect(`/pro/chat/${params.id}`)
 	} catch (e) {
@@ -84,7 +104,13 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 export default function () {
 	const { channel, errors } = useLoaderData<typeof loader>()
 	const formRef = useRef<HTMLFormElement>(null)
+	const formDuration = useRef<HTMLFormElement>(null)
 	const chatEndRef = useRef<HTMLDivElement>(null)
+
+	const [ isOpen, setIsOpen ] = useState<boolean>()
+
+	const fetcherDuration = useFetcher()
+
 	const { t } = useTranslation()
 
 	useEffect(() => {
@@ -140,7 +166,7 @@ export default function () {
 							</Dialog.Portal>
 						</Dialog.Root>
 
-						<Dialog.Root>
+						{ !channel.bookRequest.book && <Dialog.Root open={isOpen}>
 						
 							<Dialog.Trigger asChild>
 								<button className='text-center text-sm px-2 py-1 rounded-md bg-opacity-30 border border-green-500 text-green-500'>{t('validate-demand')}</button>
@@ -150,11 +176,12 @@ export default function () {
 								<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
 									<div className='flex flex-col gap-2'>
 										<Title kind={'h2'}>
-                                        	{t('validate-demand')}
+											{t('validate-demand')}
 										</Title>
 									</div>
 									<hr className='pb-4' />
-									<Form className='flex flex-col w-full'>
+									<fetcherDuration.Form ref={formDuration} className='flex flex-col w-full' method='POST'>
+										<input type="hidden" name='bookId' value={channel.bookRequest.id} />
 										<select className='w-full outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' name="duration" defaultValue='30min'>
 											<option value="30min">30 {t('minutes')}</option>
 											<option value="1h">1 {t('hour')}</option>
@@ -162,16 +189,23 @@ export default function () {
 											<option value="3h">3 {t('hour')}s</option>
 											<option value="4h">4 {t('hour')}s</option>
 										</select>
-									</Form>
+									</fetcherDuration.Form>
 									<div className='flex gap-2 items-center justify-end w-full'>
-										<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('submit')}</button>
+										<button onClick={() => {
+											if (formDuration.current) {
+												fetcherDuration.submit(formDuration.current)
+											}
+
+											setIsOpen(false)
+										}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('submit')}</button>
 										<Dialog.Close asChild>
 											<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('return')}</button>
 										</Dialog.Close>
 									</div>
 								</Dialog.Content>
 							</Dialog.Portal>
-						</Dialog.Root>
+						</Dialog.Root> }
+						
 
 
 					</div>
@@ -204,6 +238,7 @@ export default function () {
 				})}
 				{/* ========== Input ========== */}
 				<Form ref={formRef} encType='multipart/form-data' method='POST' className="flex flex-row justify-between">
+					<input type="hidden" name='kind' value='message' />
 					<div className="w-2/3">
 						<input name="content" required type="text" className="rounded-lg p-3 bg-black text-white border border-white w-full" placeholder="Message..."/>
 					</div>

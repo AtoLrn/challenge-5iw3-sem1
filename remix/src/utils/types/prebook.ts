@@ -9,6 +9,7 @@ export interface PreBook {
 export interface PreBookPatch {
     chat?: boolean
     book?: boolean
+    duration?: string
 }
 
 export interface PreBookUser {

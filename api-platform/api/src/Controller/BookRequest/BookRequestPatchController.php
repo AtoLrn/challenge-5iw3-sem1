@@ -50,6 +50,11 @@ class BookRequestPatchController
             $this->entityManager->persist($channel);
         }
 
+        if (isset($data['duration']) && $data['duration']) {
+            $bookRequest->setBook(true);
+            $bookRequest->setDuration($data['duration']);
+        }
+
         return $bookRequest;
     }
 }
