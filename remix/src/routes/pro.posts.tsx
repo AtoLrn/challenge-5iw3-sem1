@@ -12,7 +12,7 @@ import { FaTrashAlt } from 'react-icons/fa'
 export const meta: MetaFunction = () => {
 	return [
 		{
-			title: 'Posts'
+			title: 'Posts | INKIT'
 		}
 	]
 }
