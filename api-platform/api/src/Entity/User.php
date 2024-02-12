@@ -710,6 +710,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->phoneNumber = $phoneNumber;
 
+        return $this;
+    }
+
     /**
      * @return Collection<int, Feedback>
      */
