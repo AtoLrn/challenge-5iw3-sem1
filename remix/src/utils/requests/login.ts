@@ -7,7 +7,7 @@ const schema = z.object({
 
 
 export const login = async (props: Login): Promise<string> => {
-    console.log(process.env.API_URL)
+	console.log(process.env.API_URL)
 	const res = await fetch(`${process.env.API_URL}/login`, {
 		method: 'POST',
 		headers: {
