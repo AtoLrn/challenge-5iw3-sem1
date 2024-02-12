@@ -81,7 +81,6 @@ export default function MainPage() {
 	const { t } = useTranslation()
 
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
-	const [ isPrestationDialogOpen, setIsPrestationDialogOpen] = useState(false)
 	const [ description, setDescription ] = useState('')
 	const [ openedPrestationId, setOpenedPrestationId ] = useState<number | null>(null);
 
@@ -279,7 +278,6 @@ export default function MainPage() {
 
 						<Title kind="h3" className='z-20 pb-4'>Reviews</Title>
 							{artist.prestations?.map((prestation) => {
-									console.log(prestation)
 									return prestation.feedback?.map((feedback) => {
 											return (
 													<div key={feedback.comment} className="flex flex-col gap-2">
