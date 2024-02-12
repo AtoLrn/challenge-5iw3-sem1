@@ -8,6 +8,7 @@ export type Artist = {
 }
 
 export type ArtistPrestation = {
+    id: number
     name: string
     kind: string
     picture: string
@@ -17,6 +18,9 @@ export type ArtistPrestation = {
 export type ArtistFeedback = {
     rating: number
     comment: string
+    submittedBy: {
+        username: string
+    }
 }
 
 export type ArtistPostPicture = {

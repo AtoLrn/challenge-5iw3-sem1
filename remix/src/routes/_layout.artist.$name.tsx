@@ -81,7 +81,9 @@ export default function MainPage() {
 	const { t } = useTranslation()
 
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
+	const [ isPrestationDialogOpen, setIsPrestationDialogOpen] = useState(false)
 	const [ description, setDescription ] = useState('')
+	const [ openedPrestationId, setOpenedPrestationId ] = useState<number | null>(null);
 
 	let totalRating = 0;
   let reviewCount = 0;
@@ -118,13 +120,15 @@ export default function MainPage() {
 						<div className="flex flex-row justify-between">
 							<div>
 								<Title kind="h1" className='z-20 pb-2'>{artist.username}</Title>
-								<div className="flex gap-2">
-									<span className="font-bold">Rating :</span>
-									<div className="flex">
-										<span>{averageRating} &nbsp;</span>
-										<SlStar size={20} />
+								{reviewCount !== 0 && (
+									<div className="flex gap-2">
+										<span className="font-bold">Rating :</span>
+										<div className="flex">
+											<span>{averageRating} &nbsp;</span>
+											<SlStar size={20} />
+										</div>
 									</div>
-								</div>
+								)}
 								<div className="flex gap-2">
 									<span className="font-bold">Reviews :</span>
 									<span>{reviewCount}</span>
@@ -173,9 +177,54 @@ export default function MainPage() {
 							{artist.prestations?.length > 0 ?
 								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 									{artist.prestations?.map((prestation: ArtistPrestation) => {
-										return <div key={prestation.picture} className="flex items-center justify-center h-full bg-transparent text-white border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-											<p className="text-center">{prestation.name}</p>
-										</div>
+										return (
+											<Dialog.Root open={openedPrestationId === prestation.id} key={prestation.id}>
+												<Dialog.Trigger asChild>
+													<button onClick={() => setOpenedPrestationId(prestation.id)} className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+														{prestation.name}
+													</button>
+												</Dialog.Trigger>
+												<Dialog.Portal>
+													<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
+													<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white max-h-[75vh] overflow-scroll">
+														<Title kind="h4" className='z-20'>{t('name')}</Title>
+														<p className='mb-4'>{prestation.name}</p>
+														<Title kind="h4" className='z-20'>{t('kind')}</Title>
+														<p className='mb-4'>{prestation.kind}</p>
+														{ prestation.picture && (
+															<>
+																<Title kind='h4' className='z-20 pb-1'>{t('picture')}</Title>
+																<img src={prestation.picture} className='max-w-full' alt="Prestation Picture" />
+															</>
+														)}
+														{prestation.feedback && prestation.feedback.length > 0 && (
+															<Title kind="h4" className='z-20'>{t('rating')}</Title>
+														)}
+														{prestation.feedback?.map((feedback, index, feedbackArray) => {
+																return (
+																	<div key={feedback.comment} className="flex flex-col gap-2">
+																			<div className="flex justify-between gap-2">
+																					<span className="font-bold">{feedback.submittedBy.username}</span>
+																					<div className="flex">
+																							<span>{feedback.rating} &nbsp;</span>
+																							<SlStar size={20} />
+																					</div>
+																			</div>
+																			<p>{feedback.comment}</p>
+																			{index !== feedbackArray.length - 1 && <hr />}
+																	</div>
+															);
+														})}
+														<Dialog.Close asChild>
+														<button onClick={() => {
+															setOpenedPrestationId(null)
+															setDescription('')
+														}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('close')}</button>
+													</Dialog.Close>
+													</Dialog.Content>
+												</Dialog.Portal>
+											</Dialog.Root>
+										)
 									})}
 								</div>
 								:
@@ -226,9 +275,11 @@ export default function MainPage() {
 							<button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Envoyer</button>
 						</form>
 
-						*/}
+						
 
+						<Title kind="h3" className='z-20 pb-4'>Reviews</Title>
 							{artist.prestations?.map((prestation) => {
+									console.log(prestation)
 									return prestation.feedback?.map((feedback) => {
 											return (
 													<div key={feedback.comment} className="flex flex-col gap-2">
@@ -239,14 +290,17 @@ export default function MainPage() {
 																			<SlStar size={20} />
 																	</div>
 															</div>
-															<div>
+															<p>
+																By : {feedback.submittedBy.username}
+															</p>
+															<p>
 																	{feedback.comment}
-															</div>
+															</p>
 													</div>
 											);
 									});
 							})}
-
+*/}
 					</div>
 				</div>
 			</div>

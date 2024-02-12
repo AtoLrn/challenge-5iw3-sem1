@@ -79,7 +79,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Prestation
 {
-    #[Groups(['prestation:collection', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'user:read:artist'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
