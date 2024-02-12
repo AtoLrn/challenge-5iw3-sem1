@@ -119,6 +119,10 @@ use Symfony\Component\Validator\Constraints as Assert;
                                         'type' => 'string',
                                         'format' => 'binary',
                                     ],
+                                    'phoneNumber' => [
+                                        'type' => 'string',
+                                        'default' => '+33612345678'
+                                    ],
                                 ],
                                 'required' => ['email', 'password', 'username', 'isProfessional']
                             ]
@@ -323,6 +327,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['admin:read', 'admin:collection', 'user:read', 'user:collection', 'admin:patch', 'user:read:me'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $verified = false;
+
+    #[ORM\Column(length: 15, nullable: true)]
+    #[Groups(['admin:read', 'admin:collection', 'user:patch:me', 'user:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'user:read:artist'])]
+    #[Assert\Regex(
+        pattern: '/^\+33[6-7][0-9]{8}$/',
+        message: 'Your phone number must start by +33 and followed by 6 or 7 and 8 digits'
+    )]
+    private ?string $phoneNumber = null;
 
     #[Groups(['user:read:artist'])]
     #[ORM\OneToMany(mappedBy: 'submittedBy', targetEntity: Feedback::class, orphanRemoval: true)]
@@ -688,6 +700,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
 
     /**
      * @return Collection<int, Feedback>
