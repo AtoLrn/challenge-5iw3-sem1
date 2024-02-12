@@ -46,7 +46,7 @@ class Feedback
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Groups(['feedback:read', 'feedback:create', 'user:read:artist'])]
-    #[Assert\Range(notInRangeMessage: 'The rating must be between 1 and 10', min: 1, max: 10)]
+    #[Assert\Range(notInRangeMessage: 'The rating must be between 1 and 5', min: 1, max: 5)]
     private ?int $rating = null;
 
     #[ORM\Column(type: Types::TEXT)]
