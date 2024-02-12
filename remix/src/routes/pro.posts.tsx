@@ -73,15 +73,15 @@ export default function () {
 		        <button onClick={() => setIsDialogOpen(true)} className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('create')}</button>
 			</Dialog.Trigger>
 			<Dialog.Portal>
-				<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
-				<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/4 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+				<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-90 z-10 backdrop-blur-sm" />
+				<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-50 w-1/4 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
 					<Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
 						<div className='flex flex-col gap-2'>
 							<Title kind={'h2'}>
 								{t('add-post')}
 							</Title>
 						</div>
-						<hr className='pb-4' />
+						<hr className='pb-8' />
 						<div className='pb-4 flex items-center gap-2'>
 							<input
 								type="file"
@@ -115,8 +115,8 @@ export default function () {
 			</div> : null
 		}
 
-		<div className='flex flex-row flex-wrap overflow-scroll'>
-			{posts.length > 0 ?
+		<div className='flex flex-row flex-wrap gap-8 overflow-scroll'>
+{/*			{posts.length > 0 ?
 				posts.map((post: Post) => {
 					return <div>
 						<div className='pb-2 flex flex-col items-center mb-4 mr-4 justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
@@ -129,7 +129,29 @@ export default function () {
 				})
 				:
 				<p className='opacity-50'>{t('no-post')}</p>
+			}*/}
+
+			{posts.length > 0 ?
+				posts.map((post: Post) => {
+					return (
+						<div key={post.id} className='relative'>
+							<div className='relative group'>
+								<div className='flex flex-col items-center justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
+									<img width={244} className='p-4' src={post.picture} alt={post.picture} />
+									<div className='absolute top-0 left-0 w-full h-full rounded-xl bg-black opacity-0 transition-opacity group-hover:opacity-30'></div>
+									<NavLink className="hidden absolute top-2 right-2 px-3 py-3 rounded-lg bg-red-900 text-white group-hover:block" to={`/pro/posts/delete/${post.id}`}>
+										<FaTrashAlt />
+									</NavLink>
+								</div>
+							</div>
+						</div>
+					);
+				})
+				:
+				<p className='opacity-50'>{t('no-post')}</p>
 			}
+
+
 		</div>
 	</div>
 }
