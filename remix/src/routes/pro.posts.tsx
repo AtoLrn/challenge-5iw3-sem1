@@ -129,30 +129,18 @@ export default function () {
 		}
 
 		<div className='flex flex-row flex-wrap gap-8 overflow-scroll'>
-{/*			{posts.length > 0 ?
-				posts.map((post: Post) => {
-					return <div>
-						<div className='pb-2 flex flex-col items-center mb-4 mr-4 justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
-							<img width={244} className='p-4' src={post.picture} alt={post.picture} />
-							<NavLink className="px-3 py-3 rounded-lg bg-red-900" to={`/pro/posts/delete/${post.id}`}>
-								<FaTrashAlt />
-							</NavLink>
-						</div>
-					</div>
-				})
-				:
-				<p className='opacity-50'>{t('no-post')}</p>
-			}*/}
 
 			{posts.length > 0 ?
 				posts.map((post: Post) => {
 					return (
-						<div key={post.id} className='relative'>
-							<div className='relative group'>
-								<div className='flex flex-col items-center justify-between bg-slate-700 bg-opacity-30 rounded-xl'>
-									<img width={244} className='p-4' src={post.picture} alt={post.picture} />
-									<div className='absolute top-0 left-0 w-full h-full rounded-xl bg-black opacity-0 transition-opacity group-hover:opacity-30'></div>
-									<NavLink className="hidden absolute top-2 right-2 px-3 py-3 rounded-lg bg-red-900 text-white group-hover:block" to={`/pro/posts/delete/${post.id}`}>
+						<div key={post.id} className='relative h-[200px]'>
+							<div className='relative group h-full'>
+								<div className='flex flex-col items-center justify-between bg-slate-700 bg-opacity-30 rounded h-full'>
+									<img className='p-4 w-full h-full object-cover' src={post.picture} alt={post.picture} />
+									{/* Overlay with 50% opacity on hover */}
+									<div className='absolute top-0 left-0 w-full h-full rounded bg-black opacity-0 transition-opacity group-hover:opacity-30'></div>
+									{/* Hidden delete button initially */}
+									<NavLink className="hidden absolute top-2 right-2 px-3 py-3 bg-red-900 rounded-lg text-white group-hover:block" to={`/pro/posts/delete/${post.id}`}>
 										<FaTrashAlt />
 									</NavLink>
 								</div>
