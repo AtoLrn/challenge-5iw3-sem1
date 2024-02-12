@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240212103737 extends AbstractMigration
+final class Version20240212112307 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -27,9 +27,11 @@ final class Version20240212103737 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN feedback.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('ALTER TABLE feedback ADD CONSTRAINT FK_D22944589E45C554 FOREIGN KEY (prestation_id) REFERENCES prestation (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE feedback ADD CONSTRAINT FK_D229445879F7D87D FOREIGN KEY (submitted_by_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE book_request ADD duration VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE studio ADD picture VARCHAR(255) NOT NULL');
         $this->addSql('ALTER TABLE studio DROP opening_time');
         $this->addSql('ALTER TABLE studio DROP closing_time');
+        $this->addSql('ALTER TABLE "user" ADD phone_number VARCHAR(15) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
@@ -40,6 +42,8 @@ final class Version20240212103737 extends AbstractMigration
         $this->addSql('ALTER TABLE feedback DROP CONSTRAINT FK_D22944589E45C554');
         $this->addSql('ALTER TABLE feedback DROP CONSTRAINT FK_D229445879F7D87D');
         $this->addSql('DROP TABLE feedback');
+        $this->addSql('ALTER TABLE "user" DROP phone_number');
+        $this->addSql('ALTER TABLE book_request DROP duration');
         $this->addSql('ALTER TABLE studio ADD opening_time TIME(0) WITHOUT TIME ZONE NOT NULL');
         $this->addSql('ALTER TABLE studio ADD closing_time TIME(0) WITHOUT TIME ZONE NOT NULL');
         $this->addSql('ALTER TABLE studio DROP picture');
