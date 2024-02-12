@@ -242,63 +242,6 @@ export default function MainPage() {
 								<p>{t('artist-no-post')}</p>
 							}
 						</div>
-
-						{/*
-						<form className="max-w-md mx-auto my-8">
-
-							<div className="flex flex-col space-y-4">
-								<label className="flex items-center">
-									<input type="radio" name="option" className="mr-2"/>
-										Option 1
-								</label>
-								<label className="flex items-center">
-									<input type="radio" name="option" className="mr-2"/>
-										Option 2
-								</label>
-								<label className="flex items-center">
-									<input type="radio" name="option" className="mr-2"/>
-										Option 3
-								</label>
-							</div>
-
-
-							<div className="my-4 border-t"></div>
-
-
-							<label className="block my-4">
-								Commentaires :
-								<textarea className="w-full h-24 p-2 border" placeholder="Saisissez vos commentaires ici"></textarea>
-							</label>
-
-
-							<button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Envoyer</button>
-						</form>
-
-						
-
-						<Title kind="h3" className='z-20 pb-4'>Reviews</Title>
-							{artist.prestations?.map((prestation) => {
-									return prestation.feedback?.map((feedback) => {
-											return (
-													<div key={feedback.comment} className="flex flex-col gap-2">
-															<div className="flex gap-2">
-																	<span className="font-bold">Rating :</span>
-																	<div className="flex">
-																			<span>{feedback.rating} &nbsp;</span>
-																			<SlStar size={20} />
-																	</div>
-															</div>
-															<p>
-																By : {feedback.submittedBy.username}
-															</p>
-															<p>
-																	{feedback.comment}
-															</p>
-													</div>
-											);
-									});
-							})}
-*/}
 					</div>
 				</div>
 			</div>

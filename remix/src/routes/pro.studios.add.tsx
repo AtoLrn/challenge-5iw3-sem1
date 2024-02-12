@@ -148,7 +148,7 @@ export default function () {
 		map.setCenter([address.x, address.y])
 	}, [address])
 
-	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
+	return <div className="flex-1 p-8 flex flex-col items-start gap-8 h-screen overflow-y-scroll">
 		<BreadCrumb routes={[
 			{
 				name: 'Home',
