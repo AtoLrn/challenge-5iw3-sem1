@@ -95,45 +95,45 @@ export default function () {
 	const { channel, errors } = useLoaderData<typeof loader>()
 	const formRef = useRef<HTMLFormElement>(null)
 	const formDuration = useRef<HTMLFormElement>(null)
-    const chatEndRef = useRef<HTMLDivElement>(null)    
-    const { id } = useParams()
+	const chatEndRef = useRef<HTMLDivElement>(null)    
+	const { id } = useParams()
 
 	const [ isOpen, setIsOpen ] = useState<boolean>()
-    const [ messages, setMessages ] = useState<MessageI[]>(channel.messages)
+	const [ messages, setMessages ] = useState<MessageI[]>(channel.messages)
 
 	const fetcherDuration = useFetcher()
 
 	const { t } = useTranslation()
 
-    useEffect(() => {
+	useEffect(() => {
 		formRef.current?.reset()
-    })
+	})
 
 	useEffect(() => {
-        const eventSource = new EventSource(`/api/messages/${id}`)
+		const eventSource = new EventSource(`/api/messages/${id}`)
 
-        eventSource.onmessage = (e) => {
-            const { message } = JSON.parse(e.data)
+		eventSource.onmessage = (e) => {
+			const { message } = JSON.parse(e.data)
 
-            const receivedMessage: MessageI = {
-                id: message.id,
-                content: message.content,
-                picture: message.file,
-                createdAt: message.createdAt.date,
-                sender: {
-                    id: message.sender.id,
-                    username: message.sender.username,
-                    picture: message.sender.picture
-                }
-            }
+			const receivedMessage: MessageI = {
+				id: message.id,
+				content: message.content,
+				picture: message.file,
+				createdAt: message.createdAt.date,
+				sender: {
+					id: message.sender.id,
+					username: message.sender.username,
+					picture: message.sender.picture
+				}
+			}
 
-            setMessages(msg => [...msg, receivedMessage])
-        }
+			setMessages(msg => [...msg, receivedMessage])
+		}
 	}, [])
 
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView()
-    }, [messages])
+	useEffect(() => {
+		chatEndRef.current?.scrollIntoView()
+	}, [messages])
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
@@ -244,7 +244,7 @@ export default function () {
 							date={formatDate(message.createdAt)}
 						/>
 					})}
-                    <div ref={chatEndRef} />
+					<div ref={chatEndRef} />
 				</div>
 
 

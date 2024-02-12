@@ -85,7 +85,7 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 		})
 	}
 
-    formatBody.messages.sort((a: Message, b: Message) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
+	formatBody.messages.sort((a: Message, b: Message) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
 
 	return formatBody
 }

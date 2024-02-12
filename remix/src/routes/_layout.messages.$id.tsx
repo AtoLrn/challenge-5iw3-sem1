@@ -77,40 +77,40 @@ export default function () {
 	const { channels, currentChannel, errors } = useLoaderData<typeof loader>()
 	const chatEndRef = useRef<HTMLDivElement>(null)
 	const formRef = useRef<HTMLFormElement>(null)
-    const { id } = useParams()
+	const { id } = useParams()
 
-    const [ messages, setMessages ] = useState<MessageI[]>(currentChannel?.messages as MessageI[])
-
-    useEffect(() => {
-		formRef.current?.reset()
-        setMessages(currentChannel?.messages as MessageI[])
-    })
+	const [ messages, setMessages ] = useState<MessageI[]>(currentChannel?.messages as MessageI[])
 
 	useEffect(() => {
-        const eventSource = new EventSource(`/api/messages/${id}`)
+		formRef.current?.reset()
+		setMessages(currentChannel?.messages as MessageI[])
+	})
 
-        eventSource.onmessage = (e) => {
-            const { message } = JSON.parse(e.data)
+	useEffect(() => {
+		const eventSource = new EventSource(`/api/messages/${id}`)
 
-            const receivedMessage: MessageI = {
-                id: message.id,
-                content: message.content,
-                picture: message.file,
-                createdAt: message.createdAt.date,
-                sender: {
-                    id: message.sender.id,
-                    username: message.sender.username,
-                    picture: message.sender.picture
-                }
-            }
+		eventSource.onmessage = (e) => {
+			const { message } = JSON.parse(e.data)
 
-            setMessages(msg => [...msg, receivedMessage])
-        }
+			const receivedMessage: MessageI = {
+				id: message.id,
+				content: message.content,
+				picture: message.file,
+				createdAt: message.createdAt.date,
+				sender: {
+					id: message.sender.id,
+					username: message.sender.username,
+					picture: message.sender.picture
+				}
+			}
+
+			setMessages(msg => [...msg, receivedMessage])
+		}
 	}, [])
 
-    useEffect(() => {
+	useEffect(() => {
 		chatEndRef.current?.scrollIntoView()
-    }, [messages])
+	}, [messages])
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
