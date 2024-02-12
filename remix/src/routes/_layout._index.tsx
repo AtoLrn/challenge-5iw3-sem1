@@ -145,7 +145,7 @@ export default function MainPage() {
 									initial={{ opacity: 0 }}
 									animate= {{ opacity: 1 }}
 									exit={{ opacity: 0 }}
-									key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xlflex justify-center'>{t('no-results')}</m.div>
+									key='loader' className='w-full h-full flex p-2 px-4 items-center gap-4 bg-slate-700 bg-opacity-30 rounded-xl justify-center'>{t('no-results')}</m.div>
 								: <></>
 						}
 						{

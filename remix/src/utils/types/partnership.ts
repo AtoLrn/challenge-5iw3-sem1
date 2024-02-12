@@ -17,6 +17,10 @@ export interface PartnerShip {
     userId?: {
         id: number,
         username: string,
-        picture: string
+        picture: string,
+        dayOffs: Array<{
+            startDate: string,
+            endDate: string
+        }>
     }
 }

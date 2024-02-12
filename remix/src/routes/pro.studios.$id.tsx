@@ -95,7 +95,6 @@ export async function action ({ request, params }: ActionFunctionArgs) {
 				artists
 			})
 		} else {
-			console.log('ANTOINE: ', body)
 			await createPartnership({
 				token,
 				studioId: +id,

@@ -17,7 +17,11 @@ export const partnerShipSchema = z.object({
 	userId: z.object({
 		id: z.number(),
 		username: z.string().min(1),
-		picture: z.string().min(1)
+		picture: z.string().min(1),
+		dayOffs: z.array(z.object({
+			startDate: z.string().min(1), 
+			endDate: z.string().min(1),
+		}))
 	}).optional(),
 }) 
 
@@ -102,7 +106,8 @@ export const getPartnerShipForUser = async ({ token, artistId }: GetPartnerShipF
 			status: partnerShip.status === 'ACCEPTED' ? Validation.ACCEPTED : partnerShip.status === 'PENDING' ? Validation.PENDING : Validation.REFUSED ,
 			startDate: new Date(partnerShip.startDate),
 			endDate: new Date(partnerShip.endDate),
-			studio: partnerShip.studioId
+			studio: partnerShip.studioId,
+			userId: partnerShip.userId
 		}
 	})
 
