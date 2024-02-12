@@ -3,39 +3,38 @@
 namespace App\Controller\Prestation;
 
 use App\Entity\Prestation;
-use App\Enum\Kind;
+use App\Repository\PrestationRepository;
+use App\Security\Voter\PrestationVoter;
 use App\Utils\Files;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[AsController]
-class PrestationCreateController
+class PrestationPictureController
 {
     public function __construct(
         protected Security $security,
         private Files $files,
+        private PrestationRepository $prestationRepository
     ) {
     }
 
-    public function __invoke(Request $request): Prestation
+    public function __invoke(Request $request, int $id): Prestation
     {
-        $nameInput = $request->request->get('name');
-        $kindInput = $request->request->get('kind');
-        $user = $this->security->getUser();
 
-        $prestation = new Prestation();
+        $prestation = $this->prestationRepository->find($id);
 
-        try {
-            $kind = Kind::from($kindInput);
-        } catch (\ValueError $e) {
-            throw new UnprocessableEntityHttpException('Invalid kind value');
+        if (!$prestation) {
+            throw new NotFoundHttpException('Prestation not found');
         }
 
-        $prestation->setName($nameInput);
-        $prestation->setKind($kind);
-        $prestation->setProposedBy($user);
+        if (!$this->security->isGranted(PrestationVoter::EDIT, $prestation)) {
+            throw new AccessDeniedException('You do not have permission to delete this prestation.');
+        }
 
         if (!$request->files->get('picture')) {
             throw new UnprocessableEntityHttpException('File needed');

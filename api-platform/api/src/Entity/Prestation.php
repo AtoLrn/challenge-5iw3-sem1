@@ -9,6 +9,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Prestation\PrestationCreateController;
+use App\Controller\Prestation\PrestationDeleteController;
+use App\Controller\Prestation\PrestationPatchController;
+use App\Controller\Prestation\PrestationPictureController;
 use App\Controller\Prestation\PrestationUserController;
 use App\Repository\PrestationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -66,15 +69,53 @@ use Symfony\Component\Serializer\Annotation\Groups;
           security: 'is_granted("ROLE_USER")'
       ),
       new Patch(
+          controller: PrestationPatchController::class,
           normalizationContext: ['groups' => 'prestation:read'],
           denormalizationContext: ['groups' => 'prestation:patch'],
           security: 'is_granted("ROLE_USER")'
       ),
       new Delete(
+          controller: PrestationDeleteController::class,
           normalizationContext: ['groups' => 'prestation:read'],
           denormalizationContext: ['groups' => 'prestation:delete'],
           security: 'is_granted("ROLE_USER")'
       ),
+        new Post(
+            uriTemplate: '/prestations/{id}/update-picture',
+            controller: PrestationPictureController::class,
+            openapiContext: [
+                'summary' => 'Update the picture of a prestation',
+                'description' => 'Update the picture of a prestation',
+                'parameters' => [
+                    [
+                        'in' => 'path',
+                        'name' => 'id',
+                        'required' => true,
+                        'type' => 'integer',
+                        'description' => 'The id of the prestation to update the picture',
+                    ],
+                ],
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'picture' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => ['picture']
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            normalizationContext: ['groups' => 'prestation:read'],
+            security: 'is_granted("ROLE_USER")',
+            deserialize: false
+        )
     ]
 )]
 class Prestation
@@ -85,11 +126,11 @@ class Prestation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['prestation:collection', 'user:read:artist', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch', 'user:read:artist'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['prestation:collection', 'user:read:artist', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch', 'user:read:artist'])]
     #[ORM\Column(length: 255)]
     private ?\App\Enum\Kind $kind = null;
 
