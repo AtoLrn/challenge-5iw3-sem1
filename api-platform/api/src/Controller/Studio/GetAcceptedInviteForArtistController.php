@@ -29,6 +29,6 @@ class GetAcceptedInviteForArtistController
             throw new AccessDeniedHttpException('Artist not found');
         }
 
-        return $this->partnerShipRepository->findBy(["userId" => $artist->getId()]);
+        return $this->partnerShipRepository->findBy(["userId" => $artist->getId(), "status" => "ACCEPTED"]);
     }
 }
