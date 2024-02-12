@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\ForgetPasswordController;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
+use App\Controller\User\ArtistStudioController;
 use App\Controller\User\GetArtistController;
 use App\Controller\Auth\VerifyController;
 use App\Controller\User\ArtistWaitingController;

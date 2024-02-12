@@ -40,7 +40,7 @@ class InviteStudioController
 
         $partnerShip->setUserId($invitedUser);
         $partnerShip->setStartDate(new \DateTime($data["startDate"]));
-        $partnerShip->setEndDate(new \DateTime($data["startDate"]));
+        $partnerShip->setEndDate(new \DateTime($data["endDate"]));
 
 
         return $partnerShip;

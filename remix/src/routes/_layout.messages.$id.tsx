@@ -1,5 +1,5 @@
 import { Title } from 'src/components/Title'
-import {Form, useLoaderData} from '@remix-run/react'
+import {Form, Link, useLoaderData} from '@remix-run/react'
 import { IoSend } from 'react-icons/io5'
 import { MessageSide } from 'src/components/Messages/MessageSide'
 import { Message } from 'src/components/Messages/Message'
@@ -113,9 +113,9 @@ export default function () {
 						</div>
 						{ currentChannel?.bookRequest.book && <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
 							<span>{t('artist-book-ready')}</span>
-							<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+							<Link to={`/book/${currentChannel.bookRequest.id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 								{t('book')}
-							</button>
+							</Link>
 						</div>}
 
 						{/* ========== Messages ========== */}

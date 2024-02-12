@@ -210,7 +210,7 @@ export default function () {
 				<div className="flex flex-col w-1/2">
 					{/* LOCATION */}
 					<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
-						<input value={address?.id} placeholder={t('address')} type="text" name='location' className='hidden' />
+						<input value={`${address?.x},${address?.y}`} placeholder={t('address')} type="text" name='location' className='hidden' />
 						<input
 							autoComplete='off'
 							onChange={(e) => {
