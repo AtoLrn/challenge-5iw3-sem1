@@ -336,6 +336,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $phoneNumber = null;
 
+    #[Groups(['user:read:artist'])]
+    #[ORM\OneToMany(mappedBy: 'submittedBy', targetEntity: Feedback::class, orphanRemoval: true)]
+    private Collection $feedback;
+
     public function __construct()
     {
         $this->studios = new ArrayCollection();
@@ -343,6 +347,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->partnerShips = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->postPictures = new ArrayCollection();
+        $this->feedback = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -704,6 +709,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhoneNumber(?string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
+
+    /**
+     * @return Collection<int, Feedback>
+     */
+    public function getFeedback(): Collection
+    {
+        return $this->feedback;
+    }
+
+    public function addFeedback(Feedback $feedback): static
+    {
+        if (!$this->feedback->contains($feedback)) {
+            $this->feedback->add($feedback);
+            $feedback->setSubmittedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeedback(Feedback $feedback): static
+    {
+        if ($this->feedback->removeElement($feedback)) {
+            // set the owning side to null (unless already changed)
+            if ($feedback->getSubmittedBy() === $this) {
+                $feedback->setSubmittedBy(null);
+            }
+        }
 
         return $this;
     }

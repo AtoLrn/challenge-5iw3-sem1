@@ -12,13 +12,14 @@ const studioSchema = z.object({
 	status: z.string().min(1),
 	openingTime: z.string().nullable(),
 	closingTime: z.string().nullable(),
-	monday: z.boolean().nullable(),
-	tuesday: z.boolean().nullable(),
-	wednesday: z.boolean().nullable(),
-	thursday: z.boolean().nullable(),
-	friday: z.boolean().nullable(),
-	saturday: z.boolean().nullable(),
-	sunday: z.boolean().nullable(),
+	monday: z.string().nullable(),
+	tuesday: z.string().nullable(),
+	wednesday: z.string().nullable(),
+	thursday: z.string().nullable(),
+	friday: z.string().nullable(),
+	saturday: z.string().nullable(),
+	sunday: z.string().nullable(),
+	picture: z.string().min(1),
 
 	partnerShips: z.array(partnerShipSchema)
 })

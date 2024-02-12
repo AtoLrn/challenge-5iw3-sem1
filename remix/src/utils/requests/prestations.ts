@@ -2,6 +2,25 @@ import { z } from 'zod'
 import { Prestation } from '../types/prestation'
 import { Kind } from '../types/kind'
 
+type PrestationId = string | number;
+
+interface PrestationData {
+  name: string;
+  kind: Kind;
+}
+
+interface UpdatePrestationParams {
+  id: PrestationId;
+  prestationData: PrestationData;
+  token: string;
+}
+
+interface UpdatePrestationPictureParams {
+  id: string | number;
+  formData: FormData;
+  token: string;
+}
+
 const prestationsSchema = z.array(z.object({
 	id: z.number(),
 	name: z.string(),
@@ -69,6 +88,60 @@ export const createPrestation = async (formData: FormData, token: string): Promi
 		throw new Error(`Error ${response.status}: ${response.statusText}`)
 	}
 
+
+	return response
+}
+
+export const updatePrestation = async ({ id, prestationData, token }: UpdatePrestationParams): Promise<Response> => {
+  const jsonData = {
+    name: prestationData.name,
+    kind: prestationData.kind,
+  };
+
+  const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/merge-patch+json',
+    },
+    body: JSON.stringify(jsonData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error ${response.status}: ${response.statusText}`);
+  }
+
+  return response;
+};
+
+export const updatePrestationPicture = async ({ id, formData, token }: UpdatePrestationPictureParams): Promise<Response> => {
+	const response = await fetch(`${process.env.API_URL}/prestations/${id}/update-picture`, {
+		method: 'POST',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+		body: formData,
+	})
+
+	if (!response.ok) {
+		console.error('Failed to update prestation picture:', response)
+		throw new Error(`Error ${response.status}: ${response.statusText}`)
+	}
+
+	return response
+}
+
+export const deletePrestation = async (id: string | number, token: string): Promise<Response> => {
+	const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
+		method: 'DELETE',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+	})
+
+	if (!response.ok) {
+		throw new Error(`Error ${response.status}: ${response.statusText}`)
+	}
 
 	return response
 }
