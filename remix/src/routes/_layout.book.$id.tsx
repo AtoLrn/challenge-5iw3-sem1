@@ -6,13 +6,16 @@ import {getSession} from 'src/session.server'
 import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
 
 import {useTranslation} from 'react-i18next'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Marker, Map } from 'mapbox-gl'
 import { Title } from 'src/components/Title'
 import { FaArrowDown } from 'react-icons/fa6'
 
 import { motion as m } from 'framer-motion'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
+import { getPartnerShipForUser } from 'src/utils/requests/partnership'
+import { getBookingById } from 'src/utils/requests/booking'
+import { addDays, addMinutes, differenceInDays, differenceInMinutes, setHours, setMinutes } from 'date-fns'
 
 export function meta() {
 	return [
@@ -22,47 +25,58 @@ export function meta() {
 	]
 }
 
-const TMP = [
-	'2.153661,48.996369',
-	'2.382394,48.845925',
-	'2.389355,48.848898'
-]
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const session = await getSession(request.headers.get('Cookie'))
 
 	const token = session.get('token')
+
+	const { id } = params
 
 	if (!token) {
 		return redirect(`/login?error=${'You need to login'}`)
 	}
 
-	const studios = await Promise.all(TMP.map(async (place) => {
-		const req = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${place}.json?proximity=ip&access_token=${process.env.MAP_BOX_TOKEN}`)
+	if (!id) {
+		throw new Response(null, {
+			status: 404,
+			statusText: 'Not Found',
+		  })
+	}
+
+	const booking = await getBookingById({ token, bookingId: id })
+	
+	const partnerships = await getPartnerShipForUser({ token, 
+		artistId: booking.tattooArtist.id 
+	})
+
+	const studios = await Promise.all(partnerships.map(async (partnership) => {
+		const req = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${partnership.studio?.location ?? ''}.json?proximity=ip&access_token=${process.env.MAP_BOX_TOKEN}`)
 
 		const results = await req.json()
 
 		const [ location ] = results.features
 
 		return {
+			...partnership.studio,
+			startDate: partnership.startDate,
+			endDate: partnership.endDate,
 			address: location.place_name as string,
-			id: location.id as string,
 			x: location.center[0] as string,
 			y: location.center[1] as string
 		}
 	}))
 
 
-	return json({ accessToken: process.env.MAP_BOX_TOKEN, studios })
+	return json({ accessToken: process.env.MAP_BOX_TOKEN, booking, studios })
 }
 
 export default function () {
-	const { accessToken, studios } = useLoaderData<typeof loader>()
+	const { accessToken, booking, studios } = useLoaderData<typeof loader>()
 	const [ openedModal, setOpenedModal ] = useState('studioSelection')
 	
 	const [ selectedStudio, setSelectedStudio ] = useState<string>()
 	const map = useRef<Map>()
-	const { t } = useTranslation()
+	// const { t } = useTranslation()
 
 	useEffect(() => {
 		if (accessToken && openedModal === 'studioSelection') {
@@ -76,19 +90,19 @@ export default function () {
 			})
 				
 
-			for (const coordinate of studios) {
+			for (const studio of studios) {
 				const marker = new Marker()
-				marker.getElement().addEventListener('click', (x) => {
-					setSelectedStudio(coordinate.id)
+				marker.getElement().addEventListener('click', () => {
+					setSelectedStudio(studio.name)
 				})
 				
-				marker.setLngLat([+coordinate.x, +coordinate.y]).addTo(map.current)
+				marker.setLngLat([+studio.x, +studio.y]).addTo(map.current)
 			}
 		}
 	}, [ openedModal ])
 
 	useEffect(() => {
-		const studio = studios.find(({ id }) => id === selectedStudio)
+		const studio = studios.find(({ name }) => name === selectedStudio)
 
 		if (!studio) {
 			return 
@@ -96,6 +110,55 @@ export default function () {
 
 		map.current?.setCenter([+studio.x, +studio.y]).setZoom(13)
 
+	}, [ selectedStudio ])
+
+	const getMinutes = (duration: string): number => {
+		if (duration === '30min') { return 30 }
+		if (duration === '1h') { return 60 }
+		if (duration === '2h') { return 120 }
+		if (duration === '3h') { return 180 }
+		if (duration === '4h') { return 240 }
+		return 0
+	}
+
+	const slots = useMemo<Date[]>(() => {
+		const studio = studios.find(({ name }) => name === selectedStudio)
+
+		if (!studio) {
+			return []
+		}
+
+
+
+		const startDay = new Date(studio.startDate)
+		const endDay = new Date(studio.endDate)
+
+		const diff = differenceInDays(endDay, startDay)
+
+		const slots: Date[] = []
+		
+		for (let dayIndex = 0; dayIndex < diff; dayIndex++) {
+			const day = addDays(startDay, dayIndex)
+
+			const [ hh, mm ] = studio.openingTime?.split(':') as [ string, string ]
+			const startTime = day.setHours(+hh, +mm)
+
+			const [ h, m ] = studio.closingTime?.split(':') as [ string, string ]
+			const closingTime = setMinutes(setHours(day, +h), +m)
+
+			const duration = getMinutes(booking.duration ?? '')
+
+			const splits = differenceInMinutes(closingTime, startTime) / duration
+
+			for (let split = 0; split < splits; split++) {
+				slots.push(addMinutes(startTime, duration * split))
+			}
+		}
+
+
+		
+
+		return slots
 	}, [ selectedStudio ])
 
 	return (
@@ -126,9 +189,9 @@ export default function () {
 										}}
 									>
 										{ studios.map((studio) => {
-											return <ToggleGroup.Item key={studio.id} className="w-full border rounded-md px-4 py-2 flex flex-col gap-2 justify-start items-start data-[state=on]:border-red-700" value={studio.id} aria-label="Left aligned">
+											return <ToggleGroup.Item key={studio.name} className="w-full border rounded-md px-4 py-2 flex flex-col gap-2 justify-start items-start data-[state=on]:border-red-700" value={studio.name!} aria-label="Left aligned">
 												<h1 className='font-bold uppercase'>
-													{ studio.id }
+													{ studio.name }
 												</h1>
 												<span>
 													{ studio.address }
@@ -157,8 +220,11 @@ export default function () {
 								initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: '500px'}} exit={{ opacity: 0, height: 0 }} 
 								className='flex w-full gap-4 mt-2 p-8 bg-black bg-opacity-20 backdrop-blur-xl rounded-md'>
 								<div  className='flex-1'>
-									<TimePicker kind={TimePickerKind.SLOT} slots={[ new Date()]} />
+									<TimePicker kind={TimePickerKind.SLOT} slots={slots} />
 
+								</div>
+								<div className='flex-1'>
+									<span>Your appointement time will be of: <b>{booking.duration}</b></span>
 								</div>
 							</m.div>
 						</Accordion.Content>

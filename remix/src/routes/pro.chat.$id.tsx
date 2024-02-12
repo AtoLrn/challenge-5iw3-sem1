@@ -76,7 +76,6 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
 			await sendMessage(formData, token)
 		} else {
-			console.log('ANTOINE ouga')
 			const id = formData.get('bookId')?.toString()
 			const time = formData.get('duration')?.toString()
 
