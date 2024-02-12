@@ -19,7 +19,7 @@ const schema = z.object({
   id: z.number(),
   rating: z.number().min(1).max(5),
   comment: z.string().min(1),
-  prestations: z.object({
+  prestation: z.object({
     name: z.string().min(1),
   }),
   submittedBy: z.object({
@@ -49,5 +49,26 @@ export const getFeedbacks = async (token: string): Promise<Feedback[]> => {
     return parsedBody['hydra:member']
   } catch (e) {
     return e as Feedback[]
+  }
+}
+
+export const getFeedback = async (token: string, id: string): Promise<Feedback> => {
+  const res = await fetch(`${process.env.API_URL}/feedback/${id}`, {
+    headers: {
+      'Accept': 'application/ld+json',
+      'Authorization': `Bearer ${token}`
+    },
+  })
+
+  const body = await res.json()
+
+  console.log('body', body)
+
+  try {
+    const parsedBody = schema.parse(body)
+
+    return parsedBody
+  } catch (e) {
+    return e as Feedback
   }
 }

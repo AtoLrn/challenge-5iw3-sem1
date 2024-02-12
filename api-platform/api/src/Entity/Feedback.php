@@ -35,6 +35,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => 'feedback:read'],
             security: 'is_granted("ROLE_USER")'
         ),
+        new Get(
+            normalizationContext: ['groups' => 'feedback:read'],
+            security: 'is_granted("ROLE_ADMIN")'
+        ),
         new Post(
             controller: FeedbackCreateController::class,
             normalizationContext: ['groups' => 'feedback:read'],
