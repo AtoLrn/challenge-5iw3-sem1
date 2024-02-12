@@ -106,8 +106,8 @@ export default function () {
 	const [rating, setRating] = React.useState(feedback.rating)
 	const [comment, setComment] = React.useState(feedback.comment)
 
-	const deleteUser = () => {
-		if(confirm(t('about-to-delete-user'))) {
+	const deleteFeedback = () => {
+		if(confirm(t('about-to-delete-feedback'))) {
 			navigate(`/admin/feedbacks/delete/${feedback.id}`)
 		} else {
 			return
@@ -159,7 +159,7 @@ export default function () {
 			</Form>
 			<hr className='my-10'/>
 			<div className='flex justify-center'>
-				<button onClick={deleteUser} className="bg-transparent hover:bg-red-500 hover:bg-opcaity-30 text-white border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+				<button onClick={deleteFeedback} className="bg-transparent hover:bg-red-500 hover:bg-opcaity-30 text-white border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 					{t('delete')}
 				</button>
 			</div>

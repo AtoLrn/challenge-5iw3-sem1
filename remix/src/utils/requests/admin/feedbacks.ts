@@ -91,3 +91,20 @@ export const patchFeedback = async (token: string, id: string, feedback: UpdateF
 
   throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
+
+export const deleteFeedback = async (token: string, id: string): Promise<true> => {
+	const res = await fetch(`${process.env.API_URL}/feedback/${id}`, {
+		method: 'DELETE',
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+	})
+
+	if (res.status === 204) {
+		return true
+	}
+
+	const body = await res.json()
+
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
