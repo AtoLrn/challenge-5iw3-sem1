@@ -179,7 +179,7 @@ export default function () {
 		date: new Date()
 	}] 
 
-	return <div className="flex-1 p-8 flex flex-col items-start gap-4">
+	return <div className="flex-1 p-8 flex flex-col items-start gap-4 h-screen overflow-y-scroll">
 		<BreadCrumb routes={[
 			{
 				name: t('home'),

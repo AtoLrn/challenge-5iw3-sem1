@@ -50,11 +50,11 @@ export default function Prestations() {
 				url: '/pro' 
 			},
 			{ 
-				name: 'Prestation', 
+				name: 'Prestations',
 				url: '/pro/prestation'
 			}
 		]} />
-		<Title kind="h2">{t('prestation')}</Title>
+		<Title kind="h2">{t('prestations')}</Title>
 		<Link to={'/pro/prestations/add'}>
 			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>{t('add')}</button>
 		</Link>

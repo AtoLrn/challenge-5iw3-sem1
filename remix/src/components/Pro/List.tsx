@@ -11,7 +11,7 @@ export const List = <TItem extends object>({ ListItem, items, sort }: ListProps<
 	if (sort) {
 		items = items.sort(sort)
 	}
-	return <div className='w-full flex flex-col gap-2  h-screen overflow-y-scroll'>
+	return <div className='w-full flex flex-col gap-2 grow overflow-y-scroll'>
 		{ items.map((item) => {
 			return <ListItem key={`${item}`} item={item} />
 		})}

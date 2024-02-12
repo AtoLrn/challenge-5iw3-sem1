@@ -212,7 +212,7 @@ export default function () {
 					
 				</div>
 
-				<div className='flex flex-col-reverse overflow-x-auto'>
+				<div className='flex flex-col-reverse overflow-x-auto grow'>
 					{/* ========== Messages ========== */}
 					{channel.messages.map((message: MessageI) => {
 						let kind: 'received' | 'sent'
