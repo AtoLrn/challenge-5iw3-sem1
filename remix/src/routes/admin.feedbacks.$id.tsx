@@ -4,8 +4,7 @@ import {useTranslation} from 'react-i18next'
 import {getSession} from 'src/session.server'
 import {BreadCrumb} from 'src/components/Breadcrumb'
 import { z } from 'zod'
-import { zx } from 'zodix'
-import { getFeedback } from 'src/utils/requests/admin/feedbacks'
+import { getFeedback, patchFeedback } from 'src/utils/requests/admin/feedbacks'
 import React from 'react'
 
 export const meta: MetaFunction = () => {
@@ -17,39 +16,59 @@ export const meta: MetaFunction = () => {
 }
 
 const schema = z.object({
-	username: z.string().min(1),
-	email: z.string().min(1),
-	description: z.string().min(1),
-	isAdmin: zx.CheckboxAsString,
-	isArtist: zx.CheckboxAsString,
-	isBanned: zx.CheckboxAsString,
-	isVerified: zx.CheckboxAsString,
+	rating: z.number().min(1).max(5),
+	comment: z.string().min(1),
 }) 
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-	const session = await getSession(request.headers.get('Cookie'))
-	const token = session.get('token')
+  const session = await getSession(request.headers.get('Cookie'));
+  const token = session.get('token');
 
-	if (!token) {
-		return redirect('/login')
-	}
+  if (!token) {
+    return redirect('/login');
+  }
 
-	if (!params.id) {
-		return redirect('/admin/feedbacks')
-	}
+  if (!params.id) {
+    return redirect('/admin/feedbacks');
+  }
 
-	try {
-		const feedback = await getFeedback(token as string, params.id)
+  try {
+    const formData = await request.formData();
+    const rating = formData.get('rating');
+    const comment = formData.get('comment');
 
-		return redirect(`/admin/feedbacks/${params.id}?success=true`)
-	} catch (e) {
-		if (e instanceof Error)
-			return redirect(`/admin/feedbacks/${params.id}?error=${e.message}`)
+    const result = schema.safeParse({
+      rating: rating ? Number(rating) : undefined,
+      comment: comment ? String(comment) : undefined,
+    });
 
-		return redirect(`/admin/feedbacks/${params.id}?error=${'Unexpected Error'}`)
-	}
+		console.log('result', result)
 
-}
+    if (!result.success) {
+			console.log('result.error', result.error)
+      throw new Error('Invalid form data', result.error);
+    }
+
+    const feedback = await getFeedback(token as string, params.id);
+
+    const updatedFeedback = {
+      id: feedback.id,
+      rating: result.data.rating,
+      comment: result.data.comment,
+    };
+
+    await patchFeedback(token as string, params.id, updatedFeedback);
+
+    return redirect(`/admin/feedbacks/${params.id}?success=true`);
+  } catch (e) {
+    console.error(e); // Ajouter un log pour déboguer
+    if (e instanceof Error) {
+      return redirect(`/admin/feedbacks/${encodeURIComponent(params.id)}?error=${encodeURIComponent(e.message)}`);
+    }
+
+    return redirect(`/admin/feedbacks/${params.id}?error=Unexpected Error`);
+  }
+};
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
@@ -126,9 +145,9 @@ export default function () {
 			<Form method='POST'>
 			<div className='flex mb-10'>
 				<div className='flex flex-col'>
-					<div className="flex flex-row gap-4 mb-10">
-						<input value={rating} onChange={(e) => setRating(Number(e.currentTarget.value))} type="number" name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-						<input value={comment} onChange={(e) => setComment(e.currentTarget.value)} type="textarea" name="comment" placeholder={t('comment')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+					<div className="flex flex-col gap-4 mb-10">
+						<input value={rating} onChange={(e) => setRating(Number(e.currentTarget.value))} type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+						<textarea cols={25} rows={8} placeholder='Description' onChange={(e) => setComment(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' value={comment} />
 					</div>
 				</div>
 			</div>

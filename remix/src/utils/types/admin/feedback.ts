@@ -9,3 +9,8 @@ export interface Feedback {
         username: string
     }
 }
+
+export interface UpdateFeedback {
+    rating: number,
+    comment: string
+}

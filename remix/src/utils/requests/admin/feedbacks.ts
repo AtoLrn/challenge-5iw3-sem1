@@ -1,4 +1,4 @@
-import { Feedback } from "src/utils/types/admin/feedback";
+import { Feedback, UpdateFeedback } from "src/utils/types/admin/feedback";
 import { z } from "zod";
 
 const schemaCollection = z.object({
@@ -71,4 +71,23 @@ export const getFeedback = async (token: string, id: string): Promise<Feedback> 
   } catch (e) {
     return e as Feedback
   }
+}
+
+export const patchFeedback = async (token: string, id: string, feedback: UpdateFeedback): Promise<boolean> => {
+  const res = await fetch(`${process.env.API_URL}/feedback/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/merge-patch+json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(feedback)
+  })
+
+  if (res.status === 200) {
+    return true;
+  }
+
+  const body = await res.json()
+
+  throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
