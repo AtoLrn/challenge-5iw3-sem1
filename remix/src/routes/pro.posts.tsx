@@ -8,6 +8,7 @@ import {Post} from 'src/utils/types/post'
 import * as Dialog from '@radix-ui/react-dialog'
 import {useState} from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
+import {BreadCrumb} from "../components/Breadcrumb.tsx";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -66,6 +67,18 @@ export default function () {
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
+
+		<BreadCrumb routes={[
+			{
+				name: t('home'),
+				url: '/pro'
+			},
+			{
+				name: t('posts'),
+				url: '/pro/posts'
+			}
+		]} />
+
 		<Title kind="h2">{t('posts')}</Title>
 
 		<Dialog.Root open={isDialogOpen}>
