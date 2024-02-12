@@ -89,6 +89,7 @@ export default function () {
 	const { daysOff } = useLoaderData<typeof loader>()
 	const [startDate, setStartDate] = useState<Date>()
 	const [endDate, setEndDate] = useState<Date>()
+	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
 
 	const onClick = useCallback(async (id: number) => {
 
@@ -128,16 +129,16 @@ export default function () {
 			<Title kind="h2">Take a day Off</Title>
 			<span className='text-gray-400'>{t('day-off-loving-message')}</span>
 		</div>
-		<Dialog.Root>
+		<Dialog.Root open={isDialogOpen}>
 			<Dialog.Trigger asChild>
-				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>
+				<button onClick={() => setIsDialogOpen(true)} className='px-4 py-2 bg-gray-700 rounded-lg text-white'>
 					{t('add-day-off')}
 				</button>
 			</Dialog.Trigger>
 			<Dialog.Portal>
 				<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
 				<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/4 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
-					<Form method='POST' className='flex flex-col gap-2'>
+					<Form onSubmit={() => setIsDialogOpen(false)} method='POST' className='flex flex-col gap-2'>
 
 						<div className='flex flex-col gap-2'>
 							<Title kind={'h2'}>
@@ -163,7 +164,7 @@ export default function () {
 
 						<div className='flex gap-2 items-center justify-end w-full'>
 							<Dialog.Close asChild>
-								<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
+								<button onClick={() => setIsDialogOpen(false)} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
 							</Dialog.Close>
 							<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('create')}</button>
 						</div>

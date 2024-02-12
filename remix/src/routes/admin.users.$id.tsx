@@ -50,14 +50,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		if(isAdmin && !user.roles.includes('ROLE_ADMIN')) {
 			user.roles.push('ROLE_ADMIN')
 		} else if (!isAdmin && user.roles.includes('ROLE_ADMIN')) {
-			user.roles.filter(role => role !== 'ROLE_ADMIN')
+			user.roles = user.roles.filter(role => role !== 'ROLE_ADMIN')
 		}
 
 		if(isArtist && !user.roles.includes('ROLE_PRO')) {
 			user.roles.push('ROLE_PRO')
 			updatedUser.kbisVerified = true
 		} else if (!isArtist && user.roles.includes('ROLE_PRO')) {
-			user.roles.filter(role => role !== 'ROLE_PRO')
+			user.roles = user.roles.filter(role => role !== 'ROLE_PRO')
 			updatedUser.kbisVerified = false
 		}
 
@@ -66,6 +66,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		description !== user.description ? updatedUser.description = description : null
 		isBanned !== user.isBanned ? updatedUser.isBanned = isBanned : null
 		isVerified !== user.verified ? updatedUser.verified = isVerified : null
+        console.log(user.roles)
 		updatedUser.roles = user.roles
 
 		await patchUser(token, params.id, updatedUser)
