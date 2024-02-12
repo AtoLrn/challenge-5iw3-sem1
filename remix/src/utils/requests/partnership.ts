@@ -9,7 +9,10 @@ export const partnerShipSchema = z.object({
 	endDate: z.string().min(1),
 	studioId: z.object({
 		id: z.number(),
-		name: z.string().min(1)
+		name: z.string().min(1),
+		location: z.string().min(1),
+		openingTime: z.string().min(1),
+		closingTime: z.string().min(1),
 	}).optional(),
 	userId: z.object({
 		id: z.number(),
@@ -80,8 +83,38 @@ export const getPartnerShip = async ({ token }: BasePartnerShip): Promise<Partne
 	return partnerShips
 }
 
+
+export const getPartnerShipForUser = async ({ token, artistId }: GetPartnerShipForUser): Promise<PartnerShip[]> => {
+	const res = await fetch(`${process.env.API_URL}/invites/${artistId}/accepted`, {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+		},
+	})
+
+	const json = await res.json()
+
+	const body = getPartnerShipSchema.parse(json)
+
+	const partnerShips = body['hydra:member'].map<PartnerShip>((partnerShip) => {
+		return {
+			id: partnerShip.id,
+			status: partnerShip.status === 'ACCEPTED' ? Validation.ACCEPTED : partnerShip.status === 'PENDING' ? Validation.PENDING : Validation.REFUSED ,
+			startDate: new Date(partnerShip.startDate),
+			endDate: new Date(partnerShip.endDate),
+			studio: partnerShip.studioId
+		}
+	})
+
+	return partnerShips
+}
+
 export interface BasePartnerShip {
 	token: string
+}
+
+export interface GetPartnerShipForUser extends BasePartnerShip {
+	artistId: number | string
 }
 
 export type AnswerPartnership = {

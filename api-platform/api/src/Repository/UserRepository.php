@@ -57,6 +57,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $result;
     }
 
+    public function findUsersWithPhoneNumber()
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.phoneNumber IS NOT NULL')
+            ->andWhere('u.phoneNumber != :emptyString')
+            ->setParameter('emptyString', '')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

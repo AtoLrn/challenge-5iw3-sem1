@@ -8,7 +8,8 @@ const schema = z.object({
 	description: z.string().optional(),
 	picture: z.string().min(1),
 	roles: z.string().array(),
-	kbisVerified: z.boolean()
+	kbisVerified: z.boolean(),
+	phoneNumber: z.string().optional()
 })
 
 
@@ -26,7 +27,7 @@ export const me = async ({ token }: Me): Promise<User> => {
 
 	const body = await res.json()
 
-	const { id, email, username, description, picture, roles, kbisVerified } = schema.parse(body)
+	const { id, email, username, description, picture, roles, kbisVerified, phoneNumber } = schema.parse(body)
 	    
 	return {
 		id,
@@ -36,7 +37,8 @@ export const me = async ({ token }: Me): Promise<User> => {
 		description: description,
 		isProfessional: roles.includes('ROLE_PRO'),
 		isAdmin: roles.includes('ROLE_ADMIN'),
-		isKbisVerified: kbisVerified
+		isKbisVerified: kbisVerified,
+		phoneNumber: phoneNumber
 	}
 }
 
@@ -105,6 +107,7 @@ export interface PatchMe {
     email?: string,
     username?: string,
     description?: string
+		phoneNumber?: string
 }
 
 export interface Me {

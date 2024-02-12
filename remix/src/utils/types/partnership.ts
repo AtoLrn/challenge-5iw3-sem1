@@ -9,6 +9,9 @@ export interface PartnerShip {
     studio?: {
         id: number,
         name: string
+        location: string
+        openingTime: string
+        closingTime: string
     }
 
     userId?: {

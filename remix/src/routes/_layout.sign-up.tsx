@@ -11,7 +11,8 @@ const schema = z.object({
 	username: z.string().min(1),
 	email: z.string().min(1),
 	password: z.string().min(1),
-	isProfessional: zx.CheckboxAsString
+	isProfessional: zx.CheckboxAsString,
+	phoneNumber: z.string().optional()
 }) 
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
@@ -30,6 +31,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		const { isProfessional } = await zx.parseForm(request, schema)
 
 		const formData = await request.formData()
+
+		const phoneNumber = formData.get("phoneNumber")?.toString() || "";
+		formData.set("phoneNumber", phoneNumber);
 
 		formData.set('isProfessional', isProfessional.toString())
 		formData.delete('passwordConfirm')
@@ -96,6 +100,9 @@ export default function MainPage() {
 						</Title>
 						<div className="flex flex-row gap-4 mb-8">
 							<input type="email" name="email" placeholder={t('email-address')} className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+						</div>
+						<div className="flex flex-row gap-4 mb-8">
+							<input type="tel" name="phoneNumber" pattern="(\+33[67][0-9]{8})" placeholder="+33651665260" className="w-full bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
 						</div>
 						<div className="flex flex-row gap-4 mb-10">
 							<input value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" name="password" placeholder={t('password')} className="w-1/2 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>

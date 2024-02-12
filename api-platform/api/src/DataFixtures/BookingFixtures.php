@@ -31,6 +31,12 @@ class BookingFixtures extends Fixture implements DependentFixtureInterface
             $booking->setChat($validated);
             $booking->setBook($validated && $isBookable);
 
+            $time = rand(1, 2) === 2 ? "30min" : "1h";
+
+            if ($validated && $isBookable)
+                $booking->setDuration($time);
+
+
             if ($validated) {
                 $channel = new Channel();
                 $channel->setRequestingUser($booking->getRequestingUser());

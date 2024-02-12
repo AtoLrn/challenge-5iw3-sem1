@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\ForgetPasswordController;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
+use App\Controller\User\ArtistStudioController;
 use App\Controller\User\GetArtistController;
 use App\Controller\Auth\VerifyController;
 use App\Controller\User\ArtistWaitingController;
@@ -118,6 +119,10 @@ use Symfony\Component\Validator\Constraints as Assert;
                                     'kbisFile' => [
                                         'type' => 'string',
                                         'format' => 'binary',
+                                    ],
+                                    'phoneNumber' => [
+                                        'type' => 'string',
+                                        'default' => '+33612345678'
                                     ],
                                 ],
                                 'required' => ['email', 'password', 'username', 'isProfessional']
@@ -324,6 +329,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ["default" => false])]
     private ?bool $verified = false;
 
+    #[ORM\Column(length: 15, nullable: true)]
+    #[Groups(['admin:read', 'admin:collection', 'user:patch:me', 'user:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'user:read:artist'])]
+    #[Assert\Regex(
+        pattern: '/^\+33[6-7][0-9]{8}$/',
+        message: 'Your phone number must start by +33 and followed by 6 or 7 and 8 digits'
+    )]
+    private ?string $phoneNumber = null;
+
+    #[Groups(['user:read:artist'])]
+    #[ORM\OneToMany(mappedBy: 'submittedBy', targetEntity: Feedback::class, orphanRemoval: true)]
+    private Collection $feedback;
+
     public function __construct()
     {
         $this->studios = new ArrayCollection();
@@ -331,6 +348,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->partnerShips = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->postPictures = new ArrayCollection();
+        $this->feedback = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -680,6 +698,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $verified): static
     {
         $this->verified = $verified;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Feedback>
+     */
+    public function getFeedback(): Collection
+    {
+        return $this->feedback;
+    }
+
+    public function addFeedback(Feedback $feedback): static
+    {
+        if (!$this->feedback->contains($feedback)) {
+            $this->feedback->add($feedback);
+            $feedback->setSubmittedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeedback(Feedback $feedback): static
+    {
+        if ($this->feedback->removeElement($feedback)) {
+            // set the owning side to null (unless already changed)
+            if ($feedback->getSubmittedBy() === $this) {
+                $feedback->setSubmittedBy(null);
+            }
+        }
 
         return $this;
     }

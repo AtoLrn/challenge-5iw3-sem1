@@ -79,7 +79,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 			await patchMe(token, {
 				username: formData.get('username') as string,
-				email: formData.get('email') as string
+				email: formData.get('email') as string,
+				phoneNumber: formData.get('phoneNumber') as string
 			})
 
 			if (oldUserInfo.email !== formData.get('email')){
