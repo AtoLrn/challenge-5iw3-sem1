@@ -82,21 +82,21 @@ export default function MainPage() {
 
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
 	const [ description, setDescription ] = useState('')
-	const [ openedPrestationId, setOpenedPrestationId ] = useState<number | null>(null);
+	const [ openedPrestationId, setOpenedPrestationId ] = useState<number | null>(null)
 
-	let totalRating = 0;
-  let reviewCount = 0;
+	let totalRating = 0
+	let reviewCount = 0
 
-  artist.prestations?.forEach((prestation) => {
-    if (prestation.feedback && prestation.feedback.length > 0) {
-      prestation.feedback.forEach((feedback) => {
-        totalRating += feedback.rating;
-        reviewCount += 1;
-      });
-    }
-  });
+	artist.prestations?.forEach((prestation) => {
+		if (prestation.feedback && prestation.feedback.length > 0) {
+			prestation.feedback.forEach((feedback) => {
+				totalRating += feedback.rating
+				reviewCount += 1
+			})
+		}
+	})
 
-	const averageRating = reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : "N/A";
+	const averageRating = reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : 'N/A'
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col justify-center items-center gap-4 relative'>
@@ -200,26 +200,26 @@ export default function MainPage() {
 															<Title kind="h4" className='z-20'>{t('rating')}</Title>
 														)}
 														{prestation.feedback?.map((feedback, index, feedbackArray) => {
-																return (
-																	<div key={feedback.comment} className="flex flex-col gap-2">
-																			<div className="flex justify-between gap-2">
-																					<span className="font-bold">{feedback.submittedBy.username}</span>
-																					<div className="flex">
-																							<span>{feedback.rating} &nbsp;</span>
-																							<SlStar size={20} />
-																					</div>
-																			</div>
-																			<p>{feedback.comment}</p>
-																			{index !== feedbackArray.length - 1 && <hr />}
+															return (
+																<div key={feedback.comment} className="flex flex-col gap-2">
+																	<div className="flex justify-between gap-2">
+																		<span className="font-bold">{feedback.submittedBy.username}</span>
+																		<div className="flex">
+																			<span>{feedback.rating} &nbsp;</span>
+																			<SlStar size={20} />
+																		</div>
 																	</div>
-															);
+																	<p>{feedback.comment}</p>
+																	{index !== feedbackArray.length - 1 && <hr />}
+																</div>
+															)
 														})}
 														<Dialog.Close asChild>
-														<button onClick={() => {
-															setOpenedPrestationId(null)
-															setDescription('')
-														}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('close')}</button>
-													</Dialog.Close>
+															<button onClick={() => {
+																setOpenedPrestationId(null)
+																setDescription('')
+															}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('close')}</button>
+														</Dialog.Close>
 													</Dialog.Content>
 												</Dialog.Portal>
 											</Dialog.Root>
