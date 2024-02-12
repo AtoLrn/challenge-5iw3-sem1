@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Prestation\PrestationCreateController;
 use App\Controller\Prestation\PrestationUserController;
 use App\Repository\PrestationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -77,7 +79,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Prestation
 {
-    #[Groups(['prestation:collection', 'prestation:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'user:read:artist'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -102,6 +104,15 @@ class Prestation
     #[Groups(['prestation:collection', 'prestation:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: Feedback::class, orphanRemoval: true)]
+    #[Groups(['prestation:collection', 'prestation:read', 'user:read:artist'])]
+    private Collection $feedback;
+
+    public function __construct()
+    {
+        $this->feedback = new ArrayCollection();
+    }
 
     /**
      * @throws \Exception
@@ -176,6 +187,36 @@ class Prestation
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Feedback>
+     */
+    public function getFeedback(): Collection
+    {
+        return $this->feedback;
+    }
+
+    public function addFeedback(Feedback $feedback): static
+    {
+        if (!$this->feedback->contains($feedback)) {
+            $this->feedback->add($feedback);
+            $feedback->setPrestation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeedback(Feedback $feedback): static
+    {
+        if ($this->feedback->removeElement($feedback)) {
+            // set the owning side to null (unless already changed)
+            if ($feedback->getPrestation() === $this) {
+                $feedback->setPrestation(null);
+            }
+        }
 
         return $this;
     }
