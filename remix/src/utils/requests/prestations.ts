@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Prestation } from '../types/prestation'
+import { Prestation, PrestationFromUser } from '../types/prestation'
 import { Kind } from '../types/kind'
 
 type PrestationId = string | number;
@@ -30,6 +30,12 @@ const prestationsSchema = z.array(z.object({
 	created_at: z.string(),
 }))
 
+const prestationsFromUserSchema = z.array(z.object({
+	id: z.number(),
+	name: z.string(),
+	kind: z.nativeEnum(Kind),
+}))
+
 const prestationSchema = z.object({
 	id: z.number(),
 	name: z.string(),
@@ -55,6 +61,24 @@ export const getPrestations = async (token: string): Promise<Prestation[]> => {
   
 
 	const data = prestationsSchema.parse(result['hydra:member'])
+	return data
+}
+
+export const getPrestationsFromUser = async (token: string, id: number): Promise<PrestationFromUser[]> => {
+	const response = await fetch(`${process.env.API_URL}/prestations/user/${id}`, {
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Accept': 'application/ld+json',
+		},
+	})
+
+	if (!response.ok) {
+		throw new Error('Not authenticated')
+	}
+
+	const result = await response.json()
+
+	const data = prestationsFromUserSchema.parse(result['hydra:member'])
 	return data
 }
 

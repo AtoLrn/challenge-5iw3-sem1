@@ -22,11 +22,11 @@ class FeedbackCreateController
     /**
      * @throws Exception
      */
-    public function __invoke($data): Feedback
+    public function __invoke($id, $data): Feedback
     {
         $user = $this->security->getUser();
 
-        $prestation = $this->prestationRepository->find($data->getPrestation()->getId());
+        $prestation = $this->prestationRepository->find($id);
         if (!$prestation) {
             throw new Exception("Prestation not found");
         }

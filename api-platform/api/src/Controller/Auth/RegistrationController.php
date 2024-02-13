@@ -101,12 +101,13 @@ class RegistrationController
             ->text("Votre compte a bien été créé, veuillez vérifier votre email à cette url:".$_ENV['FRONT_APP_URL']."/verify?token=".$jwt);
 
         $this->mailer->send($email);
-        if ($request->request->get('phoneNumber')) {
-            $this->smsService->sendSms(
-                $user->getPhoneNumber(),
-                "Votre compte a bien été créé, veuillez vérifier votre email pour activer votre compte."
-            );
-        }
+
+        //if ($request->request->get('phoneNumber')) {
+            //$this->smsService->sendSms(
+                //$user->getPhoneNumber(),
+                //"Votre compte a bien été créé, veuillez vérifier votre email pour activer votre compte."
+            //);
+        //}
 
         if(in_array('ROLE_PRO', $user->getRoles())) {
             $users = $this->userRepository->findAll();

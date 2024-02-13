@@ -185,7 +185,7 @@
   "no-prestation": "You don't have any prestation, create your first one to show what you do !",
   "tattoo-artist": "Tattoo Artist",
   "artist-no-prestation": "This tattoo artist don't seem to have any prestation...",
-  "artist-no-post": "This tatto artist didn't fill his portoflio",
+  "artist-no-post": "This tattoo artist didn't fill his portoflio",
   "make-request": "Make request",
   "pre-book-send": "Your request has been sent to the tattoo artist, now wait for them to accept it.",
   "see-description": "See description",
@@ -211,5 +211,8 @@
   "feedback-deleted": "Feedback deleted successfully",
   "bookingCountdown.minutesSeconds": "{{minutes}} minutes and {{seconds}} seconds",
   "bookingCountdown.hoursMinutes": "{{hours}} hours and {{minutes}} minutes",
-  "bookingCountdown.days": "{{count}} days"
+  "bookingCountdown.days": "{{count}} days",
+  "name": "Name",
+  "leave-review": "Leave Review",
+  "send": "Send"
 }

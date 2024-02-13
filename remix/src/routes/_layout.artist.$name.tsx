@@ -31,6 +31,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	const { name } = params
 
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const token = session.get('token')
+
 	if (!name) {
 		throw new Response(null, {
 			status: 404,
@@ -44,6 +48,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	return json({
 		artist,
+		isLogged: token ? true : false,
 		errors: [error],
 		success: success
 	})
@@ -77,12 +82,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 
 export default function MainPage() {
-	const { artist, errors, success } = useLoaderData<typeof loader>()
+	const { artist, isLogged, errors, success } = useLoaderData<typeof loader>()
 	const { t } = useTranslation()
 
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
 	const [ description, setDescription ] = useState('')
-	const [ openedPrestationId, setOpenedPrestationId ] = useState<number | null>(null)
 
 	let totalRating = 0
 	let reviewCount = 0
@@ -121,7 +125,7 @@ export default function MainPage() {
 								<Title kind="h1" className='z-20 pb-2'>{artist.username}</Title>
 								{reviewCount !== 0 && (
 									<div className="flex gap-2">
-										<span className="font-bold">Rating :</span>
+										<span className="font-bold">{t('rating')} :</span>
 										<div className="flex">
 											<span>{averageRating} &nbsp;</span>
 											<SlStar size={20} />
@@ -129,43 +133,47 @@ export default function MainPage() {
 									</div>
 								)}
 								<div className="flex gap-2">
-									<span className="font-bold">Reviews :</span>
+									<span className="font-bold">{t('review')} :</span>
 									<span>{reviewCount}</span>
 								</div>
 							</div>
 							<div>
-								<Dialog.Root open={isDialogOpen}>
-									<Dialog.Trigger asChild>
-										<button onClick={() => setIsDialogOpen(true)} className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-											{t('make-request')}
-										</button>
-									</Dialog.Trigger>
-									<Dialog.Portal>
-										<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
-										<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
-											<Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
-												<div className='flex flex-col gap-2'>
-													<Title kind={'h2'}>
+								{isLogged ? 
+									<Dialog.Root open={isDialogOpen}>
+										<Dialog.Trigger asChild>
+											<button onClick={() => setIsDialogOpen(true)} className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+												{t('make-request')}
+											</button>
+										</Dialog.Trigger>
+										<Dialog.Portal>
+											<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
+											<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+												<Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
+													<div className='flex flex-col gap-2'>
+														<Title kind={'h2'}>
                                                     Description
-													</Title>
-												</div>
-												<hr className='pb-4' />
-												<div className='pb-4 flex items-center gap-2'>
+														</Title>
+													</div>
+													<hr className='pb-4' />
+													<div className='pb-4 flex items-center gap-2'>
 								                <textarea cols={70} rows={8} onChange={(e) => setDescription(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='description' id='description' value={description} />
-												</div>
-												<div className='flex gap-2 items-center justify-end w-full'>
-													<Dialog.Close asChild>
-														<button onClick={() => {
-															setIsDialogOpen(false)
-															setDescription('')
-														}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
-													</Dialog.Close>
-													<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('create')}</button>
-												</div>
-											</Form>
-										</Dialog.Content>
-									</Dialog.Portal>
-								</Dialog.Root>
+													</div>
+													<div className='flex gap-2 items-center justify-end w-full'>
+														<Dialog.Close asChild>
+															<button onClick={() => {
+																setIsDialogOpen(false)
+																setDescription('')
+															}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
+														</Dialog.Close>
+														<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('create')}</button>
+													</div>
+												</Form>
+											</Dialog.Content>
+										</Dialog.Portal>
+									</Dialog.Root>
+									:
+									null
+								}
 							</div>
 						</div>
 						<div>
@@ -177,9 +185,9 @@ export default function MainPage() {
 								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 									{artist.prestations?.map((prestation: ArtistPrestation) => {
 										return (
-											<Dialog.Root open={openedPrestationId === prestation.id} key={prestation.id}>
+											<Dialog.Root key={prestation.id}>
 												<Dialog.Trigger asChild>
-													<button onClick={() => setOpenedPrestationId(prestation.id)} className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+													<button className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 														{prestation.name}
 													</button>
 												</Dialog.Trigger>
@@ -188,7 +196,7 @@ export default function MainPage() {
 													<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white max-h-[75vh] overflow-scroll">
 														<Title kind="h4" className='z-20'>{t('name')}</Title>
 														<p className='mb-4'>{prestation.name}</p>
-														<Title kind="h4" className='z-20'>{t('kind')}</Title>
+														<Title kind="h4" className='z-20'>Type</Title>
 														<p className='mb-4'>{prestation.kind}</p>
 														{ prestation.picture && (
 															<>
@@ -203,7 +211,6 @@ export default function MainPage() {
 															return (
 																<div key={feedback.comment} className="flex flex-col gap-2">
 																	<div className="flex justify-between gap-2">
-																		<span className="font-bold">{feedback.submittedBy.username}</span>
 																		<div className="flex">
 																			<span>{feedback.rating} &nbsp;</span>
 																			<SlStar size={20} />
@@ -215,10 +222,7 @@ export default function MainPage() {
 															)
 														})}
 														<Dialog.Close asChild>
-															<button onClick={() => {
-																setOpenedPrestationId(null)
-																setDescription('')
-															}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('close')}</button>
+															<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('close')}</button>
 														</Dialog.Close>
 													</Dialog.Content>
 												</Dialog.Portal>

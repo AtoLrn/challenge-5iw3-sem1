@@ -18,7 +18,7 @@ class FeedbackFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $prestations = $manager->getRepository(Prestation::class)->findAll();
-        $user = $manager->getRepository(User::class)->findOneBy(['username' => 'user-1']);
+        $user = $manager->getRepository(User::class)->findOneBy(['username' => 'pro-1']);
 
         $comments = [
             'Super prestation !',

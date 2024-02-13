@@ -78,13 +78,13 @@ export default function () {
 		})}
 		<Form method='POST' encType='multipart/form-data' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>
-				<input placeholder='Name (flash, ...)' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
-				<select name="kind" className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300'>
+				<input required placeholder='Name (flash, ...)' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' />
+				<select name="kind" required className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300'>
 					<option value="Tattoo">{t('tattoo')}</option>
 					<option value="Jewelery">{t('jewelry')}</option>
 					<option value="Barber">{t('barber')}</option>
 				</select>
-				<input placeholder='Picture' type="file" name='picture' accept=".png, .jpg, .jpeg" className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
+				<input placeholder='Picture' required type="file" name='picture' accept=".png, .jpg, .jpeg" className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 hover:border-red-400 duration-300' />
 				
 			</div>
 			
