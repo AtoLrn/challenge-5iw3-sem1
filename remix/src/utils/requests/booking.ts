@@ -31,6 +31,14 @@ export const bookingSchema = z.object({
 	channel: channelSchema.optional()
 })
 
+
+const getUnallowerDaysSchema = z.object({
+	'hydra:member': z.array(z.object({
+		duration: z.string(),
+		time: z.string()
+	}))
+})
+
 export const bookingCollection = z.object({
 	'hydra:member': z.array(bookingSchema)
 })
@@ -84,6 +92,26 @@ export const addLocationToBooking = async ({ token, bookingId, studioId, date }:
 	})
 }
 
+export const getUnallowerSlots = async ({ token, artistId }: UnallowedSlotsRequest) => {
+	const res = await fetch(`${process.env.API_URL}/book-request/${artistId}/unavailable`, {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+		},
+	})
+
+	const body = await res.json()
+
+	const parsed = getUnallowerDaysSchema.parse(body)
+
+
+	return parsed['hydra:member']
+}
+
+export interface UnallowedSlotsRequest extends BaseBookingRequest {
+	artistId: number | string
+}
+
 export const deleteBooking = async ({ token, bookingId }: any): Promise<boolean> => {
 	const res = await fetch(`https://localhost/book-request/${bookingId}`, {
 		method: 'DELETE',
@@ -101,7 +129,6 @@ export const deleteBooking = async ({ token, bookingId }: any): Promise<boolean>
 
 	throw new Error(body['hydra:description'] ?? 'Error in the request')
 }
-
 
 export interface PatchBookingRequest extends BaseBookingRequest {
 	bookingId: number | string

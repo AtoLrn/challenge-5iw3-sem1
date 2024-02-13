@@ -13,8 +13,8 @@ import { FaArrowDown } from 'react-icons/fa6'
 import { motion as m } from 'framer-motion'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 import { getPartnerShipForUser } from 'src/utils/requests/partnership'
-import { addLocationToBooking, getBookingById } from 'src/utils/requests/booking'
-import { addDays, addMinutes, differenceInDays, differenceInMinutes, formatISO, isSameDay, setHours, setMinutes } from 'date-fns'
+import { addLocationToBooking, getBookingById, getUnallowerSlots } from 'src/utils/requests/booking'
+import { addDays, addMinutes, differenceInDays, differenceInMinutes, formatISO, isAfter, isBefore, isSameDay, isSameMinute, setHours, setMinutes } from 'date-fns'
 import { z } from 'zod'
 import { zx } from 'zodix'
 
@@ -102,16 +102,31 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		return acc
 	}, [])
 
-	return json({ accessToken: process.env.MAP_BOX_TOKEN,offDays, booking, studios })
+	const unallowedSlots = await getUnallowerSlots({ token, artistId: booking.tattooArtist.id })
+
+	return json({ accessToken: process.env.MAP_BOX_TOKEN,offDays, booking, studios, unallowedSlots })
 }
 
 export default function () {
-	const { accessToken, booking, studios, offDays } = useLoaderData<typeof loader>()
+	const { accessToken, booking, studios, offDays, unallowedSlots } = useLoaderData<typeof loader>()
 	const [ openedModal, setOpenedModal ] = useState('studioSelection')
 	const [ slot, setSlot ] = useState<Date>()
 	
 	const [ selectedStudio, setSelectedStudio ] = useState<string>()
 	const map = useRef<Map>()
+
+	const getMinutes = (duration: string): number => {
+		if (duration === '30min') { return 30 }
+		if (duration === '1h') { return 60 }
+		if (duration === '2h') { return 120 }
+		if (duration === '3h') { return 180 }
+		if (duration === '4h') { return 240 }
+		return 0
+	}
+
+	const formattedUnallowedSlots = useMemo(() => {
+		return unallowedSlots.map(slot => ({ startDate: new Date(slot.time), endDate: addMinutes(new Date(slot.time), getMinutes(slot.duration))}))
+	}, [])
 
 	useEffect(() => {
 		if (accessToken && openedModal === 'studioSelection') {
@@ -147,14 +162,7 @@ export default function () {
 		setOpenedModal('timeSelection')
 	}, [ selectedStudio ])
 
-	const getMinutes = (duration: string): number => {
-		if (duration === '30min') { return 30 }
-		if (duration === '1h') { return 60 }
-		if (duration === '2h') { return 120 }
-		if (duration === '3h') { return 180 }
-		if (duration === '4h') { return 240 }
-		return 0
-	}
+	
 
 	const slots = useMemo<Date[]>(() => {
 		const studio = studios.find(({ id }) => `${id}` === selectedStudio)
@@ -204,7 +212,30 @@ export default function () {
 			const splits = differenceInMinutes(closingTime, startTime) / duration
 
 			for (let split = 0; split < splits; split++) {
-				slots.push(addMinutes(startTime, duration * split))
+				const slot = addMinutes(startTime, duration * split)
+				const isUnallowed = formattedUnallowedSlots.some((unallowedSlot) => {
+					const endSlot = addMinutes(slot, duration)
+					
+					if (isSameMinute(slot, unallowedSlot.startDate)) {
+						return true
+					}
+					
+					if ((isBefore(slot, unallowedSlot.startDate)) && isBefore(slot, unallowedSlot.endDate) ) {
+						return false
+					}
+
+					if (isAfter(endSlot, unallowedSlot.startDate) && isAfter(endSlot, unallowedSlot.endDate) ) {
+						return false
+					}
+
+					
+
+					return true
+				})
+
+				if (isUnallowed) { continue }
+
+				slots.push(slot)
 			}
 		}
 

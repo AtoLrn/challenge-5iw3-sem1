@@ -27,7 +27,7 @@ export const Message: React.FC<MessageProps> = ({ kind, picture, message, date }
 	return (
 		<div className={containerClasses}>
 			<div className={messageBoxClasses}>
-				{ picture ? <a href={picture} target='_blank'><img src={picture} alt={picture} /></a> : null}
+				{ picture ? <a href={picture} target='_blank'><img className='h-96' src={picture} alt={picture} /></a> : null}
 				<p>{message}</p>
 			</div>
 			<div className={dateClasses}>

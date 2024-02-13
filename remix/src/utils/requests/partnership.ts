@@ -29,7 +29,6 @@ const getPartnerShipSchema = z.object({
 	'hydra:member': z.array(partnerShipSchema)
 })
 
-
 export const createPartnership = async ({ token, artistId, startDate, endDate, studioId }: CreatePartnership): Promise<boolean> => {
 	const res = await fetch(`${process.env.API_URL}/studio/${studioId}/invites`, {
 		method: 'POST',
@@ -86,7 +85,6 @@ export const getPartnerShip = async ({ token }: BasePartnerShip): Promise<Partne
 
 	return partnerShips
 }
-
 
 export const getPartnerShipForUser = async ({ token, artistId }: GetPartnerShipForUser): Promise<PartnerShip[]> => {
 	const res = await fetch(`${process.env.API_URL}/invites/${artistId}/accepted`, {

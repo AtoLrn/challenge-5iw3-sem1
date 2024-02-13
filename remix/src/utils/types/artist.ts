@@ -11,7 +11,7 @@ export type ArtistPrestation = {
     id: number
     name: string
     kind: string
-    picture: string
+    picture?: string
     feedback?: ArtistFeedback[]
 }
 

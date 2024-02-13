@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\BookRequest\BookRequestCreateController;
 use App\Controller\BookRequest\BookRequestDeleteController;
+use App\Controller\BookRequest\BookRequestArtistUnavailableController;
 use App\Controller\BookRequest\BookRequestGetMeController;
 use App\Controller\BookRequest\BookRequestGetMeByIdController;
 use App\Controller\BookRequest\BookRequestGetMeUserController;
@@ -66,6 +67,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/book-request/{id}',
             controller: BookRequestDeleteController::class,
         ),
+        new GetCollection(
+            uriTemplate: '/book-request/{id}/unavailable',
+            security: 'is_granted("ROLE_USER")',
+            normalizationContext: ['groups' => 'bookRequest:protected', 'skip_null_values' => false],
+            controller: BookRequestArtistUnavailableController::class,
+        ),
     ],
     paginationEnabled: false,
 )]
@@ -103,12 +110,12 @@ class BookRequest
     #[ORM\OneToOne(inversedBy: 'bookRequest', cascade: ['persist', 'remove'])]
     private ?Channel $channel = null;
 
-    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:protected', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $duration = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:protected', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     private ?\DateTimeInterface $time = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookRequests')]

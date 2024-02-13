@@ -17,6 +17,10 @@ export const AdminNavigation: React.FC = () => {
 			name: t('requests'),
 			url: '/admin/requests'
 		},
+		{
+			name: t('feedbacks'),
+			url: '/admin/feedbacks'
+		},
 	]
 
 	const changeLanguage = () => {

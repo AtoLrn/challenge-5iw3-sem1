@@ -1,6 +1,5 @@
 import { Title } from 'src/components/Title'
 import {useLoaderData} from '@remix-run/react'
-import { MessageSide } from 'src/components/Messages/MessageSide'
 import {getSession} from 'src/session.server'
 import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
 import {getChannels} from 'src/utils/requests/channel'
@@ -48,33 +47,24 @@ export default function () {
 	const { t } = useTranslation()
 
 	return (
-		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
+		<>
 
-			<div className="flex divide-x divide-white h-[88vh] mt-auto">
-
-				<MessageSide channels={channels} />
-				<div className="w-2/3 h-full">
-
-					<div className="flex flex-col items-center justify-center h-full">
-						{channels.length > 0 ?
-							<Title kind={'h2'}>
-								{t('choose-artist-to-chat')}
-							</Title>
-							:
-							<p className='opacity-50'>{t('no-one-to-chat-client')}</p>
-						}
-						{ errors.map((error) => {
-							return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
-								{error}
-							</div>
-						})}
+			<div className="flex flex-col items-center justify-center h-full">
+				{channels.length > 0 ?
+					<Title kind={'h2'}>
+						{t('choose-artist-to-chat')}
+					</Title>
+					:
+					<p className='opacity-50'>{t('no-one-to-chat-client')}</p>
+				}
+				{ errors.map((error) => {
+					return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+						{error}
 					</div>
-
-				</div>
-
+				})}
 			</div>
 
-		</main>
+		</>
 	)
 }
 

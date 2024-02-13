@@ -65,12 +65,12 @@ class MessageSendController
             'id' => $message->getId(),
             'content' => $message->getContent(),
             'file' => $message->getPicture(),
+            'createdAt' => $message->getCreatedAt(),
             'sender' => [
                 'id' => $sender->getId(),
                 'username' => $sender->getUsername(),
                 'picture' => $sender->getPicture(),
             ],
-            'createdAt' => $message->getCreatedAt(),
         ];
 
         $update = new Update("/messages/channel/" . $channel->getId(), json_encode([

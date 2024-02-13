@@ -35,6 +35,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	try {
 		const channel = await getChannel(token, params.id as string)
+        console.log(channel.messages)
         
 	    return json({
 			channel,
@@ -79,8 +80,6 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 			})
 		}
 
-
-
 		return redirect(`/pro/chat/${params.id}`)
 	} catch (e) {
 		if (e instanceof Error)
@@ -119,7 +118,7 @@ export default function () {
 				id: message.id,
 				content: message.content,
 				picture: message.file,
-				createdAt: message.createdAt.date,
+				createdAt: formatDate(message.createdAt.date, false),
 				sender: {
 					id: message.sender.id,
 					username: message.sender.username,
@@ -229,7 +228,7 @@ export default function () {
 					
 				</div>
 
-				<div className='flex flex-col-reverse overflow-x-auto grow'>
+				<div className='flex flex-col overflow-scroll grow'>
 					{/* ========== Messages ========== */}
 					{messages.map((message: MessageI) => {
 						let kind: 'received' | 'sent'
@@ -241,7 +240,7 @@ export default function () {
 						return <Message key={message.id} kind={kind}
 							picture={message.picture}
 							message={message.content}
-							date={formatDate(message.createdAt)}
+							date={message.createdAt}
 						/>
 					})}
 					<div ref={chatEndRef} />
@@ -249,7 +248,7 @@ export default function () {
 
 
 				{ errors.map((error) => {
-					return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+					return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
 						{error}
 					</div>
 				})}

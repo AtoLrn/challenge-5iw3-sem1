@@ -248,7 +248,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 //#[ApiFilter(SearchFilter::class, properties: ['username' => 'partial'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['admin:collection', 'admin:read', 'post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection'])]
+    #[Groups(['admin:collection', 'admin:read', 'post:collection', 'user:read', 'message:channel:read', 'channel:read', 'user:collection', 'user:read:me', 'channel:collection', 'user:read:artist', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection', 'feedback:collections'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -271,7 +271,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection'])]
+    #[Groups(['admin:read', 'admin:collection', 'post:collection', 'channel:collection', 'channel:read', 'user:read', 'user:read:artist',  'user:register', 'user:register:read', 'admin:patch', 'user:collection', 'user:read:me', 'user:patch:me', 'studio:invite:read', 'partnership:read', 'studio:read', 'bookRequest:me:collection', 'bookRequest:collection', 'feedback:collections', 'feedback:read'])]
     #[Assert\Length(min: 4, max: 32)]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;

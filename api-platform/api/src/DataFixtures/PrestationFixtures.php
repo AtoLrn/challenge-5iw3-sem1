@@ -13,7 +13,7 @@ class PrestationFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $user = $manager->getRepository(User::class)->findOneBy(['username' => 'user-1']);
+        $user = $manager->getRepository(User::class)->findOneBy(['username' => 'pro-9']);
 
         $kinds = Kind::cases();
 

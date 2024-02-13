@@ -1,12 +1,10 @@
 import { Title } from 'src/components/Title'
 import {Form, Link, useLoaderData, useParams} from '@remix-run/react'
 import { IoSend } from 'react-icons/io5'
-import { MessageSide } from 'src/components/Messages/MessageSide'
 import { Message } from 'src/components/Messages/Message'
 import {getSession} from 'src/session.server'
 import {ActionFunctionArgs, LoaderFunctionArgs, json, redirect} from '@remix-run/node'
-import { getChannels, sendMessage } from 'src/utils/requests/channel'
-import {GetChannelAs} from 'src/utils/types/channel'
+import { getChannel, sendMessage } from 'src/utils/requests/channel'
 import { Message as MessageI } from '../utils/types/message'
 import {useEffect, useRef, useState} from 'react'
 import { formatDate } from '../utils/date'
@@ -31,16 +29,18 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 		return redirect(`/login?error=${'You need to login'}`)
 	}
 
+	if(!params.id) {
+		return redirect('/messages')
+	}
+
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
 
 	try {
-		const channels = await getChannels(token, GetChannelAs.requestingUser)
-		const currentChannel = channels.find((channel) => channel.id === parseInt(params.id as string))
+		const channel = await getChannel(token, params.id as string)
         
 	    return json({
-			channels,
-			currentChannel,
+			channel,
 			errors: [error]
 		})
 	} catch (e) {
@@ -75,16 +75,19 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
 export default function () {
 	const { t } = useTranslation()
-	const { channels, currentChannel, errors } = useLoaderData<typeof loader>()
+	const { channel, errors } = useLoaderData<typeof loader>()
 	const chatEndRef = useRef<HTMLDivElement>(null)
 	const formRef = useRef<HTMLFormElement>(null)
 	const { id } = useParams()
 
-	const [ messages, setMessages ] = useState<MessageI[]>(currentChannel?.messages as MessageI[])
+	const [ messages, setMessages ] = useState<MessageI[]>(channel.messages as MessageI[])
+
+	useEffect(() => {
+		setMessages(channel.messages)
+	}, [id])
 
 	useEffect(() => {
 		formRef.current?.reset()
-		setMessages(currentChannel?.messages as MessageI[])
 	})
 
 	useEffect(() => {
@@ -97,7 +100,7 @@ export default function () {
 				id: message.id,
 				content: message.content,
 				picture: message.file,
-				createdAt: message.createdAt.date,
+				createdAt: formatDate(message.createdAt.date, false),
 				sender: {
 					id: message.sender.id,
 					username: message.sender.username,
@@ -107,106 +110,80 @@ export default function () {
 
 			setMessages(msg => [...msg, receivedMessage])
 		}
-	}, [])
+	}, [id])
 
 	useEffect(() => {
 		chatEndRef.current?.scrollIntoView()
 	}, [messages])
 
 	return (
-		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
-
+		<>
 			{ errors.map((error) => {
-				return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+				return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
 					{error}
 				</div>
 			})}
-			<div className="flex divide-x divide-white h-[88vh] mt-auto">
-
-				<MessageSide channels={channels} />
-				{/* ========== RIGHT SIDE ========== */}
-				<div className="w-2/3 h-full">
-
-					<div className="flex flex-col h-full">
-						<div className="sticky top-0 px-4 py-6 border-b">
-							<Title kind={'h3'}>
-								{currentChannel?.tattooArtist.username}
-							</Title>
-						</div>
-						<div className="flex flex-col gap-2 sticky top-0 px-4 py-6 border-b">
-							<Title kind={'h4'} >
-								{t('project-description')}
-							</Title>
-							<span className='opacity-70'>
-								{ currentChannel?.description }
-							</span>
-						</div>
-						{ currentChannel?.bookRequest.book && !currentChannel?.bookRequest.time 
-						&& <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
-							<span>{t('artist-book-ready')}</span>
-							<Link to={`/book/${currentChannel.bookRequest.id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-								{t('book')}
-							</Link>
-						</div>
-						}
-
-						{ currentChannel?.bookRequest.book && currentChannel?.bookRequest.time 
-						&& <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
-							<span>{t('artist-book-scheduled')} <b>{format(new Date(currentChannel.bookRequest.time), 'dd-MM-yyyy')}</b></span>
-							<Link to={'/appointments#upcoming'} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-								{t('view')}
-							</Link>
-						</div>
-						}
-
-						{/* ========== Messages ========== */}
-						<div className="h-full overflow-y-scroll p-4 flex flex-col space-y-2">
-
-							{messages.map((message: MessageI) => {
-								let kind: 'received' | 'sent'
-								if (message.sender.id === currentChannel?.tattooArtist.id) {
-									kind = 'received'
-								} else {
-									kind = 'sent'
-								}
-								return <Message key={message.id} kind={kind}
-									picture={message.picture}
-									message={message.content}
-									date={formatDate(message.createdAt)}
-								/>
-							})}
-							<div ref={chatEndRef} />
-						</div>
-						{/* ========== /Messages ========== */}
-
-						{/* ========== Input ========== */}
-						<Form ref={formRef} encType='multipart/form-data' method='POST' className="flex flex-row p-4">
-							<div className="w-2/3">
-								<input name="content" required type="text" className="rounded-lg p-3 bg-black text-white border border-white w-full" placeholder="Message..."/>
-							</div>
-							<div className="flex flex-col items-center">
-								<div className="p-3 ml-auto hover:cursor-pointer bg-black text-white border border-white rounded-lg">
-							        <input id="file" type="file" name="file" className="cursor-pointer" accept="image/png, image/jpeg"/>
-								</div>
-							</div>
-							<div className="w-1/12 flex flex-col items-center">
-								<div className="p-2 ml-auto hover:cursor-pointer bg-black text-white border border-white rounded-lg">
-									<button type="submit">
-										<IoSend size={24}/>
-									</button>
-								</div>
-							</div>
-						</Form>
-						{/* ========== /Input ========== */}
-
-					</div>
-
+			<div className="flex flex-col h-full">
+				<div className="sticky top-0 px-4 py-6 border-b">
+					<Title kind={'h3'}>
+						{channel?.tattooArtist.username}
+					</Title>
 				</div>
-				{/* ========== /RIGHT SIDE ========== */}
+				<div className="flex flex-col gap-2 sticky top-0 px-4 py-6 border-b">
+					<Title kind={'h4'} >
+						{t('project-description')}
+					</Title>
+					<span className='opacity-70'>
+						{ channel?.description }
+					</span>
+				</div>
+				{ channel?.bookRequest.book && <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
+					<span>{t('artist-book-ready')}</span>
+					<Link to={`/book/${channel.bookRequest.id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+						{t('book')}
+					</Link>
+				</div>}
 
+				{/* ========== Messages ========== */}
+				<div className="h-full overflow-y-scroll p-4 flex flex-col space-y-2">
+
+					{messages.map((message: MessageI) => {
+						let kind: 'received' | 'sent'
+						if (message.sender.id === channel?.tattooArtist.id) {
+							kind = 'received'
+						} else {
+							kind = 'sent'
+						}
+						return <Message key={message.id} kind={kind}
+							picture={message.picture}
+							message={message.content}
+							date={message.createdAt}
+						/>
+					})}
+					<div ref={chatEndRef} />
+				</div>
+				{/* ========== /Messages ========== */}
+
+				{/* ========== Input ========== */}
+				<Form ref={formRef} encType='multipart/form-data' method='POST' className="flex flex-row p-4">
+					<div className="w-2/3">
+						<input name="content" required type="text" className="rounded-lg p-3 bg-black text-white border border-white w-full" placeholder="Message..."/>
+					</div>
+					<div className="flex flex-col items-center">
+						<div className="p-3 ml-auto hover:cursor-pointer bg-black text-white border border-white rounded-lg">
+							<input id="file" type="file" name="file" className="cursor-pointer" accept="image/png, image/jpeg"/>
+						</div>
+					</div>
+					<div className="w-1/12 flex flex-col items-center">
+						<div className="p-2 ml-auto hover:cursor-pointer bg-black text-white border border-white rounded-lg">
+							<button type="submit">
+								<IoSend size={24}/>
+							</button>
+						</div>
+					</div>
+				</Form>
 			</div>
-
-		</main>
+		</>
 	)
 }
 
