@@ -13,6 +13,7 @@ use App\Controller\BookRequest\BookRequestDeleteController;
 use App\Controller\BookRequest\BookRequestArtistUnavailableController;
 use App\Controller\BookRequest\BookRequestGetMeController;
 use App\Controller\BookRequest\BookRequestGetMeByIdController;
+use App\Controller\BookRequest\BookRequestGetMeProController;
 use App\Controller\BookRequest\BookRequestGetMeUserController;
 use App\Controller\BookRequest\BookRequestPatchController;
 use App\Repository\BookRequestRepository;
@@ -24,54 +25,60 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
-            security: 'is_granted("ROLE_ADMIN")',
             uriTemplate: '/admin/book-request',
-            normalizationContext: ['groups' => 'bookRequest:collection']
+            normalizationContext: ['groups' => 'bookRequest:collection'],
+            security: 'is_granted("ROLE_ADMIN")'
         ),
         new Delete(
-            security: 'is_granted("ROLE_ADMIN")',
             uriTemplate: '/admin/book-request/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
         ),
         new GetCollection(
-            security: 'is_granted("ROLE_USER")',
             uriTemplate: '/pro/book-request',
             controller: BookRequestGetMeController::class,
-            normalizationContext: ['groups' => 'bookRequest:me:collection']
+            normalizationContext: ['groups' => 'bookRequest:me:collection'],
+            security: 'is_granted("ROLE_USER")'
         ),
         new Get(
-            security: 'is_granted("ROLE_USER")',
             uriTemplate: '/book-request/{id}',
             controller: BookRequestGetMeByIdController::class,
-            normalizationContext: ['groups' => 'bookRequest:me:collection']
+            normalizationContext: ['groups' => 'bookRequest:me:collection'],
+            security: 'is_granted("ROLE_USER")'
         ),
         new GetCollection(
-            security: 'is_granted("ROLE_USER")',
             uriTemplate: '/me/book-request',
             controller: BookRequestGetMeUserController::class,
-            normalizationContext: ['groups' => 'bookRequest:me:collection']
+            normalizationContext: ['groups' => 'bookRequest:me:collection'],
+            security: 'is_granted("ROLE_USER")'
         ),
         new Post(
             uriTemplate: '/book-request/{id}',
-            security: 'is_granted("ROLE_USER")',
             controller: BookRequestCreateController::class,
             denormalizationContext: ['groups' => 'bookRequest:create'],
+            security: 'is_granted("ROLE_USER")',
         ),
         new Patch(
-            security: 'is_granted("ROLE_USER")',
             uriTemplate: '/book-request/{id}',
             controller: BookRequestPatchController::class,
             denormalizationContext: ['groups' => 'bookRequest:patch'],
+            security: 'is_granted("ROLE_USER")',
         ),
         new Delete(
-            security: 'is_granted("ROLE_USER")',
             uriTemplate: '/book-request/{id}',
             controller: BookRequestDeleteController::class,
+            security: 'is_granted("ROLE_USER")',
         ),
         new GetCollection(
             uriTemplate: '/book-request/{id}/unavailable',
-            security: 'is_granted("ROLE_USER")',
-            normalizationContext: ['groups' => 'bookRequest:protected', 'skip_null_values' => false],
             controller: BookRequestArtistUnavailableController::class,
+            normalizationContext: ['groups' => 'bookRequest:protected', 'skip_null_values' => false],
+            security: 'is_granted("ROLE_USER")',
+        ),
+        new GetCollection(
+            uriTemplate: '/pro/me/book-request',
+            controller: BookRequestGetMeProController::class,
+            normalizationContext: ['groups' => 'bookRequest:me:collection'],
+            security: 'is_granted("ROLE_USER")'
         ),
     ],
     paginationEnabled: false,

@@ -195,5 +195,9 @@
   "comment": "Commentaire",
   "feedback-updated": "Avis modifié avec succès !",
   "about-to-delete-feedback": "Vous allez supprimer cet avis pour toujours, êtes vous sur ?",
-  "feedback-deleted": "Avis supprimé avec succès !"
+  "feedback-deleted": "Avis supprimé avec succès !",
+  "bookingCountdown.minutesSeconds": "{{minutes}} minutes et {{seconds}} secondes",
+  "bookingCountdown.hoursMinutes": "{{hours}} heures et {{minutes}} minutes",
+  "bookingCountdown.days": "{{count}} jours",
+  "go-to-list": "Aller à la liste"
 }

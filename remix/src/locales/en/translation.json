@@ -208,5 +208,8 @@
   "feedback-created": "Feedback successfully created",
   "about-to-delete-feedback": "You are about to delete this feedback forever, are you sure ?",
   "feedback-updated": "Feedback updated successfully",
-  "feedback-deleted": "Feedback deleted successfully"
+  "feedback-deleted": "Feedback deleted successfully",
+  "bookingCountdown.minutesSeconds": "{{minutes}} minutes and {{seconds}} seconds",
+  "bookingCountdown.hoursMinutes": "{{hours}} hours and {{minutes}} minutes",
+  "bookingCountdown.days": "{{count}} days"
 }

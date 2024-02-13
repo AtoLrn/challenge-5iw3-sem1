@@ -11,7 +11,6 @@ import { Badge } from 'src/components/Pro/Badge'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import * as Dialog from '@radix-ui/react-dialog'
 import { createGoogleCalendarLink, createOutlookCalendarLink, exportToICS } from 'src/utils/calendar'
-import { useEffect, useState } from 'react'
 import {useTranslation} from 'react-i18next'
 import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { getSession } from 'src/session.server'
@@ -45,16 +44,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const AppointementsItem: React.FC<ListItemProps<GetBooking>> = ({ item }) => {
 	const { t } = useTranslation()
-	const [isClientSide, setIsClientSide] = useState(false)
 
-	useEffect(() => {
-		setIsClientSide(true)
-	}, [])
+	let date
+	if (item.time) {
+		date = format(parseISO(item.time), 'dd/MM/yyyy HH:mm')
+	}
 
 	return (
 		<div className="grid grid-cols-6 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center">
 			<span>
-				<Badge state={Validation.ACCEPTED} />
+				{item.time ? (
+					<Badge state={Validation.ACCEPTED} />
+				) : (
+					<Badge state={Validation.PENDING} />
+				)}
 			</span>
 			<span className="flex items-center">
 				<img
@@ -65,7 +68,13 @@ export const AppointementsItem: React.FC<ListItemProps<GetBooking>> = ({ item })
 				{item.requestingUser.username}
 			</span>
 			<span>{item.description}</span>
-			<span>{/*isClientSide ? getAppointmentTime(item) : t('loading')*/}</span>
+			<span>
+				{date ? (
+					<time dateTime={item.time}>{date}</time>
+				) : (
+					<span>{t('pending')}</span>
+				)}
+			</span>
 			<span>{item.duration}</span>
 			<Dialog.Root>
 				<Dialog.Trigger asChild>
