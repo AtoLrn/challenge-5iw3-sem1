@@ -17,9 +17,7 @@ export const login = async (props: Login): Promise<string> => {
 		})
 	
 		const body = await res.json()
-	
-		console.log('ANTOINE: ', body)
-	
+		
 		const { token, message } = schema.parse(body)
 	
 		if (message || !token) {
@@ -28,8 +26,7 @@ export const login = async (props: Login): Promise<string> => {
 		
 		return token
 	} catch (e) {
-		console.log('ANTOINE2: ', e)
-		throw new Error('Error in the request')
+		throw new Error('Our server encountered an error')
 	}
 	
 }
