@@ -11,7 +11,8 @@ const schemaCollection = z.object({
     }),
     submittedBy: z.object({
       username: z.string().min(1)
-    })
+    }),
+    createdAt: z.string()
   }))
 })
 
@@ -24,7 +25,8 @@ const schema = z.object({
   }),
   submittedBy: z.object({
     username: z.string().min(1)
-  })
+  }),
+  createdAt: z.string()
 })
 
 export const getFeedbacks = async (token: string): Promise<Feedback[]> => {

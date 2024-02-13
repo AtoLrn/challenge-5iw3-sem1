@@ -6,6 +6,7 @@ import {BreadCrumb} from 'src/components/Breadcrumb'
 import { z } from 'zod'
 import { getFeedback, patchFeedback } from 'src/utils/requests/admin/feedbacks'
 import React from 'react'
+import { formatDate } from 'src/utils/date'
 
 export const meta: MetaFunction = () => {
 	return [
@@ -141,13 +142,22 @@ export default function () {
 			</div> : null
 		}
 
-		<div className='overflow-scroll'>
+		<div className='overflow-scroll w-full'>
 			<Form method='POST'>
-			<div className='flex mb-10'>
+			<div className='mb-10'>
 				<div className='flex flex-col'>
-					<div className="flex flex-col gap-4 mb-10">
-						<input value={rating} onChange={(e) => setRating(Number(e.currentTarget.value))} type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-						<textarea cols={25} rows={8} placeholder='Description' onChange={(e) => setComment(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' value={comment} />
+					<div className="flex flex-col mb-10">
+						<div className='flex flex-col gap-4 mb-10'>
+							<label htmlFor="rating" className='text-white font-bold'>{t('rating')}</label>
+							<input value={rating} onChange={(e) => setRating(Number(e.currentTarget.value))} type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+						</div>
+						<div className='flex flex-col'>
+							<label htmlFor="comment" className='text-white font-bold'>{t('comment')}</label>
+							<textarea cols={25} rows={8} placeholder={t('description')} onChange={(e) => setComment(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' value={comment} />
+						</div>
+						<div>
+							<p>{t('creation-date')} : {formatDate(feedback.createdAt)}</p>
+						</div>
 					</div>
 				</div>
 			</div>

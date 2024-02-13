@@ -8,6 +8,7 @@ export interface Feedback {
     submittedBy: {
         username: string
     }
+    createdAt: string
 }
 
 export interface UpdateFeedback {
