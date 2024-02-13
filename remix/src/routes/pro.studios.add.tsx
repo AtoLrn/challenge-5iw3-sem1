@@ -148,7 +148,7 @@ export default function () {
 		map.setCenter([address.x, address.y])
 	}, [address])
 
-	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
+	return <div className="flex-1 p-8 flex flex-col items-start gap-8 h-screen overflow-y-scroll">
 		<BreadCrumb routes={[
 			{
 				name: 'Home',
@@ -210,7 +210,7 @@ export default function () {
 				<div className="flex flex-col w-1/2">
 					{/* LOCATION */}
 					<div className='flex flex-col gap-4 items-stretch max-h-48 relative z-10'>
-						<input value={address?.id} placeholder={t('address')} type="text" name='location' className='hidden' />
+						<input value={`${address?.x},${address?.y}`} placeholder={t('address')} type="text" name='location' className='hidden' />
 						<input
 							autoComplete='off'
 							onChange={(e) => {

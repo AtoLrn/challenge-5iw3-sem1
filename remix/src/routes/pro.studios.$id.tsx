@@ -18,6 +18,7 @@ import {useTranslation} from 'react-i18next'
 import { Studio } from 'src/utils/types/studio'
 import { getStudio } from 'src/utils/requests/studios'
 import { Validation } from 'src/utils/types/validation'
+import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 
 
 
@@ -28,7 +29,9 @@ const formSchema = z.union([
 	}),
 	z.object({
 		kind: z.literal('POST'),
-		artistId: z.string()
+		artistId: z.string(),
+		startDate: z.string(),
+		endDate: z.string()
 	})
 ])
 
@@ -96,8 +99,8 @@ export async function action ({ request, params }: ActionFunctionArgs) {
 				token,
 				studioId: +id,
 				artistId: parseInt(body.artistId),
-				startDate: new Date(),
-				endDate: new Date()
+				startDate: new Date(body.startDate),
+				endDate: new Date(body.endDate)
 			})
 
 			return json<ActionReturnType>({
@@ -179,7 +182,7 @@ export default function () {
 		date: new Date()
 	}] 
 
-	return <div className="flex-1 p-8 flex flex-col items-start gap-4">
+	return <div className="flex-1 p-8 flex flex-col items-start gap-4 h-screen overflow-y-scroll">
 		<BreadCrumb routes={[
 			{
 				name: t('home'),
@@ -237,7 +240,12 @@ export default function () {
 						
 							<input  type="hidden" name='artistId' value={artistId} />
 							<input  type="hidden" name='kind' value='POST' />
-						
+							<div className='flex items-center gap-2'>
+								
+								<TimePicker name='startDate' kind={TimePickerKind.DAY} />
+								<TimePicker name='endDate' kind={TimePickerKind.DAY} />
+							</div>
+
 							<div className='flex flex-col gap-1'>
 								{ isSearching && fetch.data?.artists.map((artist) => {
 									return <div onClick={() => {

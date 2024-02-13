@@ -185,7 +185,9 @@ export const TimePicker: React.FC<TimePickerProps> = (props) => {
 
 
 	return  <>
-		<input type="hidden" name={props.name} value={`${ selectedDate.getDate().toString().padStart(2, '0') }-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getFullYear()}`} />
+		<input type="hidden" name={props.name} value={props.kind === TimePickerKind.DAY 
+			? `${ selectedDate.getDate().toString().padStart(2, '0') }-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getFullYear()}` 
+			: `${ selectedDate.getDate().toString().padStart(2, '0') }-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getFullYear()}`} />
 		<Popover.Root>
 
 			<Popover.Trigger asChild>

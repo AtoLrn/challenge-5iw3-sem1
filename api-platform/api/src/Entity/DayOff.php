@@ -52,11 +52,11 @@ class DayOff
     private ?User $userId = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['day-off:read', 'day-off:create'])]
+    #[Groups(['day-off:read', 'day-off:create', 'partnership:read'])]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['day-off:read', 'day-off:create'])]
+    #[Groups(['day-off:read', 'day-off:create', 'partnership:read'])]
     private ?\DateTimeInterface $endDate = null;
 
     public function getId(): ?int

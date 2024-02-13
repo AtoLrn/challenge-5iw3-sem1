@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { Form, MetaFunction, useFetcher, useLoaderData } from '@remix-run/react'
+import { Form, MetaFunction, useFetcher, useLoaderData, useParams } from '@remix-run/react'
 import { BreadCrumb } from 'src/components/Breadcrumb'
 import { Title } from 'src/components/Title'
 import { getSession } from 'src/session.server'
@@ -33,21 +33,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const error = url.searchParams.get('error')
 
-	//const eventSourceUrl = new URL("https://localhost/.well-known/mercure")
-	//eventSourceUrl.searchParams.append('topic', `/messages/channel/${params.id}`)
-	//const eventSource = new EventSource(eventSourceUrl.href)
-
-	//eventSource.onmessage = (e) => {
-	//const data = JSON.parse(e.data)
-	//console.log(data.message)
-	//}
-
 	try {
 		const channel = await getChannel(token, params.id as string)
         
 	    return json({
 			channel,
-			errors: [error]
+			errors: [error],
 		})
 	} catch (e) {
 		if (e instanceof Error)
@@ -76,7 +67,6 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 
 			await sendMessage(formData, token)
 		} else {
-			console.log('ANTOINE ouga')
 			const id = formData.get('bookId')?.toString()
 			const time = formData.get('duration')?.toString()
 
@@ -105,18 +95,45 @@ export default function () {
 	const { channel, errors } = useLoaderData<typeof loader>()
 	const formRef = useRef<HTMLFormElement>(null)
 	const formDuration = useRef<HTMLFormElement>(null)
-	const chatEndRef = useRef<HTMLDivElement>(null)
+	const chatEndRef = useRef<HTMLDivElement>(null)    
+	const { id } = useParams()
 
 	const [ isOpen, setIsOpen ] = useState<boolean>()
+	const [ messages, setMessages ] = useState<MessageI[]>(channel.messages)
 
 	const fetcherDuration = useFetcher()
 
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		chatEndRef.current?.scrollIntoView()
 		formRef.current?.reset()
 	})
+
+	useEffect(() => {
+		const eventSource = new EventSource(`/api/messages/${id}`)
+
+		eventSource.onmessage = (e) => {
+			const { message } = JSON.parse(e.data)
+
+			const receivedMessage: MessageI = {
+				id: message.id,
+				content: message.content,
+				picture: message.file,
+				createdAt: message.createdAt.date,
+				sender: {
+					id: message.sender.id,
+					username: message.sender.username,
+					picture: message.sender.picture
+				}
+			}
+
+			setMessages(msg => [...msg, receivedMessage])
+		}
+	}, [])
+
+	useEffect(() => {
+		chatEndRef.current?.scrollIntoView()
+	}, [messages])
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
@@ -212,9 +229,9 @@ export default function () {
 					
 				</div>
 
-				<div className='flex flex-col-reverse overflow-x-auto'>
+				<div className='flex flex-col-reverse overflow-x-auto grow'>
 					{/* ========== Messages ========== */}
-					{channel.messages.map((message: MessageI) => {
+					{messages.map((message: MessageI) => {
 						let kind: 'received' | 'sent'
 						if (message.sender.id === channel.requestingUser.id) {
 							kind = 'received'

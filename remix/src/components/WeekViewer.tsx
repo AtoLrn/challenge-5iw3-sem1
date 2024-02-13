@@ -45,7 +45,7 @@ const Day: React.FC<DayProps> = ({ startDate, endDate, action }) => {
 	return <HoverCard.Root>
 		<HoverCard.Trigger asChild>
 			<div  className='w-full'>
-				Off Dayss
+				Off Days
 			</div>
 		</HoverCard.Trigger>
 		<HoverCard.Portal>

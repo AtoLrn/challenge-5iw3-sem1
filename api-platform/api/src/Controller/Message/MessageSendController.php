@@ -62,12 +62,13 @@ class MessageSendController
 
         // Serialize message to send on json format
         $messageSerialized = [
+            'id' => $message->getId(),
             'content' => $message->getContent(),
             'file' => $message->getPicture(),
             'sender' => [
                 'id' => $sender->getId(),
                 'username' => $sender->getUsername(),
-                'profilPicture' => $sender->getPicture(),
+                'picture' => $sender->getPicture(),
             ],
             'createdAt' => $message->getCreatedAt(),
         ];

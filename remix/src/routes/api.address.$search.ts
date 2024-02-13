@@ -12,6 +12,8 @@ export interface AddressSearchResult {
 	y: number
 }
 
+
+
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const address = params.search
 

@@ -5,11 +5,13 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\BookRequest\BookRequestCreateController;
 use App\Controller\BookRequest\BookRequestDeleteController;
 use App\Controller\BookRequest\BookRequestGetMeController;
+use App\Controller\BookRequest\BookRequestGetMeByIdController;
 use App\Controller\BookRequest\BookRequestGetMeUserController;
 use App\Controller\BookRequest\BookRequestPatchController;
 use App\Repository\BookRequestRepository;
@@ -33,6 +35,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: 'is_granted("ROLE_USER")',
             uriTemplate: '/pro/book-request',
             controller: BookRequestGetMeController::class,
+            normalizationContext: ['groups' => 'bookRequest:me:collection']
+        ),
+        new Get(
+            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/book-request/{id}',
+            controller: BookRequestGetMeByIdController::class,
             normalizationContext: ['groups' => 'bookRequest:me:collection']
         ),
         new GetCollection(

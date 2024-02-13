@@ -126,7 +126,7 @@ class Studio
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
@@ -159,10 +159,12 @@ class Studio
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $openingTime = null;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $closingTime = null;
 
     #[Groups(['studio:creation', 'studio:read'])]

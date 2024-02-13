@@ -1,5 +1,5 @@
 import { Title } from 'src/components/Title'
-import {Form, useLoaderData} from '@remix-run/react'
+import {Form, Link, useLoaderData, useParams} from '@remix-run/react'
 import { IoSend } from 'react-icons/io5'
 import { MessageSide } from 'src/components/Messages/MessageSide'
 import { Message } from 'src/components/Messages/Message'
@@ -8,7 +8,7 @@ import {ActionFunctionArgs, LoaderFunctionArgs, json, redirect} from '@remix-run
 import { getChannels, sendMessage } from 'src/utils/requests/channel'
 import {GetChannelAs} from 'src/utils/types/channel'
 import { Message as MessageI } from '../utils/types/message'
-import {useEffect, useRef} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import { formatDate } from '../utils/date'
 import {useTranslation} from 'react-i18next'
 
@@ -77,11 +77,40 @@ export default function () {
 	const { channels, currentChannel, errors } = useLoaderData<typeof loader>()
 	const chatEndRef = useRef<HTMLDivElement>(null)
 	const formRef = useRef<HTMLFormElement>(null)
+	const { id } = useParams()
+
+	const [ messages, setMessages ] = useState<MessageI[]>(currentChannel?.messages as MessageI[])
+
+	useEffect(() => {
+		formRef.current?.reset()
+		setMessages(currentChannel?.messages as MessageI[])
+	})
+
+	useEffect(() => {
+		const eventSource = new EventSource(`/api/messages/${id}`)
+
+		eventSource.onmessage = (e) => {
+			const { message } = JSON.parse(e.data)
+
+			const receivedMessage: MessageI = {
+				id: message.id,
+				content: message.content,
+				picture: message.file,
+				createdAt: message.createdAt.date,
+				sender: {
+					id: message.sender.id,
+					username: message.sender.username,
+					picture: message.sender.picture
+				}
+			}
+
+			setMessages(msg => [...msg, receivedMessage])
+		}
+	}, [])
 
 	useEffect(() => {
 		chatEndRef.current?.scrollIntoView()
-		formRef.current?.reset()
-	})
+	}, [messages])
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
@@ -113,17 +142,17 @@ export default function () {
 						</div>
 						{ currentChannel?.bookRequest.book && <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
 							<span>{t('artist-book-ready')}</span>
-							<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+							<Link to={`/book/${currentChannel.bookRequest.id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 								{t('book')}
-							</button>
+							</Link>
 						</div>}
 
 						{/* ========== Messages ========== */}
 						<div className="h-full overflow-y-scroll p-4 flex flex-col space-y-2">
 
-							{currentChannel?.messages.map((message: MessageI) => {
+							{messages.map((message: MessageI) => {
 								let kind: 'received' | 'sent'
-								if (message.sender.id === currentChannel.tattooArtist.id) {
+								if (message.sender.id === currentChannel?.tattooArtist.id) {
 									kind = 'received'
 								} else {
 									kind = 'sent'

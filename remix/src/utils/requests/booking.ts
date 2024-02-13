@@ -18,6 +18,7 @@ export const bookingSchema = z.object({
 	description: z.string().min(1),
 	chat: z.boolean(),
 	book: z.boolean(),
+	duration: z.string().optional(),
 	requestingUser: userSchema,
 	tattooArtist: userSchema,
 	channel: channelSchema
@@ -47,6 +48,25 @@ export const getBookings = async ({ token }: BaseBookingRequest): Promise<Array<
 	}
 }
 
+export const getBookingById = async ({ token, bookingId }: GetBookingRequest): Promise<Booking> => {
+	const res = await fetch(`${process.env.API_URL}/book-request/${bookingId}`, {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+		},
+	})
+
+	const body = await res.json()
+
+	const parsed = bookingSchema.parse(body)
+
+	return parsed
+}
+
+
+export interface GetBookingRequest extends BaseBookingRequest {
+	bookingId: number | string
+}
 
 export interface BookingChannel {
     id: number,
@@ -68,6 +88,7 @@ export interface Booking {
     book: boolean
     requestingUser: BookingUser
     tattooArtist: BookingUser
+	duration?: string
 	channel?: BookingChannel
 }
 

@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Auth\ForgetPasswordController;
 use App\Controller\Auth\RegistrationController;
 use App\Controller\User\ArtistController;
+use App\Controller\User\ArtistStudioController;
 use App\Controller\User\GetArtistController;
 use App\Controller\Auth\VerifyController;
 use App\Controller\User\ArtistWaitingController;
@@ -340,6 +341,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'submittedBy', targetEntity: Feedback::class, orphanRemoval: true)]
     private Collection $feedback;
 
+    #[Groups(['user:read:artist', 'partnership:read'])]
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: DayOff::class, orphanRemoval: true)]
+    private Collection $dayOffs;
+
     public function __construct()
     {
         $this->studios = new ArrayCollection();
@@ -348,6 +353,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->messages = new ArrayCollection();
         $this->postPictures = new ArrayCollection();
         $this->feedback = new ArrayCollection();
+        $this->dayOffs = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -712,6 +718,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, DayOff>
+     */
+    public function getDayOffs(): Collection
+    {
+        return $this->dayOffs;
+    }
+
 
     /**
      * @return Collection<int, Feedback>
