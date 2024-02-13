@@ -122,11 +122,11 @@ export default function () {
 				url: '/admin' 
 			},
 			{ 
-				name: t('users'), 
+				name: t('feedbacks'),
 				url: '/admin/feedbacks'
 			},
 			{ 
-				name: feedback.submittedBy.username + ' ' + t('feedback-from') + ' ' + feedback.prestation.name,
+				name: feedback.submittedBy.username + ' ' + t('for-prestation') + ' ' + feedback.prestation.name,
 				url: `/admin/feedbacks/${feedback.id}`
 			}
 		]}/>
@@ -138,7 +138,7 @@ export default function () {
 		})}
 		{success ?
 			<div className='font-bold text-green-600 border-b border-white self-start'>
-				{t('user-updated')}
+				{t('feedback-updated')}
 			</div> : null
 		}
 

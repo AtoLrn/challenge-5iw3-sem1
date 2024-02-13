@@ -195,5 +195,17 @@
   "book": "Book",
   "artist-book-ready": "You artist indicated that you can now choose a schedule to book your appointement",
   "submit": "Submit",
-  "validate-demand": "Validation of the booking"
+  "validate-demand": "Validation of the booking",
+  "feedback": "Feedback",
+  "feedbacks": "Feedbacks",
+  "list-of-feedbacks": "List of feedbacks",
+  "no-feedback": "There is no feedback yet",
+  "from": "from",
+  "for-prestation": "for the prestation",
+  "rating": "Rating",
+  "comment": "Comment",
+  "feedback-created": "Feedback successfully created",
+  "about-to-delete-feedback": "You are about to delete this feedback forever, are you sure ?",
+  "feedback-updated": "Feedback updated successfully",
+  "feedback-deleted": "Feedback deleted successfully"
 }

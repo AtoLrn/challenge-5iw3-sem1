@@ -183,5 +183,16 @@
   "book": "Réserver",
   "artist-book-ready": "Votre artiste a ouvert la reservation pour ce projet, vous pouvez donc réserver votre créneau",
   "submit": "Valider",
-  "validate-demand": "Validation de la demande"
+  "validate-demand": "Validation de la demande",
+  "feedback": "Avis",
+  "feedbacks": "Avis",
+  "list-of-feedbacks": "Liste des avis",
+  "no-feedback": "Il n'y a aucun avis pour le moment",
+  "from": "De",
+  "for-prestation": "pour la prestation",
+  "rating": "Note",
+  "comment": "Commentaire",
+  "feedback-updated": "Avis modifié avec succès !",
+  "about-to-delete-feedback": "Vous allez supprimer cet avis pour toujours, êtes vous sur ?",
+  "feedback-deleted": "Avis supprimé avec succès !"
 }
