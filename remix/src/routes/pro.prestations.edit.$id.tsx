@@ -17,34 +17,34 @@ export const meta: MetaFunction = () => {
 
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const url = new URL(request.url)
+	const url = new URL(request.url)
 	const id = parseInt(params.id as string)
 	if (!id) {
 		throw new Response('Not Found', { status: 404 })
 	}
-  const session = await getSession(request.headers.get('Cookie'))
-  const token = session.get('token') as string
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token') as string
 	const error = url.searchParams.get('error')
 	const success = url.searchParams.get('success')
 
-  let prestationDetails;
-  if (id) {
-    try {
-      prestationDetails = await getPrestation(id, token);
-    } catch (e) {
-      prestationDetails = null;
-    }
-  }
+	let prestationDetails
+	if (id) {
+		try {
+			prestationDetails = await getPrestation(id, token)
+		} catch (e) {
+			prestationDetails = null
+		}
+	}
 
-  return json({
-    prestation: prestationDetails,
+	return json({
+		prestation: prestationDetails,
 		errors: [error],
 		success: success
-  });
-};
+	})
+}
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
-	const formData = await request.formData();
+	const formData = await request.formData()
 	const id = parseInt(params.id as string)
 
 	const session = await getSession(request.headers.get('Cookie'))
@@ -52,29 +52,29 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 	const prestationData: { name?: string; kind?: Kind } = {
 		name: formData.get('name')?.toString() ?? '',
 		kind: formData.get('kind')?.toString() as Kind,
-	};
+	}
 
-	const pictureFile = formData.get('picture');
-  if (pictureFile instanceof File) {
-    const pictureFormData = new FormData();
-    pictureFormData.append('picture', pictureFile);
+	const pictureFile = formData.get('picture')
+	if (pictureFile instanceof File) {
+		const pictureFormData = new FormData()
+		pictureFormData.append('picture', pictureFile)
 
-    try {
-      await updatePrestationPicture(id, pictureFormData, token);
-    } catch (error) {
-      console.error('Failed to update prestation picture:', error);
-      return redirect(`/pro/prestations/edit/${id}?error=Failed to update picture`);
-    }
-  }
+		try {
+			await updatePrestationPicture(id, pictureFormData, token)
+		} catch (error) {
+			console.error('Failed to update prestation picture:', error)
+			return redirect(`/pro/prestations/edit/${id}?error=Failed to update picture`)
+		}
+	}
 
 	try {
-		await updatePrestation(id, prestationData, token);
-		return redirect(`/pro/prestations/${id}?success=update`);
+		await updatePrestation(id, prestationData, token)
+		return redirect(`/pro/prestations/${id}?success=update`)
 	} catch (error) {
-		console.error('Failed to update prestation:', error);
-		return redirect(`/pro/prestations/edit/${id}?error=Failed to update`);
+		console.error('Failed to update prestation:', error)
+		return redirect(`/pro/prestations/edit/${id}?error=Failed to update`)
 	}
-};
+}
 
 export default function EditPrestationForm() {
 	const { errors } = useLoaderData<typeof loader>()
@@ -110,24 +110,24 @@ export default function EditPrestationForm() {
 					Voir l'image
 				</a>
 			</div>
-    )}
+		)}
 		<Form method='PATCH' encType='multipart/form-data' className='w-full flex flex-col gap-4'>
 			<div className='grid grid-cols-2 w-full gap-4'>
 				<input placeholder='Name (flash, ...)' type="text" name='name' className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300' defaultValue={prestation?.name} />
 				<select
-        name="kind"
-        defaultValue={prestation?.kind}
-        className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300'
-      >
-        <option value="Tattoo">Tattoo</option>
-        <option value="Jewelery">Jewelery</option>
-        <option value="Barber">Barber</option>
-      </select>
-			<input type="file" name="picture" className="outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300" />
+					name="kind"
+					defaultValue={prestation?.kind}
+					className='outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300'
+				>
+					<option value="Tattoo">Tattoo</option>
+					<option value="Jewelery">Jewelery</option>
+					<option value="Barber">Barber</option>
+				</select>
+				<input type="file" name="picture" className="outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border-1 border-gray-700 focus:border-red-400 duration-300" />
 
 			</div>
 
-				<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Update</button>
+			<button className='px-4 py-2 bg-gray-700 rounded-lg text-white self-end'>Update</button>
 		</Form>
 
 	</div>

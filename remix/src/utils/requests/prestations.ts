@@ -93,26 +93,26 @@ export const createPrestation = async (formData: FormData, token: string): Promi
 }
 
 export const updatePrestation = async ({ id, prestationData, token }: UpdatePrestationParams): Promise<Response> => {
-  const jsonData = {
-    name: prestationData.name,
-    kind: prestationData.kind,
-  };
+	const jsonData = {
+		name: prestationData.name,
+		kind: prestationData.kind,
+	}
 
-  const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/merge-patch+json',
-    },
-    body: JSON.stringify(jsonData),
-  });
+	const response = await fetch(`${process.env.API_URL}/prestations/${id}`, {
+		method: 'PATCH',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Content-Type': 'application/merge-patch+json',
+		},
+		body: JSON.stringify(jsonData),
+	})
 
-  if (!response.ok) {
-    throw new Error(`Error ${response.status}: ${response.statusText}`);
-  }
+	if (!response.ok) {
+		throw new Error(`Error ${response.status}: ${response.statusText}`)
+	}
 
-  return response;
-};
+	return response
+}
 
 export const updatePrestationPicture = async ({ id, formData, token }: UpdatePrestationPictureParams): Promise<Response> => {
 	const response = await fetch(`${process.env.API_URL}/prestations/${id}/update-picture`, {

@@ -79,8 +79,6 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 			})
 		}
 
-
-
 		return redirect(`/pro/chat/${params.id}`)
 	} catch (e) {
 		if (e instanceof Error)
@@ -119,7 +117,7 @@ export default function () {
 				id: message.id,
 				content: message.content,
 				picture: message.file,
-				createdAt: message.createdAt.date,
+				createdAt: formatDate(message.createdAt.date, false),
 				sender: {
 					id: message.sender.id,
 					username: message.sender.username,
@@ -229,7 +227,7 @@ export default function () {
 					
 				</div>
 
-				<div className='flex flex-col-reverse overflow-x-auto grow'>
+				<div className='flex flex-col overflow-x-auto grow'>
 					{/* ========== Messages ========== */}
 					{messages.map((message: MessageI) => {
 						let kind: 'received' | 'sent'
@@ -241,7 +239,7 @@ export default function () {
 						return <Message key={message.id} kind={kind}
 							picture={message.picture}
 							message={message.content}
-							date={formatDate(message.createdAt)}
+							date={message.createdAt}
 						/>
 					})}
 					<div ref={chatEndRef} />
