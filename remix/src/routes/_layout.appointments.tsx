@@ -186,6 +186,16 @@ export default function MainPage() {
 						</div>
 						{/* ========== /Table header ========== */}
 
+						{errors && (
+							<div className='font-bold text-red-600 border-b border-white self-start'>
+								{errors}
+							</div>
+						)}
+						{success && (
+							<div className='font-bold text-green-600 border-b border-white self-start'>
+								{success}
+							</div>
+						)}
 						<div>
 							{ bookings.filter((booking) => booking.time && booking.studio).length === 0 && <span>No Scheduled Appointements for now</span>}
 							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {
@@ -199,6 +209,7 @@ export default function MainPage() {
 									appointmentTime={format(date, 'hh:mm a')}
 									address={book.studio.location!}
 									projectDescription={book.description}
+									onCancel={() => cancelBooking(book.id)}
 								/>
 								{/* ========== /Table rows ========== */}
 							
