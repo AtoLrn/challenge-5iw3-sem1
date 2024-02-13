@@ -218,7 +218,7 @@ export default function MainPage() {
 									artistUsername={book.tattooArtist.username}
 									appointmentDate={format(date, 'MMMM dd, yyyy')}
 									appointmentTime={format(date, 'hh:mm a')}
-									address={book.studio.location!}
+									address={book.studio?.location!}
 									projectDescription={book.description}
 									onCancel={() => cancelBooking(book.id)}
 								/>

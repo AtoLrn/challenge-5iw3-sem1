@@ -78,6 +78,26 @@ export const getBookingById = async ({ token, bookingId }: GetBookingRequest): P
 	return parsed
 }
 
+export const getArtistBookings = async ({ token }: BaseBookingRequest): Promise<Array<Booking>> => {
+	const res = await fetch(`${process.env.API_URL}/pro/me/book-request/`, {
+		method: 'GET',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+		},
+	})
+
+	const body = await res.json()
+
+	try {
+		const parsed = bookingCollection.parse(body)
+
+		return parsed['hydra:member']
+	} catch (e) {
+		console.log(e)
+		return []
+	}
+}
+
 export const addLocationToBooking = async ({ token, bookingId, studioId, date }: PatchBookingRequest): Promise<void> => {
 	await fetch(`${process.env.API_URL}/book-request/${bookingId}`, {
 		method: 'PATCH',

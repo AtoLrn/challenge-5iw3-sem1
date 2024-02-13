@@ -1,12 +1,21 @@
-import { Prestation } from './prestation'
-import { ProfileFormInterface } from './profileForm'
-import { Validation } from './validation'
-
-export interface Booking {
+export interface GetBooking {
 	id: number,
-  	profile: ProfileFormInterface,
-	prestation: Prestation,
-	date: string,
-	duration: number,
-	status: Validation.ACCEPTED | Validation.PENDING | Validation.REFUSED,
+	description: string,
+	chat: boolean,
+	book: boolean,
+	requestingUser: BookingRequestingUser,
+	tattooArtist: BookingRequestingUser,
+	duration?: string,
+	time?: string,
+	studio?: {
+		id?: number,
+		name?: string,
+		location?: string
+	}
+}
+
+interface BookingRequestingUser {
+	id: number,
+	username: string,
+	picture: string,
 }

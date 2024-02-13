@@ -1,29 +1,40 @@
-import { Booking } from './types/booking'
+import { GetBooking } from './types/booking'
 
-const prepareCalendarData = (booking: Booking) => {
-	const title = encodeURIComponent(`${booking.prestation.name} pour ${booking.profile.username}`)
-	const description = encodeURIComponent(`Rendez-vous avec ${booking.profile.username}`)
-	const location = encodeURIComponent(booking.prestation.location)
+const prepareCalendarData = (booking: GetBooking) => {
+	const title = encodeURIComponent(`Prestation pour ${booking.requestingUser.username}`)
+	const description = encodeURIComponent(`Rendez-vous avec ${booking.requestingUser.username}`)
+	const location = encodeURIComponent(booking.studio?.location?.replace(/,/g, '') ?? '')
 
-	const startDate = new Date(booking.date).toISOString().replace(/-|:|\.\d\d\d/g,'')
-	const endDate = new Date(new Date(booking.date).getTime() + booking.duration * 60000).toISOString().replace(/-|:|\.\d\d\d/g, '')
+	const startDate: Date = booking.time ? new Date(booking.time) : new Date()
+	let endDate
+	if (booking.duration === '1h') {
+		endDate = new Date(startDate.getTime() + 60 * 60000)
+	} else if (booking.duration === '2h') {
+		endDate = new Date(startDate.getTime() + 120 * 60000)
+	} else if (booking.duration === '3h') {
+		endDate = new Date(startDate.getTime() + 180 * 60000)
+	} else if (booking.duration === '30m') {
+		endDate = new Date(startDate.getTime() + 30 * 60000)
+	} else {
+		endDate = new Date(startDate.getTime() + 60 * 60000)
+	}
 
 	return { title, description, location, startDate, endDate }
 }
 
-const createGoogleCalendarLink = (booking: Booking) => {
+const createGoogleCalendarLink = (booking: GetBooking) => {
 	const { title, description, location, startDate, endDate } = prepareCalendarData(booking)
 
 	return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${description}&location=${location}&sf=true&output=xml`
 }
 
-const createOutlookCalendarLink = (booking: Booking) => {
+const createOutlookCalendarLink = (booking: GetBooking) => {
 	const { title, description, location, startDate, endDate } = prepareCalendarData(booking)
 
 	return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&body=${description}&location=${location}&startdt=${startDate}&enddt=${endDate}`
 }
 
-const exportToICS = (booking: Booking) => {
+const exportToICS = (booking: GetBooking) => {
 	const { title, description, location, startDate, endDate } = prepareCalendarData(booking)
 
 	const icsData = [
@@ -42,7 +53,7 @@ const exportToICS = (booking: Booking) => {
 	const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8;' })
 	const link = document.createElement('a')
 	link.href = URL.createObjectURL(blob)
-	link.download = `Rendez-vous-${booking.profile.username}.ics`
+	link.download = `Rendez-vous-${booking.requestingUser.username}.ics`
 	document.body.appendChild(link)
 	link.click()
 	document.body.removeChild(link)
