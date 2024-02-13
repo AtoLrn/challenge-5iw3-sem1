@@ -22,54 +22,54 @@ const schema = z.object({
 }) 
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const session = await getSession(request.headers.get('Cookie'));
-  const token = session.get('token');
+	const session = await getSession(request.headers.get('Cookie'))
+	const token = session.get('token')
 
-  if (!token) {
-    return redirect('/login');
-  }
+	if (!token) {
+		return redirect('/login')
+	}
 
-  if (!params.id) {
-    return redirect('/admin/feedbacks');
-  }
+	if (!params.id) {
+		return redirect('/admin/feedbacks')
+	}
 
-  try {
-    const formData = await request.formData();
-    const rating = formData.get('rating');
-    const comment = formData.get('comment');
+	try {
+		const formData = await request.formData()
+		const rating = formData.get('rating')
+		const comment = formData.get('comment')
 
-    const result = schema.safeParse({
-      rating: rating ? Number(rating) : undefined,
-      comment: comment ? String(comment) : undefined,
-    });
+		const result = schema.safeParse({
+			rating: rating ? Number(rating) : undefined,
+			comment: comment ? String(comment) : undefined,
+		})
 
 		console.log('result', result)
 
-    if (!result.success) {
+		if (!result.success) {
 			console.log('result.error', result.error)
-      throw new Error('Invalid form data', result.error);
-    }
+			throw new Error('Invalid form data', result.error)
+		}
 
-    const feedback = await getFeedback(token as string, params.id);
+		const feedback = await getFeedback(token as string, params.id)
 
-    const updatedFeedback = {
-      id: feedback.id,
-      rating: result.data.rating,
-      comment: result.data.comment,
-    };
+		const updatedFeedback = {
+			id: feedback.id,
+			rating: result.data.rating,
+			comment: result.data.comment,
+		}
 
-    await patchFeedback(token as string, params.id, updatedFeedback);
+		await patchFeedback(token as string, params.id, updatedFeedback)
 
-    return redirect(`/admin/feedbacks/${params.id}?success=true`);
-  } catch (e) {
-    console.error(e); // Ajouter un log pour déboguer
-    if (e instanceof Error) {
-      return redirect(`/admin/feedbacks/${encodeURIComponent(params.id)}?error=${encodeURIComponent(e.message)}`);
-    }
+		return redirect(`/admin/feedbacks/${params.id}?success=true`)
+	} catch (e) {
+		console.error(e) // Ajouter un log pour déboguer
+		if (e instanceof Error) {
+			return redirect(`/admin/feedbacks/${encodeURIComponent(params.id)}?error=${encodeURIComponent(e.message)}`)
+		}
 
-    return redirect(`/admin/feedbacks/${params.id}?error=Unexpected Error`);
-  }
-};
+		return redirect(`/admin/feedbacks/${params.id}?error=Unexpected Error`)
+	}
+}
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
@@ -144,23 +144,23 @@ export default function () {
 
 		<div className='overflow-scroll w-full'>
 			<Form method='POST'>
-			<div className='mb-10'>
-				<div className='flex flex-col'>
-					<div className="flex flex-col mb-10">
-						<div className='flex flex-col gap-4 mb-10'>
-							<label htmlFor="rating" className='text-white font-bold'>{t('rating')}</label>
-							<input value={rating} onChange={(e) => setRating(Number(e.currentTarget.value))} type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-						</div>
-						<div className='flex flex-col'>
-							<label htmlFor="comment" className='text-white font-bold'>{t('comment')}</label>
-							<textarea cols={25} rows={8} placeholder={t('description')} onChange={(e) => setComment(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' value={comment} />
-						</div>
-						<div>
-							<p>{t('creation-date')} : {formatDate(feedback.createdAt)}</p>
+				<div className='mb-10'>
+					<div className='flex flex-col'>
+						<div className="flex flex-col mb-10">
+							<div className='flex flex-col gap-4 mb-10'>
+								<label htmlFor="rating" className='text-white font-bold'>{t('rating')}</label>
+								<input value={rating} onChange={(e) => setRating(Number(e.currentTarget.value))} type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+							</div>
+							<div className='flex flex-col'>
+								<label htmlFor="comment" className='text-white font-bold'>{t('comment')}</label>
+								<textarea cols={25} rows={8} placeholder={t('description')} onChange={(e) => setComment(e.currentTarget.value)} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' value={comment} />
+							</div>
+							<div>
+								<p>{t('creation-date')} : {formatDate(feedback.createdAt)}</p>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 				<div className='flex justify-center'>
 					<button type="submit" className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 						{t('update')}
