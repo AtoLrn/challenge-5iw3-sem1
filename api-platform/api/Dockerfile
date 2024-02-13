@@ -6,7 +6,7 @@
 # Versions
 # hadolint ignore=DL3007
 FROM dunglas/frankenphp:latest-alpine AS frankenphp_upstream
-FROM composer/composer:2-bin AS composer_upstream
+FROM composer/composer:2.6.6-bin AS composer_upstream
 
 
 # The different stages of this Dockerfile are meant to be built into separate images
@@ -22,24 +22,24 @@ WORKDIR /app
 # persistent / runtime deps
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
-		acl \
-		file \
-		gettext \
-		git \
+	acl \
+	file \
+	gettext \
+	git \
 	;
 
 RUN set -eux; \
-    install-php-extensions \
-		apcu \
-		intl \
-		opcache \
-		zip \
-    ;
+	install-php-extensions \
+	apcu \
+	intl \
+	opcache \
+	zip \
+	;
 
 ###> recipes ###
 ###> doctrine/doctrine-bundle ###
 RUN set -eux; \
-    install-php-extensions pdo_pgsql
+	install-php-extensions pdo_pgsql
 ###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
@@ -67,8 +67,8 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 RUN set -eux; \
 	install-php-extensions \
-    	xdebug \
-    ;
+	xdebug \
+	;
 
 COPY --link frankenphp/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
 

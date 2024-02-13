@@ -74,28 +74,28 @@ class BookRequest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['bookRequest:me:collection', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['bookRequest:create', 'bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    #[Groups(['bookRequest:create', 'bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     private ?string $description = null;
 
-    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'studio:read'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $chat = false;
 
-    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     #[ORM\Column(options: ["default" => false])]
     private ?bool $book = false;
 
     #[ORM\ManyToOne]
-    #[Groups(['bookRequest:me:collection', 'bookRequest:collection'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:collection', 'studio:read'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $requestingUser = null;
 
     #[ORM\ManyToOne]
-    #[Groups(['bookRequest:collection', 'bookRequest:me:collection'])]
+    #[Groups(['bookRequest:collection', 'bookRequest:me:collection', 'studio:read'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $tattooArtist = null;
 
@@ -103,12 +103,12 @@ class BookRequest
     #[ORM\OneToOne(inversedBy: 'bookRequest', cascade: ['persist', 'remove'])]
     private ?Channel $channel = null;
 
-    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $duration = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read', 'studio:read'])]
     private ?\DateTimeInterface $time = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookRequests')]

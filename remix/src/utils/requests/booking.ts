@@ -28,7 +28,7 @@ export const bookingSchema = z.object({
 	}).optional(),
 	requestingUser: userSchema,
 	tattooArtist: userSchema,
-	channel: channelSchema
+	channel: channelSchema.optional()
 })
 
 export const bookingCollection = z.object({

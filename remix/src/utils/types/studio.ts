@@ -1,3 +1,4 @@
+import { Booking } from '../requests/booking'
 import { PartnerShip } from './partnership'
 import { Validation } from './validation'
 
@@ -18,5 +19,7 @@ export interface Studio {
 	saturday: boolean | null,
 	sunday: boolean | null,
 	picture: string,
+
+	bookRequests: Booking[]
 	partnerShips: PartnerShip[]  
 }

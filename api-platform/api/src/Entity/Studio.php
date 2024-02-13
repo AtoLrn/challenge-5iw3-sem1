@@ -203,6 +203,7 @@ class Studio
     #[Groups(['studio:creation', 'studio:read'])]
     private ?string $picture = null;
 
+    #[Groups(['studio:creation', 'studio:read', 'bookRequest:me:collection'])]
     #[ORM\OneToMany(mappedBy: 'studio', targetEntity: BookRequest::class)]
     private Collection $bookRequests;
 

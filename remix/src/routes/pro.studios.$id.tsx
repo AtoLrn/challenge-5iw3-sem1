@@ -19,6 +19,7 @@ import { Studio } from 'src/utils/types/studio'
 import { getStudio } from 'src/utils/requests/studios'
 import { Validation } from 'src/utils/types/validation'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
+import { format } from 'date-fns'
 
 
 
@@ -49,21 +50,24 @@ export type LoaderReturnType = {
 
 export interface Appointement {
 	id: string,
-	name: string,
-	with: string
-	date: Date
+	username: string,
+	artistName: string,
+	startDate: Date
+	duration: string
 }
 
 export const AppointementItem: React.FC<ListItemProps<Appointement>> = ({ item }) => {
-	const h = item.date.getHours().toString().padStart(2, '0')
-	const m = item.date.getMinutes().toString().padStart(2, '0')
 
 
-	const formattedDate = `${h}h${m}`
 	return <div className='grid grid-cols-3 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
-		<span>{ item.name }</span>
-		<span>{ item.with }</span>
-		<span><b>{ formattedDate }</b></span>
+		<span>{ item.username } with <b>{ item.artistName }</b></span>
+		{/* <span>{ item.with }</span> */}
+		<span>
+			<b>{ format(item.startDate, 'uuuu-LL-dd') }</b>
+		</span>
+		<span>
+			<b>{ item.duration }</b>
+		</span>
 		{/* <span className='text-right'>{ item.available } / { item.seats }</span> */}
 
 	</div>
@@ -169,18 +173,16 @@ export default function () {
 		})
 	}, 300), [])
 
-	const appointements: Appointement[] = [{
-		id: '1',
-		name: 'Lucas Campistron',
-		with: 'Erromis',
-		date: new Date()
-	},
-	{
-		id: '12',
-		name: 'Izia Crinier',
-		with: 'Matin',
-		date: new Date()
-	}] 
+	const appointements: Appointement[] = studio.bookRequests.flatMap((b) => {
+		if (!b.time) { return [] }
+		return [{
+			id: `${b.id}`,
+			startDate: new Date(b.time),
+			duration: b.duration!,
+			username: b.requestingUser.username,
+			artistName: b.tattooArtist.username
+		}]
+	})
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-4 h-screen overflow-y-scroll">
 		<BreadCrumb routes={[
@@ -199,9 +201,6 @@ export default function () {
 			<Title kind='h1'>{studio.name}</Title>
 
 			<div className='flex items-center gap-2'>
-				<Link to={'/pro/studios/poivre-noir/edit'}>
-					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Add Closing Day</button>
-				</Link>
 				<Link to={'/pro/studios/poivre-noir/edit'}>
 					<button className='px-4 py-2 bg-gray-700 rounded-lg text-white'>Edit</button>
 				</Link>

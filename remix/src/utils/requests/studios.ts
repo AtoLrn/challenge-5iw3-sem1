@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { Studio } from './../types/studio'
 import { Validation } from '../types/validation'
 import { partnerShipSchema } from './partnership'
+import { bookingSchema } from './booking'
 
 const studioSchema = z.object({
 	id: z.number(),
@@ -21,7 +22,8 @@ const studioSchema = z.object({
 	sunday: z.string().nullable(),
 	picture: z.string().min(1),
 
-	partnerShips: z.array(partnerShipSchema)
+	partnerShips: z.array(partnerShipSchema),
+	bookRequests: z.array(bookingSchema)
 })
 
 const schema = z.object({
@@ -93,6 +95,8 @@ export const getStudio = async ({ id }: { id: string}): Promise<Studio> => {
 
 	
 	const body = await res.json()
+
+	console.log(body)
 
 	const studio = studioSchema.parse(body)
 
