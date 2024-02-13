@@ -133,7 +133,7 @@ export interface UnallowedSlotsRequest extends BaseBookingRequest {
 }
 
 export const deleteBooking = async ({ token, bookingId }: any): Promise<boolean> => {
-	const res = await fetch(`https://localhost/book-request/${bookingId}`, {
+	const res = await fetch(`${process.env.API_URL}/book-request/${bookingId}`, {
 		method: 'DELETE',
 		headers: {
 			'Authorization': `Bearer ${token}`,
