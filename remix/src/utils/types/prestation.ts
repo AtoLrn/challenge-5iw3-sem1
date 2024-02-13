@@ -8,3 +8,9 @@ export interface Prestation {
 	picture: string | null,
 	created_at: string
 }
+
+export interface PrestationFromUser {
+	id: number,
+	name: string,
+	kind: Kind,
+}

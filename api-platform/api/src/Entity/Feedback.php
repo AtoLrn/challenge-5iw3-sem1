@@ -40,6 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted("ROLE_ADMIN")'
         ),
         new Post(
+            uriTemplate: '/prestation/{id}/feedbacks',
             controller: FeedbackCreateController::class,
             normalizationContext: ['groups' => 'feedback:read'],
             denormalizationContext: ['groups' => 'feedback:create'],
@@ -76,7 +77,7 @@ class Feedback
 
     #[ORM\ManyToOne(inversedBy: 'feedback')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['feedback:read', 'feedback:create', 'admin:collection', 'admin:read', 'feedback:collections'])]
+    #[Groups(['feedback:read', 'admin:collection', 'admin:read', 'feedback:collections'])]
     private ?Prestation $prestation = null;
 
     #[ORM\Column]

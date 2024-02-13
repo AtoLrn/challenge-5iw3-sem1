@@ -20,9 +20,6 @@ export const schemaArtistProfile = z.object({
 		feedback: z.array(z.object({
 			rating: z.number(),
 			comment: z.string().min(1),
-			submittedBy: z.object({
-				username: z.string().min(1)
-			})
 		})).optional()
 	})).optional(),
 	postPictures: z.array(z.object({
@@ -59,6 +56,7 @@ export const getArtist = async ({ name }: { name: string }): Promise<Artist> => 
 	const res = await fetch(`${process.env.API_URL}/artists/${name}`)
 	
 	const body = await res.json()
+    console.log(body)
 
 	const artist = schemaArtistProfile.parse(body)
 

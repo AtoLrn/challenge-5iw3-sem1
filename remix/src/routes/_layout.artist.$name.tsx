@@ -31,6 +31,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	const { name } = params
 
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const token = session.get('token')
+
 	if (!name) {
 		throw new Response(null, {
 			status: 404,
@@ -44,6 +48,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	return json({
 		artist,
+        isLogged: token ? true : false,
 		errors: [error],
 		success: success
 	})
@@ -77,7 +82,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 
 export default function MainPage() {
-	const { artist, errors, success } = useLoaderData<typeof loader>()
+	const { artist, isLogged, errors, success } = useLoaderData<typeof loader>()
 	const { t } = useTranslation()
 
 	const [ isDialogOpen, setIsDialogOpen ] = useState(false)
@@ -121,7 +126,7 @@ export default function MainPage() {
 								<Title kind="h1" className='z-20 pb-2'>{artist.username}</Title>
 								{reviewCount !== 0 && (
 									<div className="flex gap-2">
-										<span className="font-bold">Rating :</span>
+										<span className="font-bold">{t('rating')} :</span>
 										<div className="flex">
 											<span>{averageRating} &nbsp;</span>
 											<SlStar size={20} />
@@ -129,11 +134,12 @@ export default function MainPage() {
 									</div>
 								)}
 								<div className="flex gap-2">
-									<span className="font-bold">Reviews :</span>
+									<span className="font-bold">{t('review')} :</span>
 									<span>{reviewCount}</span>
 								</div>
 							</div>
 							<div>
+                                {isLogged ? 
 								<Dialog.Root open={isDialogOpen}>
 									<Dialog.Trigger asChild>
 										<button onClick={() => setIsDialogOpen(true)} className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
@@ -166,6 +172,9 @@ export default function MainPage() {
 										</Dialog.Content>
 									</Dialog.Portal>
 								</Dialog.Root>
+                                :
+                                    null
+                                }
 							</div>
 						</div>
 						<div>
@@ -188,7 +197,7 @@ export default function MainPage() {
 													<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-4 z-20 bg-zinc-600 bg-opacity-30 w-1/2 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white max-h-[75vh] overflow-scroll">
 														<Title kind="h4" className='z-20'>{t('name')}</Title>
 														<p className='mb-4'>{prestation.name}</p>
-														<Title kind="h4" className='z-20'>{t('kind')}</Title>
+														<Title kind="h4" className='z-20'>Type</Title>
 														<p className='mb-4'>{prestation.kind}</p>
 														{ prestation.picture && (
 															<>
@@ -203,7 +212,6 @@ export default function MainPage() {
 															return (
 																<div key={feedback.comment} className="flex flex-col gap-2">
 																	<div className="flex justify-between gap-2">
-																		<span className="font-bold">{feedback.submittedBy.username}</span>
 																		<div className="flex">
 																			<span>{feedback.rating} &nbsp;</span>
 																			<SlStar size={20} />

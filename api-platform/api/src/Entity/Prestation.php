@@ -13,6 +13,7 @@ use App\Controller\Prestation\PrestationDeleteController;
 use App\Controller\Prestation\PrestationPatchController;
 use App\Controller\Prestation\PrestationPictureController;
 use App\Controller\Prestation\PrestationUserController;
+use App\Controller\Prestation\PrestationUserGetController;
 use App\Repository\PrestationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,6 +24,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
+      new GetCollection(
+          uriTemplate: '/prestations/user/{id}',
+          controller: PrestationUserGetController::class,
+          normalizationContext: ['groups' => 'prestation:read:user'],
+          denormalizationContext: ['groups' => 'prestation:read:user'],
+          security: 'is_granted("ROLE_USER")',
+          paginationEnabled: false
+      ),
       new GetCollection(
           controller: PrestationUserController::class,
           normalizationContext: ['groups' => 'prestation:collection'],
@@ -120,17 +129,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Prestation
 {
-    #[Groups(['prestation:collection', 'prestation:read', 'user:read:artist', 'feedback:collections'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:read:user', 'user:read:artist', 'feedback:collections'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch', 'user:read:artist', 'feedback:collections', 'feedback:read'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:read:user', 'prestation:patch', 'user:read:artist', 'feedback:collections', 'feedback:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['prestation:collection', 'prestation:read', 'prestation:patch', 'user:read:artist', 'feedback:collections'])]
+    #[Groups(['prestation:collection', 'prestation:read', 'prestation:read:user', 'prestation:patch', 'user:read:artist', 'feedback:collections'])]
     #[ORM\Column(length: 255)]
     private ?\App\Enum\Kind $kind = null;
 
