@@ -69,6 +69,18 @@ export default function MainPage() {
 			setActiveTab('tabCurrentAppointments')
 	}, [])
 
+	const now = new Date();
+
+	const upcomingBookings = bookings.filter(booking => {
+		const bookingDate = booking.time ? new Date(booking.time) : null;
+		return bookingDate && bookingDate > now && booking.studio;
+	});
+
+	const pastBookings = bookings.filter(booking => {
+		const bookingDate = booking.time ? new Date(booking.time) : null;
+		return bookingDate && bookingDate < now && booking.studio;
+	});	
+
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
 
@@ -197,9 +209,8 @@ export default function MainPage() {
 							</div>
 						)}
 						<div>
-							{ bookings.filter((booking) => booking.time && booking.studio).length === 0 && <span>No Scheduled Appointements for now</span>}
-							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {
-								
+						{upcomingBookings.length === 0 && <span>No Scheduled Appointments for now</span>}
+							{upcomingBookings.map((book) => {
 								const date = new Date(book.time!)
 								{/* ========== Table rows ========== */}
 								return <AppointmentRow kind={'current'} key={book.id}
@@ -246,17 +257,35 @@ export default function MainPage() {
 						</div>
 						{/* ========== /Table header ========== */}
 
-						{/* ========== Table rows ========== */}
-						<AppointmentRow kind={'past'}
-							artistPicture='https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80'
-							artistUsername={'Jane'}
-							appointmentDate={'December 16, 2023'}
-							appointmentTime={'11:30 AM'}
-							address={'123 Main Street'}
-							city={'London'}
-							projectDescription={'Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores blanditiis labore, numquam quos sed sint sunt..'}
-						/>
-						{/* ========== /Table rows ========== */}
+						{errors && (
+							<div className='font-bold text-red-600 border-b border-white self-start'>
+								{errors}
+							</div>
+						)}
+						{success && (
+							<div className='font-bold text-green-600 border-b border-white self-start'>
+								{success}
+							</div>
+						)}
+						<div>
+						{pastBookings.length === 0 && <span>No appointments have been scheduled yet</span>}
+							{pastBookings.map((book) => {
+								const date = new Date(book.time!)
+
+								{/* ========== Table rows ========== */}
+								return (
+									<AppointmentRow kind={'past'} key={book.id}
+										artistPicture={book.tattooArtist.picture}
+										artistUsername={book.tattooArtist.username}
+										appointmentDate={format(date, 'MMMM dd, yyyy')}
+										appointmentTime={format(date, 'hh:mm a')}
+										address={book.studio?.location}
+										projectDescription={book.description}
+									/>
+								);
+								{/* ========== /Table rows ========== */}
+							})}
+						</div>
 
 					</Tabs.Content>
 					{/* ========= /TAB CONTENT: Past appointments ========== */}
