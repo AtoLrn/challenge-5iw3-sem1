@@ -23,7 +23,7 @@ class BookRequestDeleteController
 
         $request = $this->bookRequestRepository->find($id);
 
-        if ($request->getTattooArtist() !== $user) {
+        if ($request->getTattooArtist() !== $user || $request->getRequestingUser() !== $user) {
             throw new NotFoundHttpException('Not found');
         }
 

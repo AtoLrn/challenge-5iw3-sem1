@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import {AppointmentRow} from '../components/AppointmentRow.tsx'
 import {useTranslation} from 'react-i18next'
 import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
-import { getBookings } from 'src/utils/requests/booking.ts'
+import { deleteBooking, getBookings } from 'src/utils/requests/booking.ts'
 import { getSession } from 'src/session.server.ts'
 import { useLoaderData } from '@remix-run/react'
 import { format } from 'date-fns'
@@ -30,15 +30,39 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const bookings = await getBookings({ token })
 
 	return json({
-		bookings
+		bookings,
+		token
 	})
 }
 
 export default function MainPage() {
 
-	const { bookings } = useLoaderData<typeof loader>()
 	const [activeTab, setActiveTab ] = useState('tabBooking')
 	const { t } = useTranslation()
+	const { bookings: initialBookings, token } = useLoaderData<typeof loader>();
+	const [bookings, setBookings] = useState(initialBookings);
+
+
+	const [errors, setErrors] = useState<string | false>(false)
+	const [success, setSuccess] = useState<string | false>(false)
+
+	const cancelBooking = (bookingId: number) => {
+		const confirm = window.confirm('Are you sure you want to cancel this appointment?');
+	
+		if (confirm) {
+			deleteBooking({ token, bookingId })
+			.then(() => {
+				setSuccess('Appointment cancelled successfully');
+				const updatedBookings = bookings.filter(booking => booking.id !== bookingId);
+				setBookings(updatedBookings);
+				setErrors(false);
+			})
+			.catch(() => {
+				setErrors('Failed to cancel the appointment');
+				setSuccess(false);
+			});			
+		}
+	};	
 
 	useEffect(() => {
 		if (location.hash === '#upcoming')
@@ -107,7 +131,17 @@ export default function MainPage() {
 						{/* ========== /Table header ========== */}
 
 						{/* ========== Table rows ========== */}
-		
+
+						{errors && (
+							<div className='font-bold text-red-600 border-b border-white self-start'>
+								{errors}
+							</div>
+						)}
+						{success && (
+							<div className='font-bold text-green-600 border-b border-white self-start'>
+								{success}
+							</div>
+						)}
 						<div>
 							{ bookings.length === 0 && <span>No Appointements for now</span>}
 							{ bookings.map((book) => {
@@ -117,7 +151,7 @@ export default function MainPage() {
 									artistUsername={book.tattooArtist.username}
 									artistPicture={book.tattooArtist.picture}
 									projectDescription={book.description}
-									onCancel={() => alert(book.id)}
+									onCancel={() => cancelBooking(book.id)}
 								/>
 							})}
 						</div>
@@ -155,7 +189,6 @@ export default function MainPage() {
 						<div>
 							{ bookings.filter((booking) => booking.time && booking.studio).length === 0 && <span>No Scheduled Appointements for now</span>}
 							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {
-								console.log('ANTOINE2: ', book)
 								
 								const date = new Date(book.time!)
 								{/* ========== Table rows ========== */}

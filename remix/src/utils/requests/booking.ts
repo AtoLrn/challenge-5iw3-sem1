@@ -84,6 +84,23 @@ export const addLocationToBooking = async ({ token, bookingId, studioId, date }:
 	})
 }
 
+export const deleteBooking = async ({ token, bookingId }: any): Promise<boolean> => {
+	const res = await fetch(`https://localhost/book-request/${bookingId}`, {
+		method: 'DELETE',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Content-Type': 'application/ld+json'
+		},
+	})
+
+	if (res.status === 204) {
+		return true
+	}
+
+	const body = await res.json()
+
+	throw new Error(body['hydra:description'] ?? 'Error in the request')
+}
 
 
 export interface PatchBookingRequest extends BaseBookingRequest {
