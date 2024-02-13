@@ -3,7 +3,7 @@ import * as Accordion from '@radix-ui/react-accordion'
 
 import {Form, useLoaderData} from '@remix-run/react'
 import {getSession} from 'src/session.server'
-import {LoaderFunctionArgs, json, redirect} from '@remix-run/node'
+import {ActionFunctionArgs, LoaderFunctionArgs, json, redirect} from '@remix-run/node'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Marker, Map } from 'mapbox-gl'
@@ -13,15 +13,45 @@ import { FaArrowDown } from 'react-icons/fa6'
 import { motion as m } from 'framer-motion'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 import { getPartnerShipForUser } from 'src/utils/requests/partnership'
-import { getBookingById } from 'src/utils/requests/booking'
-import { addDays, addMinutes, differenceInDays, differenceInMinutes, isSameDay, setHours, setMinutes } from 'date-fns'
+import { addLocationToBooking, getBookingById } from 'src/utils/requests/booking'
+import { addDays, addMinutes, differenceInDays, differenceInMinutes, formatISO, isSameDay, setHours, setMinutes } from 'date-fns'
+import { z } from 'zod'
+import { zx } from 'zodix'
 
 export function meta() {
 	return [
 		{
-			title: 'Messages | INKIT',
+			title: 'Appointement | INKIT',
 		},
 	]
+}
+
+export const schema = z.object({
+	studioId: z.string().min(1),
+	date: z.string().min(1)
+})
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const token = session.get('token')
+
+	const { id: bookingId }= params
+
+	if (!token || !bookingId) {
+		return redirect(`/login?error=${'You need to login'}`)
+	}
+
+	const { studioId, date } = await zx.parseForm(request, schema)
+
+	await addLocationToBooking({
+		token,
+		bookingId,
+		studioId,
+		date
+	})
+
+	return redirect('/appointments#upcoming')
 }
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -72,13 +102,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		return acc
 	}, [])
 
-
 	return json({ accessToken: process.env.MAP_BOX_TOKEN,offDays, booking, studios })
 }
 
 export default function () {
 	const { accessToken, booking, studios, offDays } = useLoaderData<typeof loader>()
 	const [ openedModal, setOpenedModal ] = useState('studioSelection')
+	const [ slot, setSlot ] = useState<Date>()
 	
 	const [ selectedStudio, setSelectedStudio ] = useState<string>()
 	const map = useRef<Map>()
@@ -186,14 +216,16 @@ export default function () {
 			<div className='flex flex-col gap-4 container mx-auto'>
 				<Title kind='h1'>You are about to book your project !</Title>
 				<hr className='w-full' />
-				<Form method='POST'>
+				<Form method='POST' className='flex flex-col gap-4 items-end'>
+					<input type="hidden" name='studioId' value={selectedStudio} />
+					<input type="hidden" name='date' value={slot ? formatISO(slot) : ''} />
 					<Accordion.Root className="w-full flex flex-col gap-2" type="single" value={openedModal} onValueChange={(modal) => setOpenedModal(modal)} collapsible>
 						<Accordion.Item value="studioSelection">
 							<Accordion.Trigger className='w-full rounded-md border-2 flex px-4 py-2 justify-between items-center'>
 								<Title kind='h3'>Please choose the place you want to be tattooed</Title>
 								<FaArrowDown size={32} />
 							</Accordion.Trigger>
-							<Accordion.Content >
+							<Accordion.Content>
 								<m.div 
 									initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: '500px'}} exit={{ opacity: 0, height: 0 }} 
 									className='flex w-full gap-4 mt-2 p-8 bg-black bg-opacity-20 backdrop-blur-xl rounded-md'>
@@ -239,7 +271,7 @@ export default function () {
 									initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: '500px'}} exit={{ opacity: 0, height: 0 }} 
 									className='flex w-full gap-4 mt-2 p-8 bg-black bg-opacity-20 backdrop-blur-xl rounded-md'>
 									<div  className='flex-1'>
-										<TimePicker kind={TimePickerKind.SLOT} slots={slots} />
+										<TimePicker kind={TimePickerKind.SLOT} slots={slots} onChange={setSlot} />
 
 									</div>
 									<div className='flex-1'>
@@ -249,6 +281,9 @@ export default function () {
 							</Accordion.Content>
 						</Accordion.Item>
 					</Accordion.Root>
+					<button className="bg-transparent hover:bg-white text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+						Submit
+					</button>
 				</Form>
 
 			</div>

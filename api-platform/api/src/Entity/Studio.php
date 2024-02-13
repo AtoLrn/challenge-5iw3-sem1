@@ -119,14 +119,14 @@ class Studio
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['studio:read', 'partnership:read'])]
+    #[Groups(['studio:read', 'partnership:read', 'bookRequest:me:collection'])]
     private ?int $id = null;
 
-    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read', 'bookRequest:me:collection'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read', 'bookRequest:me:collection'])]
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
@@ -155,15 +155,15 @@ class Studio
     #[ORM\OneToMany(mappedBy: 'studioId', targetEntity: PartnerShip::class, orphanRemoval: true)]
     private Collection $partnerShips;
 
-    #[Groups(['studio:creation', 'studio:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'bookRequest:me:collection'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read', 'bookRequest:me:collection'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $openingTime = null;
 
-    #[Groups(['studio:creation', 'studio:read', 'partnership:read'])]
+    #[Groups(['studio:creation', 'studio:read', 'partnership:read', 'bookRequest:me:collection'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $closingTime = null;
 
@@ -203,10 +203,14 @@ class Studio
     #[Groups(['studio:creation', 'studio:read'])]
     private ?string $picture = null;
 
+    #[ORM\OneToMany(mappedBy: 'studio', targetEntity: BookRequest::class)]
+    private Collection $bookRequests;
+
 
     public function __construct()
     {
         $this->partnerShips = new ArrayCollection();
+        $this->bookRequests = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -496,6 +500,36 @@ class Studio
     public function setPicture(string $picture): static
     {
         $this->picture = $picture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BookRequest>
+     */
+    public function getBookRequests(): Collection
+    {
+        return $this->bookRequests;
+    }
+
+    public function addBookRequest(BookRequest $bookRequest): static
+    {
+        if (!$this->bookRequests->contains($bookRequest)) {
+            $this->bookRequests->add($bookRequest);
+            $bookRequest->setStudio($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBookRequest(BookRequest $bookRequest): static
+    {
+        if ($this->bookRequests->removeElement($bookRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($bookRequest->getStudio() === $this) {
+                $bookRequest->setStudio(null);
+            }
+        }
 
         return $this;
     }

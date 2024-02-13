@@ -1,4 +1,5 @@
 import { Message } from './message'
+import { Studio } from './studio'
 
 export interface UserChannel {
     id: number
@@ -10,6 +11,8 @@ export interface BookRequestChannel {
     id: number
     description: string
     book: boolean
+    time?: string
+    studio?: Studio
 }
 
 export interface Channel {

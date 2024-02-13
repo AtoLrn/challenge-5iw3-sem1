@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { Studio } from '../types/studio'
 
 export const userSchema = z.object({
 	id: z.number(),
@@ -19,6 +20,12 @@ export const bookingSchema = z.object({
 	chat: z.boolean(),
 	book: z.boolean(),
 	duration: z.string().optional(),
+	time: z.string().optional(),
+	studio: z.object({
+		id: z.number(),
+		name: z.string(),
+		location: z.string()
+	}).optional(),
 	requestingUser: userSchema,
 	tattooArtist: userSchema,
 	channel: channelSchema
@@ -63,7 +70,27 @@ export const getBookingById = async ({ token, bookingId }: GetBookingRequest): P
 	return parsed
 }
 
+export const addLocationToBooking = async ({ token, bookingId, studioId, date }: PatchBookingRequest): Promise<void> => {
+	await fetch(`${process.env.API_URL}/book-request/${bookingId}`, {
+		method: 'PATCH',
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Content-Type': 'application/merge-patch+json'
+		},
+		body: JSON.stringify({
+			studioId,
+			date
+		})
+	})
+}
 
+
+
+export interface PatchBookingRequest extends BaseBookingRequest {
+	bookingId: number | string
+	studioId: number | string
+	date: string
+}
 export interface GetBookingRequest extends BaseBookingRequest {
 	bookingId: number | string
 }
@@ -90,6 +117,8 @@ export interface Booking {
     tattooArtist: BookingUser
 	duration?: string
 	channel?: BookingChannel
+	time?: string
+	studio?: Partial<Studio>
 }
 
 

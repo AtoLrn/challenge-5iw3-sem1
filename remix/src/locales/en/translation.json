@@ -194,6 +194,7 @@
   "close": "Close",
   "book": "Book",
   "artist-book-ready": "You artist indicated that you can now choose a schedule to book your appointement",
+  "artist-book-scheduled": "Your appointement has been scheduled for the:",
   "submit": "Submit",
   "validate-demand": "Validation of the booking"
 }

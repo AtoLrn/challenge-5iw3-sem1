@@ -107,6 +107,14 @@ class BookRequest
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $duration = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    private ?\DateTimeInterface $time = null;
+
+    #[ORM\ManyToOne(inversedBy: 'bookRequests')]
+    #[Groups(['bookRequest:me:collection', 'bookRequest:patch', 'bookRequest:collection', 'channel:read', 'message:channel:read'])]
+    private ?Studio $studio = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -192,6 +200,30 @@ class BookRequest
     public function setDuration(?string $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getTime(): ?\DateTimeInterface
+    {
+        return $this->time;
+    }
+
+    public function setTime(?\DateTimeInterface $time): static
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    public function getStudio(): ?Studio
+    {
+        return $this->studio;
+    }
+
+    public function setStudio(?Studio $studio): static
+    {
+        $this->studio = $studio;
 
         return $this;
     }

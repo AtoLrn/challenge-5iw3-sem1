@@ -1,12 +1,13 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import {Title} from '../components/Title.tsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {AppointmentRow} from '../components/AppointmentRow.tsx'
 import {useTranslation} from 'react-i18next'
 import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { getBookings } from 'src/utils/requests/booking.ts'
 import { getSession } from 'src/session.server.ts'
 import { useLoaderData } from '@remix-run/react'
+import { format } from 'date-fns'
 
 export function meta() {
 	return [
@@ -34,16 +35,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export default function MainPage() {
+
 	const { bookings } = useLoaderData<typeof loader>()
-	const [activeTab, setActiveTab] = useState('tabBooking')
+	const [activeTab, setActiveTab ] = useState('tabBooking')
 	const { t } = useTranslation()
+
+	useEffect(() => {
+		if (location.hash === '#upcoming')
+			setActiveTab('tabCurrentAppointments')
+	}, [])
 
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4'>
 
 			<div className="container w-10/12 mx-auto">
 
-				<Tabs.Root className="TabsRoot mt-32" defaultValue="tabBooking">
+				<Tabs.Root className="TabsRoot mt-32" value={activeTab}>
 
 					{/* ========= TABS ========== */}
 					<Tabs.List className="TabsList flex mb-12 border-b-1 border-white" aria-label="Manage your appointments">
@@ -145,17 +152,26 @@ export default function MainPage() {
 						</div>
 						{/* ========== /Table header ========== */}
 
-						{/* ========== Table rows ========== */}
-						<AppointmentRow kind={'current'}
-							artistPicture='https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80'
-							artistUsername={'Jane'}
-							appointmentDate={'December 16, 2023'}
-							appointmentTime={'11:30 AM'}
-							address={'123 Main Street'}
-							city={'London'}
-							projectDescription={'Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores blanditiis labore, numquam quos sed sint sunt..'}
-						/>
-						{/* ========== /Table rows ========== */}
+						<div>
+							{ bookings.filter((booking) => booking.time && booking.studio).length === 0 && <span>No Scheduled Appointements for now</span>}
+							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {
+								console.log('ANTOINE2: ', book)
+								
+								const date = new Date(book.time!)
+								{/* ========== Table rows ========== */}
+								return <AppointmentRow kind={'current'} key={book.id}
+									artistPicture={book.tattooArtist.picture}
+									artistUsername={book.tattooArtist.username}
+									appointmentDate={format(date, 'MMMM dd, yyyy')}
+									appointmentTime={format(date, 'hh:mm a')}
+									address={book.studio.location!}
+									projectDescription={book.description}
+								/>
+								{/* ========== /Table rows ========== */}
+							
+							})}
+						</div>
+						
 
 					</Tabs.Content>
 					{/* ========= /TAB CONTENT: Upcoming appointments ========== */}

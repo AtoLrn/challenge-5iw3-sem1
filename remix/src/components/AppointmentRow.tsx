@@ -9,6 +9,7 @@ import {Title} from './Title.tsx'
 import { Badge } from './Pro/Badge.tsx'
 import { Validation } from 'src/utils/types/validation.ts'
 import { Link } from '@remix-run/react'
+import { useEffect, useState } from 'react'
 
 export interface AppointmentRowProps {
     kind: 'current' | 'past' | 'book',
@@ -24,7 +25,23 @@ export interface AppointmentRowProps {
 	onCancel?: () => unknown
 }
 
-export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, chatId, artistUsername, isChatting, artistPicture, appointmentDate, appointmentTime, address, city, projectDescription, onCancel}) => {
+export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, chatId, artistUsername, isChatting, artistPicture, appointmentDate, appointmentTime, address, projectDescription, onCancel}) => {
+	const [ fullAddress, setFullAddress ] = useState()
+
+
+	useEffect(() => {
+		if (address) {
+			fetch(`/api/address/${address}`).then((res) => res.json()).then((body) => {
+				const { locations } = body
+
+				const [ location ] = locations
+
+				setFullAddress(location.name)
+			})
+		}
+		
+	}, [])
+	
 	return (
 		<div className="flex flex-row items-center gap-8 border-b-1 pb-8 mb-8">
 			<div className="w-4/12 flex flex-row items-center gap-4">
@@ -70,10 +87,7 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, chatId, art
 					</div>
 					<div className="flex flex-col text-sm underline">
 						<div>
-							{address}
-						</div>
-						<div>
-							{city}
+							{fullAddress}
 						</div>
 					</div></> } 
 				

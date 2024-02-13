@@ -1,4 +1,5 @@
 import * as Popover from '@radix-ui/react-popover'
+import { formatISO } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io'
 
@@ -97,7 +98,6 @@ const Calendar: React.FC<CalendarProps> = ({ onChange, defaultValue, maxSelectab
 	useEffect(() => {
 		setSelectedMonth(viewingDate.getMonth())
 		setSelectedYear(viewingDate.getFullYear())
-
 	}, [viewingDate])
 
 	
@@ -183,18 +183,21 @@ export const TimePicker: React.FC<TimePickerProps> = (props) => {
 		setViewingDay(new Date(selectedYear, selectedMonth, 1))
 	}, [selectedYear, selectedMonth])
 
+	useEffect(() => {
+		if (selectedSlot) 
+			props.onChange?.(selectedSlot)
+	}, [selectedSlot])
+
 
 	return  <>
-		<input type="hidden" name={props.name} value={props.kind === TimePickerKind.DAY 
-			? `${ selectedDate.getDate().toString().padStart(2, '0') }-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getFullYear()}` 
-			: `${ selectedDate.getDate().toString().padStart(2, '0') }-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getFullYear()}`} />
+		<input type="hidden" name={props.name} value={formatISO(selectedDate)} />
 		<Popover.Root>
 
 			<Popover.Trigger asChild>
 				<span className='flex items-center gap-4 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-700 hover:border-red-400 duration-300'>
 					{ props.kind === TimePickerKind.DAY && <span>{ selectedDate.getDate().toString().padStart(2, '0') }-{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-{selectedDate.getFullYear()}</span>}
 					{ props.kind === TimePickerKind.SLOT && (selectedSlot 
-						? <><span>{ selectedSlot.getDate() }-{selectedSlot.getMonth()}-{selectedSlot.getFullYear()}</span><span>{ selectedSlot.getHours().toString().padStart(2, '0') }h{selectedSlot.getMinutes().toString().padStart(2, '0') }</span></>
+						? <><span>{ selectedSlot.getDate().toString().padStart(2, '0') }-{(selectedSlot.getMonth() + 1).toString().padStart(2, '0')}-{selectedSlot.getFullYear().toString().padStart(2, '0')}</span><span>:</span><span>{ selectedSlot.getHours().toString().padStart(2, '0') }h{selectedSlot.getMinutes().toString().padStart(2, '0') }</span></>
 						: <span>Please select a slot</span>) }
 				</span>
 			</Popover.Trigger>
@@ -265,7 +268,8 @@ export const TimePicker: React.FC<TimePickerProps> = (props) => {
 						</Popover.Close >
 						<Popover.Close
 							onClick={() => {
-								props.onChange?.(selectedDate)
+								if (props.kind !== TimePickerKind.SLOT)
+									props.onChange?.(selectedDate)
 							}}
 							className='flex-1 cursor-pointer outline-none bg-opacity-30 backdrop-blur-lg bg-black px-2 py-1 text-base rounded-md border border-gray-600 hover:border-red-400 duration-300'>
 						Confirm

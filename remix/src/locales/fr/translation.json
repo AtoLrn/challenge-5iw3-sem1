@@ -182,6 +182,7 @@
   "close": "Fermer",
   "book": "Réserver",
   "artist-book-ready": "Votre artiste a ouvert la reservation pour ce projet, vous pouvez donc réserver votre créneau",
+  "artist-book-scheduled": "Votre a bien ete pris en compte pour:",
   "submit": "Valider",
   "validate-demand": "Validation de la demande"
 }

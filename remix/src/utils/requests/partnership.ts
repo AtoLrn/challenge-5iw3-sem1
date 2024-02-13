@@ -21,7 +21,7 @@ export const partnerShipSchema = z.object({
 		dayOffs: z.array(z.object({
 			startDate: z.string().min(1), 
 			endDate: z.string().min(1),
-		}))
+		})).optional()
 	}).optional(),
 }) 
 

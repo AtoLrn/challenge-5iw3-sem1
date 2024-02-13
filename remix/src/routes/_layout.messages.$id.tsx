@@ -11,6 +11,7 @@ import { Message as MessageI } from '../utils/types/message'
 import {useEffect, useRef, useState} from 'react'
 import { formatDate } from '../utils/date'
 import {useTranslation} from 'react-i18next'
+import { format } from 'date-fns'
 
 
 export function meta() {
@@ -140,12 +141,23 @@ export default function () {
 								{ currentChannel?.description }
 							</span>
 						</div>
-						{ currentChannel?.bookRequest.book && <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
+						{ currentChannel?.bookRequest.book && !currentChannel?.bookRequest.time 
+						&& <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
 							<span>{t('artist-book-ready')}</span>
 							<Link to={`/book/${currentChannel.bookRequest.id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 								{t('book')}
 							</Link>
-						</div>}
+						</div>
+						}
+
+						{ currentChannel?.bookRequest.book && currentChannel?.bookRequest.time 
+						&& <div className="flex gap-2 sticky top-0 px-4 py-6 border-b justify-between items-center">
+							<span>{t('artist-book-scheduled')} <b>{format(new Date(currentChannel.bookRequest.time), 'dd-MM-yyyy')}</b></span>
+							<Link to={'/appointments#upcoming'} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+								{t('view')}
+							</Link>
+						</div>
+						}
 
 						{/* ========== Messages ========== */}
 						<div className="h-full overflow-y-scroll p-4 flex flex-col space-y-2">
