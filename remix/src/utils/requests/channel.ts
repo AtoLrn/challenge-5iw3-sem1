@@ -57,6 +57,8 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 	    throw new Error(body['hydra:description'] ?? 'Error in the request')
 	}
 
+	body.messages.sort((a: Message, b: Message) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
+
 	const formatBody = {
 		id: body.id,
 		description: body.description,
@@ -86,7 +88,6 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 		})
 	}
 
-	formatBody.messages.sort((a: Message, b: Message) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
 
 	return formatBody
 }

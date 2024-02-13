@@ -35,6 +35,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	try {
 		const channel = await getChannel(token, params.id as string)
+        console.log(channel.messages)
         
 	    return json({
 			channel,
@@ -227,7 +228,7 @@ export default function () {
 					
 				</div>
 
-				<div className='flex flex-col overflow-x-auto grow'>
+				<div className='flex flex-col overflow-scroll grow'>
 					{/* ========== Messages ========== */}
 					{messages.map((message: MessageI) => {
 						let kind: 'received' | 'sent'
@@ -247,7 +248,7 @@ export default function () {
 
 
 				{ errors.map((error) => {
-					return <div className='mb-16 font-bold text-red-600 border-b border-white self-start' key={error}>
+					return <div className='font-bold text-red-600 border-b border-white self-start' key={error}>
 						{error}
 					</div>
 				})}
