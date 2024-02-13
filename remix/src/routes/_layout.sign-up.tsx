@@ -32,8 +32,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 		const formData = await request.formData()
 
-		const phoneNumber = formData.get("phoneNumber")?.toString() || "";
-		formData.set("phoneNumber", phoneNumber);
+		const phoneNumber = formData.get('phoneNumber')?.toString() || ''
+		formData.set('phoneNumber', phoneNumber)
 
 		formData.set('isProfessional', isProfessional.toString())
 		formData.delete('passwordConfirm')

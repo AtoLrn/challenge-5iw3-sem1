@@ -1,3 +1,4 @@
+import {formatDate} from '../date'
 import { Channel, GetChannelAs } from '../types/channel'
 import { Message } from '../types/message'
 
@@ -74,7 +75,7 @@ export const getChannel = async (token: string, id: string): Promise<Channel> =>
 			return {
 				id: message.id,
 				content: message.content,
-				createdAt: message.createdAt,
+				createdAt: formatDate(message.createdAt),
 				picture: message.picture,
 				sender: {
 					id: message.sender.id,
