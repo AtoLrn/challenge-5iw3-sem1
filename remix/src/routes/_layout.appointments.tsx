@@ -7,7 +7,7 @@ import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { getBookings } from 'src/utils/requests/booking.ts'
 import { getSession } from 'src/session.server.ts'
 import { useLoaderData } from '@remix-run/react'
-import { format } from 'date-fns'
+import { format, isBefore, subHours } from 'date-fns'
 
 export function meta() {
 	return [
@@ -70,15 +70,6 @@ export default function MainPage() {
 								{t('upcoming-appointments')}
 							</Title>
 						</Tabs.Trigger>
-						<Tabs.Trigger
-							className={`TabsTrigger py-2 px-8 ${activeTab === 'tabPastAppointments' ? 'bg-white text-black' : ''}`}
-							value="tabPastAppointments"
-							onClick={() => setActiveTab('tabPastAppointments')}>
-							<Title kind={'h3'}>
-								{t('past-appointments')}
-							</Title>
-						</Tabs.Trigger>
-						
 					</Tabs.List>
 					{/* ========= /TABS ========== */}
                     
@@ -111,7 +102,9 @@ export default function MainPage() {
 						<div>
 							{ bookings.length === 0 && <span>No Appointements for now</span>}
 							{ bookings.map((book) => {
-								return <AppointmentRow key={book.id} kind={'book'}
+								return <AppointmentRow 
+									id={book.id}
+									key={book.id} kind={'book'}
 									chatId={book.channel?.id}
 									isChatting={book.chat}
 									artistUsername={book.tattooArtist.username}
@@ -157,9 +150,12 @@ export default function MainPage() {
 							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {
 								console.log('ANTOINE2: ', book)
 								
-								const date = new Date(book.time!)
+								const date = subHours(new Date(book.time!), 1)
+
+								const now = new Date()
 								{/* ========== Table rows ========== */}
-								return <AppointmentRow kind={'current'} key={book.id}
+								return <AppointmentRow kind={isBefore(date, now) ? 'past' : 'current'} key={book.id}
+									id={book.id}
 									artistPicture={book.tattooArtist.picture}
 									artistUsername={book.tattooArtist.username}
 									appointmentDate={format(date, 'MMMM dd, yyyy')}
@@ -175,47 +171,6 @@ export default function MainPage() {
 
 					</Tabs.Content>
 					{/* ========= /TAB CONTENT: Upcoming appointments ========== */}
-
-					{/* ========= TAB CONTENT: Past appointments ========== */}
-					<Tabs.Content className="TabsContent" value="tabPastAppointments">
-
-						{/* ========== Table header ========== */}
-						<div className="flex flex-row gap-8 mb-8">
-							<div className="w-4/12">
-								<Title kind={'h4'}>
-									{t('artist')}
-								</Title>
-							</div>
-							<div className="w-3/12">
-								<Title kind={'h4'}>
-									{t('date')} & {t('time')}
-								</Title>
-							</div>
-							<div className="w-3/12">
-								<Title kind={'h4'}>
-									{t('location')}
-								</Title>
-							</div>
-							<div className="w-2/12">
-                                &nbsp;
-							</div>
-						</div>
-						{/* ========== /Table header ========== */}
-
-						{/* ========== Table rows ========== */}
-						<AppointmentRow kind={'past'}
-							artistPicture='https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80'
-							artistUsername={'Jane'}
-							appointmentDate={'December 16, 2023'}
-							appointmentTime={'11:30 AM'}
-							address={'123 Main Street'}
-							city={'London'}
-							projectDescription={'Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores blanditiis labore, numquam quos sed sint sunt..'}
-						/>
-						{/* ========== /Table rows ========== */}
-
-					</Tabs.Content>
-					{/* ========= /TAB CONTENT: Past appointments ========== */}
                     
 				</Tabs.Root>
 

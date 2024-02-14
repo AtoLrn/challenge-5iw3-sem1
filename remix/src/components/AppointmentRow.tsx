@@ -12,6 +12,7 @@ import { Link } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 
 export interface AppointmentRowProps {
+	id: number
     kind: 'current' | 'past' | 'book',
     artistUsername: string,
 	artistPicture: string,
@@ -25,7 +26,7 @@ export interface AppointmentRowProps {
 	onCancel?: () => unknown
 }
 
-export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, chatId, artistUsername, isChatting, artistPicture, appointmentDate, appointmentTime, address, projectDescription, onCancel}) => {
+export const AppointmentRow: React.FC<AppointmentRowProps> = ({ id, kind, chatId, artistUsername, isChatting, artistPicture, appointmentDate, appointmentTime, address, projectDescription, onCancel}) => {
 	const [ fullAddress, setFullAddress ] = useState()
 
 
@@ -164,9 +165,9 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({kind, chatId, art
 											</button>
 										</Dialog.Close>
 										<Dialog.Close asChild>
-											<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+											<Link to={`/book/${id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 												{t('reschedule')}
-											</button>
+											</Link>
 										</Dialog.Close>
 									</>
 								) }

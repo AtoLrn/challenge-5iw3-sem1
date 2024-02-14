@@ -171,6 +171,8 @@ export default function () {
 			return []
 		}
 
+		const now = new Date()
+
 
 		const unallowedDays = offDays?.reduce<Date[]>((acc, [ start, end ]) => {
 			const startDate = new Date(start)
@@ -219,6 +221,10 @@ export default function () {
 					if (isSameMinute(slot, unallowedSlot.startDate)) {
 						return true
 					}
+
+					if (isBefore(slot, now)) {
+						return true
+					}
 					
 					if ((isBefore(slot, unallowedSlot.startDate)) && isBefore(slot, unallowedSlot.endDate) ) {
 						return false
@@ -227,8 +233,6 @@ export default function () {
 					if (isAfter(endSlot, unallowedSlot.startDate) && isAfter(endSlot, unallowedSlot.endDate) ) {
 						return false
 					}
-
-					
 
 					return true
 				})

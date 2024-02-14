@@ -11,6 +11,7 @@ import {getSession} from 'src/session.server'
 import {createPreBook} from 'src/utils/requests/pre-book'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import { me } from 'src/utils/requests/me'
 
 const schema = z.object({
 	description: z.string().min(1),
@@ -22,6 +23,17 @@ export const meta: MetaFunction = () => {
 			title: 'Artist'
 		}
 	]
+}
+
+const checkUser = async (token: string) => {
+	try {
+		return  await me({
+			token
+		})
+	} catch {
+		return undefined
+	}
+	
 }
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -48,7 +60,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	return json({
 		artist,
-		isLogged: token ? true : false,
+		isLogged: token ? !!checkUser(token) : false,
 		errors: [error],
 		success: success
 	})
