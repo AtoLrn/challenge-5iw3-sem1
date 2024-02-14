@@ -135,18 +135,7 @@ export default function () {
 	}, [messages])
 
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
-		<BreadCrumb routes={[
-			{
-				name: 'Home',
-				url: '/pro'
-			},{
-				name: 'Chat',
-				url: '/pro/chat'
-			},{
-				name: channel.requestingUser.username,
-				url: `/pro/chat/${channel.id}`
-			}
-		]}/>
+
 		<div className="w-full h-full">
 
 			<div className="flex flex-col h-full">
