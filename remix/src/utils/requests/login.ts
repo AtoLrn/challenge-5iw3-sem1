@@ -7,29 +7,24 @@ const schema = z.object({
 
 
 export const login = async (props: Login): Promise<string> => {
-	try {
-		const res = await fetch(`${process.env.API_URL}/login`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(props)
-		})
+	const res = await fetch(`${process.env.API_URL}/login`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(props)
+	})
 	
-		const body = await res.json()
+	const body = await res.json()
 		
-		const { token, message } = schema.parse(body)
+	const { token, message } = schema.parse(body)
 	
-		if (message || !token) {
-			throw new Error(message ?? 'Error in the request')
-		}
-		
-		return token
-	} catch (e) {
-		console.log(e)
-		throw new Error('Our server encountered an error')
+	if (message || !token) {
+		throw new Error(message ?? 'Error in the request')
 	}
-	
+		
+	return token
+
 }
 
 export interface Login {
