@@ -3,6 +3,7 @@ import { t } from 'i18next'
 import { useState } from 'react'
 import { Validation } from 'src/utils/types/validation'
 import * as HoverCard from '@radix-ui/react-hover-card'
+import { useTranslation } from 'react-i18next'
 
 export interface WeekViewerProps {
     events: {
@@ -41,11 +42,11 @@ export interface DayProps {
 }
 
 const Day: React.FC<DayProps> = ({ startDate, endDate, action }) => {
-	
+	const { t } = useTranslation()
 	return <HoverCard.Root>
 		<HoverCard.Trigger asChild>
 			<div  className='w-full'>
-				Off Days
+				{t('day-off')}
 			</div>
 		</HoverCard.Trigger>
 		<HoverCard.Portal>
@@ -64,6 +65,8 @@ const Day: React.FC<DayProps> = ({ startDate, endDate, action }) => {
 }
 
 export const WeekViewer: React.FC<WeekViewerProps> = ({ events }) => {
+	const { t } = useTranslation()
+
 	const [ viewingDate, setViewingDate ] = useState(startOfWeek(new Date(), {
 		weekStartsOn: 1
 	}))
@@ -85,13 +88,13 @@ export const WeekViewer: React.FC<WeekViewerProps> = ({ events }) => {
 		<div className='w-full flex items-center justify-between gap-4 backdrop-blur-md rounded-lg bg-black bg-opacity-30'>
 			<button className='px-2 py-2 bg-transparent rounded-lg text-white' onClick={() => setViewingDate(sub(viewingDate, {
 				weeks: 1
-			}))}> Previous </button>
+			}))}> {t('previous')} </button>
 			<span>
                 Week of the <b>{viewingDate.getDate()} { months[viewingDate.getMonth()] }</b>
 			</span>
 			<button className='px-2 py-2 bg-transparent rounded-lg text-white' onClick={() => setViewingDate(add(viewingDate, {
 				weeks: 1
-			}))}> Next </button>
+			}))}> {t('next')} </button>
 		</div>
 		<div className='relative'>
 			<div className='w-full grid grid-cols-7 gap-6'>

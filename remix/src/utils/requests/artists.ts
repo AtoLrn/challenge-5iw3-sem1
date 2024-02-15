@@ -56,7 +56,6 @@ export const getArtist = async ({ name }: { name: string }): Promise<Artist> => 
 	const res = await fetch(`${process.env.API_URL}/artists/${name}`)
 	
 	const body = await res.json()
-    console.log(body)
 
 	const artist = schemaArtistProfile.parse(body)
 

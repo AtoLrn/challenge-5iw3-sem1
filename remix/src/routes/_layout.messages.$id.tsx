@@ -40,11 +40,11 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	try {
 		const channel = await getChannel(token, params.id as string)
-        const artistPrestations = await getPrestationsFromUser(token, channel.tattooArtist.id)
+		const artistPrestations = await getPrestationsFromUser(token, channel.tattooArtist.id)
         
 	    return json({
 			channel,
-            artistPrestations,
+			artistPrestations,
 			errors: [error]
 		})
 	} catch (e) {
@@ -65,24 +65,24 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 			return redirect(`/login?error=${'You need to login'}`)
 		}
 
-        switch(requestType) {
-            case 'message':
-                formData.set('channelId', params.id as string)
+		switch(requestType) {
+		case 'message':
+			formData.set('channelId', params.id as string)
 
-                await sendMessage(formData, token)
-                break
-            case 'leave-review':
-                await createFeedback(
-                    token,
-                    {
-                        rating: Number(formData.get("rating")),
-                        comment: formData.get("comment")?.toString() as string
-                    },
-                    formData.get("prestation") as string
-                )
-            default:
-                break
-        }
+			await sendMessage(formData, token)
+			break
+		case 'leave-review':
+			await createFeedback(
+				token,
+				{
+					rating: Number(formData.get('rating')),
+					comment: formData.get('comment')?.toString() as string
+				},
+                    formData.get('prestation') as string
+			)
+		default:
+			break
+		}
 
 		return redirect(`/messages/${params.id}`)
 	} catch (e) {
@@ -164,53 +164,53 @@ export default function () {
 					<Link to={`/book/${channel.bookRequest.id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 						{t('book')}
 					</Link>
-                    <Dialog.Root open={isDialogOpen}>
-                        <Dialog.Trigger asChild>
-                            <button onClick={() => setIsDialogOpen(true)} className="bg-transparent hover:bg-white text-white hover:text-black text-sm border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-                                {t('leave-review')}
-                            </button>
-                        </Dialog.Trigger>
-                        <Dialog.Portal>
-                            <Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
-                            <Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-6 z-20 bg-zinc-600 bg-opacity-30 w-2/6 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
-                                <Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
+					<Dialog.Root open={isDialogOpen}>
+						<Dialog.Trigger asChild>
+							<button onClick={() => setIsDialogOpen(true)} className="bg-transparent hover:bg-white text-white hover:text-black text-sm border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
+								{t('leave-review')}
+							</button>
+						</Dialog.Trigger>
+						<Dialog.Portal>
+							<Dialog.Overlay className="top-0 left-0 absolute w-screen h-screen bg-zinc-900 bg-opacity-70 z-10 backdrop-blur-sm" />
+							<Dialog.Content className="flex flex-col items-stretch justify-start gap-4 p-6 z-20 bg-zinc-600 bg-opacity-30 w-2/6 top-1/2 left-1/2 fixed -translate-x-1/2 -translate-y-1/2 rounded-lg text-white">
+								<Form onSubmit={() => setIsDialogOpen(false)} encType='multipart/form-data' method='POST' className='flex flex-col gap-2'>
 					                <input value="leave-review" name="request-type" readOnly hidden />
-                                    <div className='flex flex-col gap-2'>
-                                        <Title kind={'h2'}>
-                                            {t('review')}
-                                        </Title>
-                                    </div>
-                                    <hr className='pb-4' />
-                                    <div className='flex flex-col pb-4 flex items-start gap-2'>
-                                        <div className='flex flex-col gap-4 mb-10'>
-                                            <label htmlFor="rating" className='text-white font-bold'>{t('rating')}</label>
-                                            <input required type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
-                                        </div>
-                                        <div className='flex flex-col gap-4 mb-10'>
-                                            <label htmlFor="prestation" className='text-white font-bold'>Prestation</label>
-                                            <select required name="prestation" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300">
-                                                {artistPrestations.map((prestation) => {
-                                                    return <option value={prestation.id}>{prestation.name}</option>
-                                                })}
-                                            </select>
-                                        </div>
-                                        <div className='flex flex-col'>
-                                            <label htmlFor="comment" className='text-white font-bold'>{t('comment')}</label>
-                                            <textarea required cols={50} rows={8} placeholder={t('description')} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' />
-                                        </div>
-                                    </div>
-                                    <div className='flex gap-2 items-center justify-end w-full'>
-                                        <Dialog.Close asChild>
-                                            <button onClick={() => {
-                                                setIsDialogOpen(false)
-                                            }} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
-                                        </Dialog.Close>
-                                        <button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('send')}</button>
-                                    </div>
-                                </Form>
-                            </Dialog.Content>
-                        </Dialog.Portal>
-                    </Dialog.Root>
+									<div className='flex flex-col gap-2'>
+										<Title kind={'h2'}>
+											{t('review')}
+										</Title>
+									</div>
+									<hr className='pb-4' />
+									<div className='flex flex-col pb-4 flex items-start gap-2'>
+										<div className='flex flex-col gap-4 mb-10'>
+											<label htmlFor="rating" className='text-white font-bold'>{t('rating')}</label>
+											<input required type="number" max={5} min={1} name="rating" placeholder={t('rating')} className="w-1/3 bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300"/>
+										</div>
+										<div className='flex flex-col gap-4 mb-10'>
+											<label htmlFor="prestation" className='text-white font-bold'>Prestation</label>
+											<select required name="prestation" className="bg-transparent outline-none border-white border-b hover:border-b-[1.5px] placeholder-gray-300 transition ease-in-out duration-300">
+												{artistPrestations.map((prestation) => {
+													return <option value={prestation.id}>{prestation.name}</option>
+												})}
+											</select>
+										</div>
+										<div className='flex flex-col'>
+											<label htmlFor="comment" className='text-white font-bold'>{t('comment')}</label>
+											<textarea required cols={50} rows={8} placeholder={t('description')} className='resize-y my-4 bg-transparent border-1 border-white' name='comment' id='comment' />
+										</div>
+									</div>
+									<div className='flex gap-2 items-center justify-end w-full'>
+										<Dialog.Close asChild>
+											<button onClick={() => {
+												setIsDialogOpen(false)
+											}} className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('cancel')}</button>
+										</Dialog.Close>
+										<button className="outline-none px-4 py-2 bg-gray-700 rounded-md text-white">{t('send')}</button>
+									</div>
+								</Form>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</Dialog.Root>
 				</div>}
 
 				{/* ========== Messages ========== */}

@@ -3,11 +3,14 @@ import {Title} from '../components/Title.tsx'
 import { useEffect, useState } from 'react'
 import {AppointmentRow} from '../components/AppointmentRow.tsx'
 import {useTranslation} from 'react-i18next'
-import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { getBookings } from 'src/utils/requests/booking.ts'
 import { getSession } from 'src/session.server.ts'
-import { useLoaderData } from '@remix-run/react'
+import { useFetcher, useLoaderData } from '@remix-run/react'
 import { format, isBefore, subHours } from 'date-fns'
+import { deletePreBook } from 'src/utils/requests/pre-book.ts'
+import { z } from 'zod'
+import { zx } from 'zodix'
 
 export function meta() {
 	return [
@@ -17,6 +20,32 @@ export function meta() {
 	]
 }
 
+const actionSchema = z.object({
+	id: z.string()
+}) 
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	const token = session.get('token')
+
+	if (!token) {
+		return redirect('/login')
+	}
+	try {
+		const { id } = await zx.parseForm(request, actionSchema)
+	
+		await deletePreBook(token, id)
+	
+		return json({
+			status: 200
+		})
+	} catch {
+		return json({
+			status: 400
+		})
+	}
+}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const session = await getSession(request.headers.get('Cookie'))
@@ -35,10 +64,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export default function MainPage() {
-
 	const { bookings } = useLoaderData<typeof loader>()
 	const [activeTab, setActiveTab ] = useState('tabBooking')
 	const { t } = useTranslation()
+
+	const fetcher = useFetcher()
+
+	const onCancel = (id: string | number) => {
+		const isConfirmed = confirm(t('are-you-sure-delete'))
+
+		if (isConfirmed)
+			fetcher.submit({
+				id
+			}, {
+				method: 'POST'
+			})
+	}
 
 	useEffect(() => {
 		if (location.hash === '#upcoming')
@@ -110,7 +151,7 @@ export default function MainPage() {
 									artistUsername={book.tattooArtist.username}
 									artistPicture={book.tattooArtist.picture}
 									projectDescription={book.description}
-									onCancel={() => alert(book.id)}
+									onCancel={() => onCancel(book.id)}
 								/>
 							})}
 						</div>
@@ -147,9 +188,7 @@ export default function MainPage() {
 
 						<div>
 							{ bookings.filter((booking) => booking.time && booking.studio).length === 0 && <span>No Scheduled Appointements for now</span>}
-							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {
-								console.log('ANTOINE2: ', book)
-								
+							{ bookings.filter((booking) => booking.time && booking.studio).map((book) => {								
 								const date = subHours(new Date(book.time!), 1)
 
 								const now = new Date()

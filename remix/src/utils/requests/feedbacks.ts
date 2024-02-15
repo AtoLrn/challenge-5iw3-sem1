@@ -1,4 +1,4 @@
-import {FeedBackCreate} from "../types/feedback"
+import {FeedBackCreate} from '../types/feedback'
 
 export const createFeedback = async (token: string, data: FeedBackCreate, id: string): Promise<true> => {
 	const response = await fetch(`${process.env.API_URL}/prestation/${id}/feedbacks`, {
@@ -10,7 +10,6 @@ export const createFeedback = async (token: string, data: FeedBackCreate, id: st
 		},
 		body: JSON.stringify(data),
 	})
-    console.log(response)
 
 	if(response.status === 201) {
 		return true

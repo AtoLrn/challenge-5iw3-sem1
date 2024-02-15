@@ -35,7 +35,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	try {
 		const channel = await getChannel(token, params.id as string)
-        console.log(channel.messages)
         
 	    return json({
 			channel,

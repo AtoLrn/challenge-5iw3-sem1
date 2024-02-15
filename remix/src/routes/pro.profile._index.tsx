@@ -128,7 +128,7 @@ export default function () {
 	return (
 		<div className="flex-1 p-8 flex flex-col gap-8 text-white">
 			<Title kind="h2">{t('profile')}</Title>
-			<Link to={'/pro/profile/day'}>
+			<Link className="px-4 py-2 bg-gray-700 rounded-lg text-white self-start" to={'/pro/profile/day'}>
 				{t('day-off')}
 			</Link>
 
@@ -222,7 +222,7 @@ export default function () {
 							</table>
 							{appointments.length > 5 && (
 								<a
-									href={'/pro/dashboard'}
+									href={'/pro/booking'}
 									title={t('see-more-appointments')}
 									className="bg-red-950 text-white px-4 py-2 rounded-md shadow-md mt-4 hover:bg-red-900 edit-btn"
 								>

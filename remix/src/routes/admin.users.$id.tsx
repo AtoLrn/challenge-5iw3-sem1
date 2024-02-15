@@ -66,7 +66,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		description !== user.description ? updatedUser.description = description : null
 		isBanned !== user.isBanned ? updatedUser.isBanned = isBanned : null
 		isVerified !== user.verified ? updatedUser.verified = isVerified : null
-		console.log(user.roles)
+
 		updatedUser.roles = user.roles
 
 		await patchUser(token, params.id, updatedUser)

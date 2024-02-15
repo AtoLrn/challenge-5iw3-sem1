@@ -11,9 +11,9 @@ export const ProNavigation: React.FC<NavigationProps> = ({ user }) => {
 
 	const links = [
 		{
-			name: t('dashboard'),
-			url: '/pro/dashboard'
-		},
+			name: t('appointments'),
+			url: '/pro/booking'
+		},		
 		{
 			name: 'Studios',
 			url: '/pro/studios'

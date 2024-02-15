@@ -17,6 +17,7 @@ import { addLocationToBooking, getBookingById, getUnallowerSlots } from 'src/uti
 import { addDays, addMinutes, differenceInDays, differenceInMinutes, formatISO, isAfter, isBefore, isSameDay, isSameMinute, setHours, setMinutes } from 'date-fns'
 import { z } from 'zod'
 import { zx } from 'zodix'
+import { t } from 'i18next'
 
 export function meta() {
 	return [
@@ -249,7 +250,7 @@ export default function () {
 	return (
 		<main className='min-h-screen min-w-full gradient-bg text-white flex flex-col gap-4 pt-32'>
 			<div className='flex flex-col gap-4 container mx-auto'>
-				<Title kind='h1'>You are about to book your project !</Title>
+				<Title kind='h1'>{t('about-to-book')}</Title>
 				<hr className='w-full' />
 				<Form method='POST' className='flex flex-col gap-4 items-end'>
 					<input type="hidden" name='studioId' value={selectedStudio} />
@@ -257,7 +258,7 @@ export default function () {
 					<Accordion.Root className="w-full flex flex-col gap-2" type="single" value={openedModal} onValueChange={(modal) => setOpenedModal(modal)} collapsible>
 						<Accordion.Item value="studioSelection">
 							<Accordion.Trigger className='w-full rounded-md border-2 flex px-4 py-2 justify-between items-center'>
-								<Title kind='h3'>Please choose the place you want to be tattooed</Title>
+								<Title kind='h3'>{t('select-location')}</Title>
 								<FaArrowDown size={32} />
 							</Accordion.Trigger>
 							<Accordion.Content>
@@ -298,7 +299,7 @@ export default function () {
 						</Accordion.Item>
 						<Accordion.Item value="timeSelection">
 							<Accordion.Trigger className='w-full rounded-md border-2 flex px-4 py-2 justify-between items-center'>
-								<Title kind='h3'>Please choose the schedule</Title>
+								<Title kind='h3'>{t('select-schedule')}</Title>
 								<FaArrowDown size={32} />
 							</Accordion.Trigger>
 							<Accordion.Content >
@@ -310,7 +311,7 @@ export default function () {
 
 									</div>
 									<div className='flex-1'>
-										<span>Your appointement time will be of: <b>{booking.duration}</b></span>
+										<span>{t('appointement-duration')}: <b>{booking.duration}</b></span>
 									</div>
 								</m.div>
 							</Accordion.Content>

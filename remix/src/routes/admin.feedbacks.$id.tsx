@@ -43,10 +43,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 			comment: comment ? String(comment) : undefined,
 		})
 
-		console.log('result', result)
-
 		if (!result.success) {
-			console.log('result.error', result.error)
 			throw new Error('Invalid form data', result.error)
 		}
 
@@ -62,7 +59,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 		return redirect(`/admin/feedbacks/${params.id}?success=true`)
 	} catch (e) {
-		console.error(e) // Ajouter un log pour déboguer
 		if (e instanceof Error) {
 			return redirect(`/admin/feedbacks/${encodeURIComponent(params.id)}?error=${encodeURIComponent(e.message)}`)
 		}
@@ -101,8 +97,6 @@ export default function () {
 	const { t } = useTranslation()
 	const { feedback, errors, success } = useLoaderData<typeof loader>()
 	const navigate = useNavigate()
-
-	console.log('feedback', feedback)
 
 	const [rating, setRating] = React.useState(feedback.rating)
 	const [comment, setComment] = React.useState(feedback.comment)

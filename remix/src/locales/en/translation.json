@@ -211,5 +211,12 @@
   "feedback-deleted": "Feedback deleted successfully",
   "name": "Name",
   "leave-review": "Leave Review",
-  "send": "Send"
+  "send": "Send",
+  "next": "Next",
+  "previous": "Previous",
+  "about-to-book": "You are about to book your project !",
+  "select-location": "Please choose the place you want to be tattooed",
+  "select-schedule": "Please choose the schedule",
+  "appointement-duration": "Your appointement time will be of",
+  "are-you-sure-delete": "Are you sure you want to delete this booking ?"
 }

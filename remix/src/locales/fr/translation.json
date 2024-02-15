@@ -198,5 +198,12 @@
   "feedback-deleted": "Avis supprimé avec succès !",
   "name": "Nom",
   "leave-review": "Laisser un avis",
-  "send": "Envoyer"
+  "send": "Envoyer",
+  "next": "Precedent",
+  "previous": "Suivant",
+  "about-to-book": "Vous allez pouvoir reserver votre projet !",
+  "select-location": "Veuillez choisir le studio",
+  "select-schedule": "Ainsi que l'horaire",
+  "appointement-duration": "Votre rendez-vous va durer",
+  "are-you-sure-delete": "Etes vous sûr de vouloir supprimer votre rendez-vous"
 }

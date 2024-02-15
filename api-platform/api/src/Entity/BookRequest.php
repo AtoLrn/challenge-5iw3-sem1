@@ -12,6 +12,7 @@ use App\Controller\BookRequest\BookRequestCreateController;
 use App\Controller\BookRequest\BookRequestDeleteController;
 use App\Controller\BookRequest\BookRequestArtistUnavailableController;
 use App\Controller\BookRequest\BookRequestGetMeController;
+use App\Controller\BookRequest\BookRequestGetMeAllController;
 use App\Controller\BookRequest\BookRequestGetMeByIdController;
 use App\Controller\BookRequest\BookRequestGetMeUserController;
 use App\Controller\BookRequest\BookRequestPatchController;
@@ -33,9 +34,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/admin/book-request/{id}',
         ),
         new GetCollection(
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             uriTemplate: '/pro/book-request',
             controller: BookRequestGetMeController::class,
+            normalizationContext: ['groups' => 'bookRequest:me:collection']
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/pro/book-request/all',
+            controller: BookRequestGetMeAllController::class,
             normalizationContext: ['groups' => 'bookRequest:me:collection']
         ),
         new Get(

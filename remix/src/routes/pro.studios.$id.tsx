@@ -20,7 +20,8 @@ import { getStudio } from 'src/utils/requests/studios'
 import { Validation } from 'src/utils/types/validation'
 import { TimePicker, TimePickerKind } from 'src/components/Calendar'
 import { format } from 'date-fns'
-
+import * as HoverCard from '@radix-ui/react-hover-card'
+import { Badge } from 'src/components/Pro/Badge'
 
 
 const formSchema = z.union([
@@ -214,7 +215,29 @@ export default function () {
 
 		<section className='flex items-center justify-start gap-6'>
 			{ studio.partnerShips.filter(p => p.status !== 'DENIED' as any).map((guest) => {
-				return  <img key={guest.userId?.id} className={ `rounded-full relative object-cover w-28 h-28 cursor-pointer border-4 ${guest.status === Validation.ACCEPTED.toUpperCase() ? 'border-green-500' : guest.status === Validation.PENDING.toUpperCase() ? 'bg-orange-500 border-orange-500' : 'bg-red-500 border-red-500'  }` } src={guest.userId?.picture} alt={guest.userId?.username}/>
+				return  <HoverCard.Root key={guest.userId?.id}>
+					<HoverCard.Trigger asChild>
+						<Link to={`/artist/${guest.userId?.id}`} target='_blank'>
+							<img  className={ `rounded-full relative object-cover w-28 h-28 cursor-pointer border-4 ${guest.status === Validation.ACCEPTED.toUpperCase() ? 'border-green-500' : guest.status === Validation.PENDING.toUpperCase() ? 'bg-orange-500 border-orange-500' : 'bg-red-500 border-red-500'  }` } src={guest.userId?.picture} alt={guest.userId?.username}/>
+						</Link>
+					</HoverCard.Trigger>
+					<HoverCard.Portal>
+						<HoverCard.Content className='mt-4 z-50 gap-4 flex flex-col text-white p-4 rounded-md bg-black bg-opacity-30 backdrop-blur-lg'>
+							<Title kind='h3'>
+								{guest.userId?.username}
+							</Title>
+							<hr className='w-full' />
+							<Badge state={guest.status === Validation.ACCEPTED.toUpperCase() ? Validation.ACCEPTED : Validation.PENDING}  />
+							<span>
+								{t('from')}: <b>{ format(new Date(guest.startDate), 'uuuu-LL-dd') }</b>
+							</span>
+							<span>
+								{t('to')}: <b>{ format(new Date(guest.endDate), 'uuuu-LL-dd') }</b>
+							</span>
+						</HoverCard.Content>
+
+					</HoverCard.Portal>
+				</HoverCard.Root> 
 			}) }
 			
 
@@ -278,7 +301,7 @@ export default function () {
 		<hr className='mt-8 w-full opacity-30'/>
 		<div className='w-1/2 flex flex-col gap-4'>
 			<Title kind='h3' className='mt-4'>
-				Today's Appointements
+				{t('your-nexts-appointements')}
 			</Title>
 			<List items={appointements} ListItem={AppointementItem} />
 		</div>

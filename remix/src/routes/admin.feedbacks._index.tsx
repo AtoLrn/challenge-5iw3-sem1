@@ -28,8 +28,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	const feedbacks = await getFeedbacks(token as string)
 
-	console.log(feedbacks)
-
 	return json({
 		feedbacks: feedbacks,
 		errors: [error],

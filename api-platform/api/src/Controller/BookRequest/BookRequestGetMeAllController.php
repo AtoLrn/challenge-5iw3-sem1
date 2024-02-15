@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[AsController]
-class BookRequestGetMeController
+class BookRequestGetMeAllController
 {
     public function __construct(
         private BookRequestRepository $bookRequestRepository,
@@ -24,7 +24,7 @@ class BookRequestGetMeController
             throw new NotFoundHttpException('User not found');
         }
 
-        $bookRequest = $this->bookRequestRepository->findBy(['tattooArtist' => $tattooArtist->getId(), 'chat' => false]);
+        $bookRequest = $this->bookRequestRepository->findBy(['tattooArtist' => $tattooArtist->getId()]);
 
         return $bookRequest;
     }

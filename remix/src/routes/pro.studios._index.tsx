@@ -2,7 +2,6 @@ import { LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import {useTranslation} from 'react-i18next'
 import { BreadCrumb } from 'src/components/Breadcrumb'
-import { Badge } from 'src/components/Pro/Badge'
 import { List } from 'src/components/Pro/List'
 import { ListItemProps } from 'src/components/Pro/ListItem'
 import { Title } from 'src/components/Title'
@@ -40,9 +39,6 @@ export const StudioItem: React.FC<ListItemProps<Studio>> = ({ item }) => {
 	const { t } = useTranslation()
 
 	return <div className='grid grid-cols-5 gap-4 w-full px-8 py-4 backdrop-blur-xl bg-slate-700 bg-opacity-30 rounded-xl items-center'>
-		<span>
-			<Badge state={item.status} />
-		</span>
 		<span>{ item.name }</span>
 		<span>{ item.description }</span>
 		<span className='text-right'>{ item.maxCapacity } / { item.maxCapacity }</span>

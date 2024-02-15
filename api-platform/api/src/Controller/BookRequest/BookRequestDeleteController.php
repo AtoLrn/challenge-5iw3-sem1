@@ -14,8 +14,8 @@ class BookRequestDeleteController
     public function __construct(
         private BookRequestRepository $bookRequestRepository,
         protected Security $security,
-    )
-    {}
+    ) {
+    }
 
     public function __invoke($id): BookRequest
     {
@@ -23,7 +23,7 @@ class BookRequestDeleteController
 
         $request = $this->bookRequestRepository->find($id);
 
-        if ($request->getTattooArtist() !== $user) {
+        if ($request->getTattooArtist() !== $user && $request->getRequestingUser() !== $user) {
             throw new NotFoundHttpException('Not found');
         }
 
