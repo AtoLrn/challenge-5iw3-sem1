@@ -26,6 +26,7 @@ export const login = async (props: Login): Promise<string> => {
 		
 		return token
 	} catch (e) {
+		console.log(e)
 		throw new Error('Our server encountered an error')
 	}
 	
