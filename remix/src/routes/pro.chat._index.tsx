@@ -67,7 +67,7 @@ export default function () {
 	return <div className="flex-1 p-8 flex flex-col items-start gap-8">
 		<BreadCrumb routes={[
 			{
-				name: 'Home',
+				name: t('home'),
 				url: '/pro'
 			},{
 				name: 'Chat',

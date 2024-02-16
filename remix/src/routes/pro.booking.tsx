@@ -1,6 +1,5 @@
 import { Link, MetaFunction, useLoaderData } from '@remix-run/react'
 import { Title } from 'src/components/Title'
-import { t } from 'i18next'
 import { FaDownload } from 'react-icons/fa6'
 import { format, isBefore } from 'date-fns'
 import { List } from 'src/components/Pro/List'
@@ -13,6 +12,8 @@ import { getSession } from 'src/session.server'
 import { getProBookings } from 'src/utils/requests/booking'
 
 export const meta: MetaFunction = () => {
+	const { t } = useTranslation()
+	
 	return [
 		{
 			title: t('booking-title'),
@@ -112,6 +113,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 export default function () {
+	const { t } = useTranslation()
 	const { appointements } = useLoaderData<typeof loader>()
 
 	return (
@@ -119,7 +121,7 @@ export default function () {
 			<BreadCrumb
 				routes={[
 					{
-						name: 'Home',
+						name: t('home'),
 						url: '/pro',
 					},
 					{

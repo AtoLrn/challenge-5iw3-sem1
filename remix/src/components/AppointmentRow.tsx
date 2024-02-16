@@ -139,20 +139,18 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({ id, kind, chatId
 							<div className='w-full flex items-center justify-end gap-4 border-t-1 border-white pt-4'>
 								{kind === 'book' && (
 									<>
-										{ isChatting && <Dialog.Close asChild>
+										{ isChatting ? <Dialog.Close asChild>
 											<Link to={`/messages/${chatId}`}>
 												<button className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 													{t('go-to-chat')}
 												</button>
 											</Link>
 										
-										</Dialog.Close>}
-										
-										<Dialog.Close asChild>
+										</Dialog.Close> : <Dialog.Close asChild>
 											<button onClick={onCancel} className="bg-transparent hover:bg-white text-sm text-red-500 hover:text-black border border-red-500 font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
 												{t('cancel-book')}
 											</button>
-										</Dialog.Close>
+										</Dialog.Close>}	
 									</>
 								) }
 
@@ -160,9 +158,6 @@ export const AppointmentRow: React.FC<AppointmentRowProps> = ({ id, kind, chatId
 								{kind === 'current' && (
 									<>
 										<Dialog.Close asChild>
-											<button onClick={onCancel} className="bg-transparent hover:bg-white text-sm text-red-500 hover:text-black border border-red-500 font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
-												{t('cancel-appointment')}
-											</button>
 										</Dialog.Close>
 										<Dialog.Close asChild>
 											<Link to={`/book/${id}`} className="bg-transparent hover:bg-white text-sm text-white hover:text-black border border-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline transition ease-in-out duration-300">
