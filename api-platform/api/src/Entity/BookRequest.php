@@ -40,13 +40,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
             normalizationContext: ['groups' => 'bookRequest:me:collection']
         ),
         new GetCollection(
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             uriTemplate: '/pro/book-request/all',
             controller: BookRequestGetMeAllController::class,
             normalizationContext: ['groups' => 'bookRequest:me:collection']
         ),
         new Get(
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             uriTemplate: '/book-request/{id}',
             controller: BookRequestGetMeByIdController::class,
             normalizationContext: ['groups' => 'bookRequest:me:collection']

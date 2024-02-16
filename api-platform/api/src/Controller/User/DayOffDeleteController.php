@@ -3,7 +3,7 @@
 namespace App\Controller\User;
 
 use App\Entity\DayOff;
-use App\Entity\User;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Repository\DayOffRepository;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -28,7 +28,7 @@ class DayOffDeleteController
         $dayOff = $this->dayOffRepository->findOneBy(["userId" => $user->getId()]);
 
         if (!$dayOff) {
-            return null;
+            throw new UnprocessableEntityHttpException('Not found');
         }
 
 

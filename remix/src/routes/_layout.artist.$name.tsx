@@ -27,11 +27,13 @@ export const meta: MetaFunction = () => {
 
 const checkUser = async (token: string) => {
 	try {
-		return  await me({
+		await me({
 			token
 		})
+
+		return true
 	} catch {
-		return undefined
+		return false
 	}
 	
 }
@@ -60,7 +62,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	return json({
 		artist,
-		isLogged: token ? !!checkUser(token) : false,
+		isLogged: token ? await checkUser(token) : false,
 		errors: [error],
 		success: success
 	})

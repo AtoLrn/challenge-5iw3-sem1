@@ -24,71 +24,71 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
-      new GetCollection(
-          uriTemplate: '/prestations/user/{id}',
-          controller: PrestationUserGetController::class,
-          normalizationContext: ['groups' => 'prestation:read:user'],
-          denormalizationContext: ['groups' => 'prestation:read:user'],
-          security: 'is_granted("ROLE_USER")',
-          paginationEnabled: false
-      ),
-      new GetCollection(
-          controller: PrestationUserController::class,
-          normalizationContext: ['groups' => 'prestation:collection'],
-          security: 'is_granted("ROLE_USER")'
-      ),
-      new Post(
-          controller: PrestationCreateController::class,
-          openapiContext: [
-            'requestBody' => [
-              'content' => [
-                'multipart/form-data' => [
-                  'schema' => [
-                    'type' => 'object',
-                    'properties' => [
-                      'name' => [
-                        'type' => 'string',
-                        'default' => 'John Doe',
-                      ],
-                      'kind' => [
-                        'type' => 'string',
-                        'default' => 'Tattoo',
-                      ],
-                      'picture' => [
-                        'type' => 'string',
-                        'format' => 'binary',
-                      ],
+        new GetCollection(
+            uriTemplate: '/prestations/user/{id}',
+            controller: PrestationUserGetController::class,
+            normalizationContext: ['groups' => 'prestation:read:user'],
+            denormalizationContext: ['groups' => 'prestation:read:user'],
+            security: 'is_granted("ROLE_USER")',
+            paginationEnabled: false
+        ),
+        new GetCollection(
+            controller: PrestationUserController::class,
+            normalizationContext: ['groups' => 'prestation:collection'],
+            security: 'is_granted("ROLE_USER")'
+        ),
+        new Post(
+            controller: PrestationCreateController::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'name' => [
+                                        'type' => 'string',
+                                        'default' => 'John Doe',
+                                    ],
+                                    'kind' => [
+                                        'type' => 'string',
+                                        'default' => 'Tattoo',
+                                    ],
+                                    'picture' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                                'required' => [
+                                    'name',
+                                    'kind',
+                                    'picture',
+                                ],
+                            ],
+                        ],
                     ],
-                    'required' => [
-                      'name',
-                      'kind',
-                      'picture',
-                    ],
-                  ],
                 ],
-              ],
             ],
-          ],
-          security: 'is_granted("ROLE_USER")',
-          deserialize: false
-      ),
-      new Get(
-          normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:read'],
-          security: 'is_granted("ROLE_USER")'
-      ),
-      new Patch(
-          controller: PrestationPatchController::class,
-          normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:patch'],
-          security: 'is_granted("ROLE_USER")'
-      ),
-      new Delete(
-          controller: PrestationDeleteController::class,
-          normalizationContext: ['groups' => 'prestation:read'],
-          denormalizationContext: ['groups' => 'prestation:delete'],
-          security: 'is_granted("ROLE_USER")'
-      ),
+            security: 'is_granted("ROLE_PRO")',
+            deserialize: false
+        ),
+        new Get(
+            normalizationContext: ['groups' => 'prestation:read'],
+            denormalizationContext: ['groups' => 'prestation:read'],
+            security: 'is_granted("ROLE_USER")'
+        ),
+        new Patch(
+            controller: PrestationPatchController::class,
+            normalizationContext: ['groups' => 'prestation:read'],
+            denormalizationContext: ['groups' => 'prestation:patch'],
+            security: 'is_granted("ROLE_PRO")'
+        ),
+        new Delete(
+            controller: PrestationDeleteController::class,
+            normalizationContext: ['groups' => 'prestation:read'],
+            denormalizationContext: ['groups' => 'prestation:delete'],
+            security: 'is_granted("ROLE_PRO")'
+        ),
         new Post(
             uriTemplate: '/prestations/{id}/update-picture',
             controller: PrestationPictureController::class,
@@ -122,7 +122,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 ]
             ],
             normalizationContext: ['groups' => 'prestation:read'],
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             deserialize: false
         )
     ]

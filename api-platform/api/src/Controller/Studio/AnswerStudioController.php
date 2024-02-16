@@ -28,7 +28,7 @@ class AnswerStudioController
         $user = $this->security->getUser();
 
         if ($partnerShip->getUserId()->getId() !== $user->getId()) {
-            return null;
+            throw new UnprocessableEntityHttpException('This partnership is not for you');
         }
 
         if ($partnerShip->getStatus() !== "PENDING") {

@@ -27,7 +27,7 @@ use DateTimeZone;
         ),
         new GetCollection(
             uriTemplate: '/studio/mine',
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             controller: GetMyStudioController::class,
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
         ),
@@ -39,7 +39,7 @@ use DateTimeZone;
         ),
         new Post(
             uriTemplate: '/studios/add',
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             denormalizationContext: ['groups' => 'studio:creation'],
             normalizationContext: ['groups' => 'studio:read', 'skip_null_values' => false],
             controller: PostStudioController::class,
@@ -89,14 +89,14 @@ use DateTimeZone;
         ),
         new Post(
             uriTemplate: '/studio/{id}/invites',
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             denormalizationContext: ['groups' => 'studio:invite:create'],
             normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
             controller: InviteStudioController::class
         ),
         new GetCollection(
             uriTemplate: '/studio/{id}/invites',
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_PRO")',
             normalizationContext: ['groups' => 'studio:invite:read', 'skip_null_values' => false],
             controller: GetStudioInviteController::class
         ),

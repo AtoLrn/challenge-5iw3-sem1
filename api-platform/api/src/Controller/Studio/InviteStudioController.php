@@ -8,7 +8,7 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
-use DateTimeZone;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 #[AsController]
 class InviteStudioController
@@ -29,7 +29,7 @@ class InviteStudioController
         $invitedUser = $this->userRepository->findOneBy(["id" => $data["userId"]]);
 
         if ($studio->getOwner()->getId() !== $user->getId() || !$invitedUser) {
-            return null;
+            throw new UnprocessableEntityHttpException('This studio is not yours');
         }
 
         $partnerShip = new PartnerShip();
