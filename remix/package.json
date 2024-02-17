@@ -25,7 +25,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.0.4",
-    "@remix-run/dev": "^2.1.0",
+    "@remix-run/dev": "^2.0.1",
     "@remix-run/express": "^2.0.1",
     "@remix-run/node": "^2.0.1",
     "@remix-run/react": "^2.0.1",
